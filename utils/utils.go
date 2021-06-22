@@ -12,7 +12,6 @@ func ReadValue() string {
 	return value
 }
 
-// TODO a mettre dans un folder utils
 // Convert string value to int
 func ConvertStringToInt(str string) (int, error) {
 	f, err := strconv.Atoi(str)

@@ -1,0 +1,21 @@
+{
+    "name": "Corpos-Christie",
+    "version": "0.0.2",
+    "tranches": [
+        {
+            "min": 0,
+            "max": 5,
+            "percentage": 41
+        },
+        {
+            "min": 0,
+            "max": 5,
+            "percentage": 41
+        },
+        {
+            "min": 0,
+            "max": 5,
+            "percentage": 41
+        }
+    ]
+}
