@@ -7,7 +7,7 @@ type Config struct {
 }
 
 type Tranche struct {
-	Min        int `json:"min"`
-	Max        int `json:"max"`
-	Percentage int `json:"percentage"`
+	Min        int     `json:"min"`
+	Max        int     `json:"max"`
+	Percentage float64 `json:"percentage"`
 }

@@ -4,18 +4,28 @@
     "tranches": [
         {
             "min": 0,
-            "max": 5,
+            "max": 10084,
+            "percentage": 0
+        },
+        {
+            "min": 10085,
+            "max": 25710,
+            "percentage": 11
+        },
+        {
+            "min": 25711,
+            "max": 73516,
+            "percentage": 30
+        },
+        {
+            "min": 73517,
+            "max": 158122,
             "percentage": 41
         },
         {
-            "min": 0,
-            "max": 5,
-            "percentage": 41
-        },
-        {
-            "min": 0,
-            "max": 5,
-            "percentage": 41
+            "min": 158123,
+            "max": 1000000,
+            "percentage": 45
         }
     ]
 }

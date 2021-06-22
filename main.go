@@ -3,6 +3,7 @@ package main
 import (
 	"corpos-christie/colors"
 	"corpos-christie/config"
+	"corpos-christie/core"
 	"corpos-christie/utils"
 	"fmt"
 	"log"
@@ -15,19 +16,15 @@ var cfg *config.Config
 func start(cfg *config.Config) bool {
 	fmt.Print("Enter your income (Revenu net imposable): ")
 	var input string = utils.ReadValue()
-	r, err := utils.ConvertStringToInt(input)
+	income, err := utils.ConvertStringToInt(input)
 	if err != nil {
 		log.Printf("Error: Tax income is not convertible in int, details: %v", err)
 		return false
 	}
 
-	log.Printf("income to calculate tax: %v", colors.Red(r))
-
-	//TODO faire un fichier process pour faire les calculs d'impot
-	//TODO Creer un fichier de config.json avec une struct tranches et une struct tranche qui gere ca
-
-	//TODO Calculer l'imposition
-	//TODO Faire ensuite le differentiel pour savoir ce qui nous reste
+	// calculate tax
+	result := core.Process(income, cfg)
+	fmt.Printf("Income:\t\t%v €\nTax:\t\t%v €\nRemainder:\t%v €\n", colors.Red(result.Income), colors.Red(result.Tax), colors.Red(result.Remainder))
 
 	return true
 }
@@ -52,14 +49,16 @@ func init() {
 	config.LoadConfiguration(cfg)
 }
 
+// Starting program
 func main() {
 	log.Printf("Project: %v", colors.Yellow(cfg.Name))
-	log.Printf("Version %v", colors.Yellow(cfg.Version))
+	log.Printf("Version: %v", colors.Yellow(cfg.Version))
 
 	var keep bool
 	for ok := true; ok; ok = keep {
 		status := start(cfg)
 		log.Printf("Status of operation: %v", status)
+		fmt.Println("--------------------------------------------------------------")
 		keep = askRestart()
 	}
 
