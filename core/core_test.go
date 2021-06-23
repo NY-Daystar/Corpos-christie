@@ -1,29 +1,43 @@
 package core
 
 import (
+	"corpos-christie/colors"
 	"corpos-christie/config"
-	"log"
+	"reflect"
 	"testing"
 )
 
-// To test:
+// For testing
 // $ cd core
 // $ go test -v
 
-// Test a valid process
-func TestValidProcess(t *testing.T) {
-	//TODO Voir si on a moyen de mettre cette config en variable global dans le script
-	var cfg config.Config
-	cfg.Tranches = []config.Tranche{
+// Global variables
+var CONFIG *config.Config
+
+// Init global variables
+func init() {
+	CONFIG = new(config.Config)
+	CONFIG.Tranches = []config.Tranche{
 		{Min: 0, Max: 10084, Percentage: 0},
 		{Min: 10085, Max: 25710, Percentage: 11},
-		{Min: 25711, Max: 73516, Percentage: 30}}
+		{Min: 25711, Max: 73516, Percentage: 30},
+		{Min: 73517, Max: 158122, Percentage: 41},
+		{Min: 158123, Max: 1000000, Percentage: 45}}
+}
 
+// Test a valid process with 32000
+func TestValidProcess(t *testing.T) {
 	var income int = 32000
-	Process(income, &cfg)
 
-	//TODO mettre un log panic ou fatal f
+	result := Process(income, CONFIG)
+	t.Logf("Function tested\nIncome:\t\t%v €\nTax:\t\t%v €\nRemainder:\t%v €\n", result.Income, result.Tax, result.Remainder)
 
 	expected := Result{Income: 32000, Tax: 3605, Remainder: 28395}
-	log.Printf("%v", expected)
+	t.Logf("Expected\nIncome:\t\t%v €\nTax:\t\t%v €\nRemainder:\t%v €\n", expected.Income, expected.Tax, expected.Remainder)
+
+	if !reflect.DeepEqual(expected, result) {
+		t.Errorf("Expected that the Income %v should be equal to %v", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %v should be equal to %v", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %v should be equal to %v", colors.Red(expected.Remainder), colors.Red(result.Remainder))
+	}
 }
