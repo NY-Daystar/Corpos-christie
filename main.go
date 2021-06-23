@@ -46,7 +46,10 @@ func askRestart() bool {
 // Init configuration file
 func init() {
 	cfg = new(config.Config)
-	config.LoadConfiguration(cfg)
+	cfg.LoadConfiguration("./config.json")
+
+	// get line and file log
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
 
 // Starting program
