@@ -60,7 +60,11 @@ func main() {
 	var keep bool
 	for ok := true; ok; ok = keep {
 		status := start(cfg)
-		log.Printf("Status of operation: %v", status)
+		if status {
+			log.Println("Core process successful")
+		} else {
+			log.Println("Core process failed")
+		}
 		fmt.Println("--------------------------------------------------------------")
 		keep = askRestart()
 	}

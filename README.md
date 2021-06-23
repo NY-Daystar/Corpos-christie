@@ -13,7 +13,7 @@ Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-
 - [Suggestions](#suggestions)
 - [Credits](#credits)
 
-### Version 0.0.2
+### Version 0.0.3
 
 ## Requirements
 - [Golang](https://golang.org/dl/) >= 1.16.4
