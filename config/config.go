@@ -7,25 +7,6 @@ import (
 	"os"
 )
 
-//TODO mettre en mode objet
-// Load json file from string path (config.json)
-// func LoadConfiguration(cfg *Config, file string) {
-// 	// default path
-// 	if file == "" {
-// 		file = "./config.json"
-// 	}
-// 	// const file string = "./config.json"
-// 	configFile, err := os.Open(file)
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 		log.Printf("Loading Default configuration...")
-// 		LoadDefaultConfiguration(cfg)
-// 	}
-// 	defer configFile.Close()
-// 	jsonParser := json.NewDecoder(configFile)
-// 	jsonParser.Decode(cfg)
-// }
-
 func (cfg *Config) LoadConfiguration(file string) {
 	// default path
 	if file == "" {
@@ -43,7 +24,6 @@ func (cfg *Config) LoadConfiguration(file string) {
 	jsonParser.Decode(cfg)
 }
 
-//TODO mettre en mode objet
 // Load default configuration file if we don't have a 'config.json file'
 func (cfg *Config) LoadDefaultConfiguration() {
 	cfg.Name = "Corpos-Christie"

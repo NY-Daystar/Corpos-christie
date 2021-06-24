@@ -14,8 +14,6 @@ var CONFIG_REFERENCE Config
 
 // Init global variables
 func init() {
-	CONFIG_REFERENCE.Name = "Corpos-Christie"
-	CONFIG_REFERENCE.Version = "0.0.3"
 	CONFIG_REFERENCE.Tranches = []Tranche{
 		{Min: 0, Max: 10084, Percentage: 0},
 		{Min: 10085, Max: 25710, Percentage: 11},
@@ -24,29 +22,28 @@ func init() {
 		{Min: 158123, Max: 1000000, Percentage: 45}}
 }
 
-// Test a valid config
+// Test if tranche are well setup
 func TestValidConfig(t *testing.T) {
-	t.Logf("Reference config %v", CONFIG_REFERENCE)
+	t.Logf("Reference config %+v", CONFIG_REFERENCE)
 
 	var cfg *Config = new(Config)
 	cfg.LoadConfiguration("../config.json")
-	t.Logf("Config loaded %v", *cfg)
+	t.Logf("Config loaded %+v", cfg)
 
-	if !reflect.DeepEqual(CONFIG_REFERENCE, *cfg) {
+	if !reflect.DeepEqual(CONFIG_REFERENCE.Tranches, cfg.Tranches) {
 		t.Errorf("Expected that the configRef \n%v\n should be equal to \n%v", CONFIG_REFERENCE, cfg)
 	}
 }
 
 // Test loading of the default configuration
 func TestLoadConfigWithNoFileSoLoadDefaultConfig(t *testing.T) {
-	CONFIG_REFERENCE.Version = "1.0.0" // To fit with default config
-	t.Logf("Reference config %v", CONFIG_REFERENCE)
+	t.Logf("Reference config %+v", CONFIG_REFERENCE)
 
-	var cfg Config
+	var cfg *Config = new(Config)
 	cfg.LoadConfiguration("config_file_not_exist.json") // load a file which doesn't exist
-	t.Logf("Config loaded %v", cfg)
+	t.Logf("Config loaded %+v", cfg)
 
-	if !reflect.DeepEqual(CONFIG_REFERENCE, cfg) {
+	if !reflect.DeepEqual(CONFIG_REFERENCE.Tranches, cfg.Tranches) {
 		t.Errorf("Expected that the configRef \n%v\n should be equal to \n%v", CONFIG_REFERENCE, cfg)
 	}
 }

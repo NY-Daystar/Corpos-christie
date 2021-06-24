@@ -3,6 +3,7 @@ package core
 import (
 	"corpos-christie/colors"
 	"corpos-christie/config"
+	"corpos-christie/user"
 	"reflect"
 	"testing"
 )
@@ -25,15 +26,39 @@ func init() {
 		{Min: 158123, Max: 1000000, Percentage: 45}}
 }
 
-// Test a valid process with 32000
+// Test a valid process with 32000 of income for single person
 func TestValidProcess(t *testing.T) {
-	var income int = 32000
+	user := user.User{
+		Income: 32000,
+	}
 
-	result := Process(income, CONFIG)
-	t.Logf("Function tested\nIncome:\t\t%v €\nTax:\t\t%v €\nRemainder:\t%v €\n", result.Income, result.Tax, result.Remainder)
+	result := Process(&user, CONFIG)
+	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 32000, Tax: 3605, Remainder: 28395}
-	t.Logf("Expected\nIncome:\t\t%v €\nTax:\t\t%v €\nRemainder:\t%v €\n", expected.Income, expected.Tax, expected.Remainder)
+	t.Logf("Expected:\t\t%+v", expected)
+
+	if !reflect.DeepEqual(expected, result) {
+		t.Errorf("Expected that the Income %v should be equal to %v", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %v should be equal to %v", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %v should be equal to %v", colors.Red(expected.Remainder), colors.Red(result.Remainder))
+	}
+}
+
+// Test parts with a couple and 2 childrens
+func TestProcessForCoupleWith2Children(t *testing.T) {
+	user := user.User{
+		Income:     55950,
+		IsInCouple: true,
+		Children:   2,
+		Parts:      3,
+	}
+
+	result := Process(&user, CONFIG)
+	t.Logf("Function result:\t%+v", result)
+
+	expected := Result{Income: 55950, Tax: 2826, Remainder: 53124}
+	t.Logf("Expected:\t\t%+v", expected)
 
 	if !reflect.DeepEqual(expected, result) {
 		t.Errorf("Expected that the Income %v should be equal to %v", colors.Red(expected.Income), colors.Red(result.Income))

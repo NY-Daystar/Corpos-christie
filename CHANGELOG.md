@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project release
 
+## [0.0.4] - 2021-06-25 - Handle couple, children and parts
+> Add: new process to integrate couple, children to process part and including them to the tax process  
 ## [0.0.3] - 2021-06-23 - Fix
 > Fix: Config doesn't exist  
 > Add: Testing script for config and core modules  
