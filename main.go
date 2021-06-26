@@ -66,7 +66,11 @@ func askRestart() bool {
 // Init configuration file
 func init() {
 	cfg = new(config.Config)
-	cfg.LoadConfiguration("./config.json")
+	_, err := cfg.LoadConfiguration("./config.json")
+	if err != nil {
+		log.Printf(colors.Red("Unable to load config.json file, details: %v"), colors.Red(err))
+		cfg.LoadDefaultConfiguration()
+	}
 
 	// get line and file log
 	log.SetFlags(log.LstdFlags | log.Lshortfile)

@@ -1,31 +1,54 @@
 {
     "name": "Corpos-Christie",
     "version": "0.0.4",
-    "tranches": [
-        {
-            "min": 0,
-            "max": 10084,
-            "percentage": 0
+    "tax": {
+        "2021": {
+            "tranches": [
+                {
+                    "min": 0,
+                    "max": 10084,
+                    "percentage": 0
+                },
+                {
+                    "min": 10085,
+                    "max": 25710,
+                    "percentage": 11
+                },
+                {
+                    "min": 25711,
+                    "max": 73516,
+                    "percentage": 30
+                },
+                {
+                    "min": 73517,
+                    "max": 158122,
+                    "percentage": 41
+                },
+                {
+                    "min": 158123,
+                    "max": 1000000,
+                    "percentage": 45
+                }
+            ]
         },
-        {
-            "min": 10085,
-            "max": 25710,
-            "percentage": 11
-        },
-        {
-            "min": 25711,
-            "max": 73516,
-            "percentage": 30
-        },
-        {
-            "min": 73517,
-            "max": 158122,
-            "percentage": 41
-        },
-        {
-            "min": 158123,
-            "max": 1000000,
-            "percentage": 45
+        "2020": {
+            "tranches": [
+                {
+                    "min": 2020,
+                    "max": 2020,
+                    "percentage": 2020
+                },
+                {
+                    "min": 2020,
+                    "max": 2020,
+                    "percentage": 2020
+                },
+                {
+                    "min": 2020,
+                    "max": 2020,
+                    "percentage": 2020
+                }
+            ]
         }
-    ]
+    }
 }

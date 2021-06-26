@@ -18,7 +18,7 @@ func Process(user *user.User, cfg *config.Config) Result {
 	}
 
 	// for each tranche
-	for _, tranche := range cfg.Tranches {
+	for _, tranche := range cfg.Tax.Tranches {
 		if int(imposable) > tranche.Max { // if income is superior to maximum of the tranche to pass to tranch superior
 			// we get the diff between min and max of the tranch we apply the tax percentage and we add it to the user
 			tax = float64(tranche.Max-tranche.Min) * (tranche.Percentage / 100)

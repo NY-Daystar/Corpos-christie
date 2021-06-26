@@ -2,8 +2,15 @@ package config
 
 // Define the program config
 type Config struct {
-	Name     string    `json:"name"`
-	Version  string    `json:"version"`
+	Name    string `json:"name"`
+	Version string `json:"version"`
+	Tax     Tax
+	TaxList []Tax `json:"tax"`
+}
+
+// Define the tranche on a specific year
+type Tax struct {
+	Year     int
 	Tranches []Tranche `json:"tranches"`
 }
 

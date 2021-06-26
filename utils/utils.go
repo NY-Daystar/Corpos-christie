@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"strconv"
+	"time"
 )
 
 // Read input from terminal
@@ -19,4 +20,10 @@ func ConvertStringToInt(str string) (int, error) {
 		return 0, err
 	}
 	return f, nil
+}
+
+// Return current year
+func GetCurrentYear() int {
+	year, _, _ := time.Now().Date()
+	return year
 }

@@ -30,7 +30,6 @@ func (user *User) AskIsInCouple() (bool, error) {
 	} else if input == "" || input == "N" || input == "n" || input == "No" || input == "no" {
 		user.IsInCouple = false
 	} else {
-		//log.Printf("Error: Invalid response you have to answer by (yes/Yes/Y/y or no/No/N/n)")
 		return false, errors.New("invalid response you have to answer by (yes/Yes/Y/y or no/No/N/n)")
 	}
 	return true, nil

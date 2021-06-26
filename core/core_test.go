@@ -18,12 +18,16 @@ var CONFIG *config.Config
 // Init global variables
 func init() {
 	CONFIG = new(config.Config)
-	CONFIG.Tranches = []config.Tranche{
-		{Min: 0, Max: 10084, Percentage: 0},
-		{Min: 10085, Max: 25710, Percentage: 11},
-		{Min: 25711, Max: 73516, Percentage: 30},
-		{Min: 73517, Max: 158122, Percentage: 41},
-		{Min: 158123, Max: 1000000, Percentage: 45}}
+	CONFIG.Tax = config.Tax{
+		Year: 2021,
+		Tranches: []config.Tranche{
+			{Min: 0, Max: 10084, Percentage: 0},
+			{Min: 10085, Max: 25710, Percentage: 11},
+			{Min: 25711, Max: 73516, Percentage: 30},
+			{Min: 73517, Max: 158122, Percentage: 41},
+			{Min: 158123, Max: 1000000, Percentage: 45},
+		},
+	}
 }
 
 // Test a valid process with 32000 of income for single person
