@@ -55,11 +55,10 @@ func TestLoadConfigWithNoFileSoLoadDefaultConfig(t *testing.T) {
 	}
 }
 
-//TODO a finir
-func TestLoadConfigWithInterface(t *testing.T) {
-	configRef := make(map[string]map[string]interface{})
-	configRef["2021"] = make(map[string]interface{})
-	configRef["2021"]["tranches"] = []Tax{
+// Test to compare a json data structure to the golang config structure
+func TestConfigLoadedFitWithInterface(t *testing.T) {
+	configJson := make(map[string]interface{})
+	configJson["taxlist"] = []Tax{
 		{
 			Year: 2021,
 			Tranches: []Tranche{
@@ -71,16 +70,14 @@ func TestLoadConfigWithInterface(t *testing.T) {
 			},
 		},
 	}
-	t.Logf("TEST %v", configRef)
-	t.Logf("TEST2 %v", configRef["2021"]["tranches"])
-
-	t.Logf("Reference config %+v", configRef)
 
 	var cfg *Config = new(Config)
-	cfg.LoadConfiguration("config_file_not_exist.json") // load a file which doesn't exist
-	t.Logf("Config loaded %+v", cfg)
+	_, err := cfg.LoadConfiguration("config_file_not_exist.json") // load a file which doesn't exist
+	if err != nil {
+		cfg.LoadDefaultConfiguration()
+	}
 
-	// if !reflect.DeepEqual(CONFIG_REFERENCE.Tax.Tranches, cfg.Tax.Tranches) {
-	// 	t.Errorf("Expected that the configRef \n%v\n should be equal to \n%v", CONFIG_REFERENCE.Tax.Tranches, cfg.Tax)
-	// }
+	if !reflect.DeepEqual(configJson["taxlist"], cfg.TaxList) {
+		t.Errorf("Expected that the configJson \n%v\n should be equal to \n%v", configJson["taxlist"], cfg.TaxList)
+	}
 }

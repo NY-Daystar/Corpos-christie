@@ -37,14 +37,19 @@ func start(cfg *config.Config, user *user.User) bool {
 		return false
 	}
 
-	// calculate tax
+	// Calculate tax
 	result := core.Process(user, cfg)
 
-	user.Tax = result.Tax
-	user.Remainder = result.Remainder
-
-	// show user
+	// Show user
 	user.Show()
+
+	// Ask user if he wants to see tax tranches
+	if ok, err := user.AskTaxDetails(); ok {
+		if err != nil {
+			log.Printf("Error: asking tax details, details: %v", err)
+		}
+		core.ShowTaxTranche(result)
+	}
 
 	return true
 }
@@ -88,9 +93,9 @@ func main() {
 	for ok := true; ok; ok = keep {
 		status := start(cfg, user)
 		if status {
-			log.Println("Core process successful")
+			log.Println(colors.Green("Core process successful"))
 		} else {
-			log.Println("Core process failed")
+			log.Println(colors.Red("Core process failed"))
 		}
 		fmt.Println("--------------------------------------------------------------")
 		keep = askRestart()

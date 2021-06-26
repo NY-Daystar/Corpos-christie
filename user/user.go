@@ -55,6 +55,19 @@ func (user *User) AskHasChildren() (bool, error) {
 	return true, nil
 }
 
+// Ask if the user does have children and how many
+func (user *User) AskTaxDetails() (bool, error) {
+	fmt.Print("Do you want to see tax details (Y/n) ? ")
+	var input string = utils.ReadValue()
+	if input == "Y" || input == "y" || input == "Yes" || input == "yes" {
+		return true, nil
+	} else if input == "" || input == "N" || input == "n" || input == "No" || input == "no" {
+		return false, nil
+	} else {
+		return false, errors.New("invalid response you have to answer by (yes/Yes/Y/y or no/No/N/n)")
+	}
+}
+
 // Processing to calculate part of the user
 func (user *User) CalculateParts() {
 	var parts float64

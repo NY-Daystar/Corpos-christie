@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project release
-
+## [0.0.5] - 2021-06-26 - table tax tranches
+> Add: table to get tax tranches  
 ## [0.0.4] - 2021-06-25 - Handle couple, children and parts
 > Add: new process to integrate couple, children to process part and including them to the tax process  
 ## [0.0.3] - 2021-06-23 - Fix

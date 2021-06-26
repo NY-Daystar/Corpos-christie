@@ -4,7 +4,6 @@ import (
 	"corpos-christie/colors"
 	"corpos-christie/config"
 	"corpos-christie/user"
-	"reflect"
 	"testing"
 )
 
@@ -39,13 +38,13 @@ func TestValidProcess(t *testing.T) {
 	result := Process(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{Income: 32000, Tax: 3605, Remainder: 28395}
+	expected := Result{income: 32000, tax: 3605, remainder: 28395}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if !reflect.DeepEqual(expected, result) {
-		t.Errorf("Expected that the Income %v should be equal to %v", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %v should be equal to %v", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %v should be equal to %v", colors.Red(expected.Remainder), colors.Red(result.Remainder))
+	if result.income != expected.income && result.tax != expected.tax && result.remainder != expected.remainder {
+		t.Errorf("Expected that the Income %v should be equal to %v", colors.Red(expected.income), colors.Red(result.income))
+		t.Errorf("Expected that the Tax %v should be equal to %v", colors.Red(expected.tax), colors.Red(result.tax))
+		t.Errorf("Expected that the Remainder %v should be equal to %v", colors.Red(expected.remainder), colors.Red(result.remainder))
 	}
 }
 
@@ -61,12 +60,12 @@ func TestProcessForCoupleWith2Children(t *testing.T) {
 	result := Process(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{Income: 55950, Tax: 2826, Remainder: 53124}
+	expected := Result{income: 55950, tax: 2826, remainder: 53124}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if !reflect.DeepEqual(expected, result) {
-		t.Errorf("Expected that the Income %v should be equal to %v", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %v should be equal to %v", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %v should be equal to %v", colors.Red(expected.Remainder), colors.Red(result.Remainder))
+	if result.income != expected.income && result.tax != expected.tax && result.remainder != expected.remainder {
+		t.Errorf("Expected that the Income %v should be equal to %v", colors.Red(expected.income), colors.Red(result.income))
+		t.Errorf("Expected that the Tax %v should be equal to %v", colors.Red(expected.tax), colors.Red(result.tax))
+		t.Errorf("Expected that the Remainder %v should be equal to %v", colors.Red(expected.remainder), colors.Red(result.remainder))
 	}
 }
