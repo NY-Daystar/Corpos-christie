@@ -13,7 +13,7 @@ Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-
 - [Suggestions](#suggestions)
 - [Credits](#credits)
 
-### Version 0.0.4
+### Version 0.0.5
 
 ## Requirements
 - [Golang](https://golang.org/dl/) >= 1.16.4
@@ -25,13 +25,18 @@ $ go run main.go
 or
 ```
 $ go build
-# ./corpos-christie
+$ ./corpos-christie
+```
+
+To launch tests
+```bash
+$ go test ./...
 ```
 
 To import modules
 ```bash
-go mod init corpos-christie
-go mod download
+$ go mod init corpos-christie
+$ go mod download
 ```
 
 ## Configuration file (config.json)
