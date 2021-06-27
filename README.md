@@ -1,6 +1,6 @@
 # Income tax calculator
 
-[![ci](https://github.com/LucasNoga/tablewriter/corpos-christie/ci/badge.svg?branch=master)](https://github.com/LucasNoga/corpos-christie/actions)
+[![ci](https://github.com/LucasNoga/corpos-christie/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/LucasNoga/corpos-christie/actions)
 [![Total views](https://img.shields.io/sourcegraph/rrc/github.com/LucasNoga/corpos-christie.svg)](https://sourcegraph.com/github.com/LucasNoga/corpos-christie)
 [![Godoc](https://godoc.org/github.com/LucasNoga/corpos-christie?status.svg)](https://godoc.org/github.com/LucasNoga/corpos-christie)
 
