@@ -1,11 +1,12 @@
 package config
 
 import (
-	"corpos-christie/utils"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/LucasNoga/corpos-christie/lib/utils"
 )
 
 // Load configuration from config.json file

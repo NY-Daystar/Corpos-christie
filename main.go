@@ -1,14 +1,15 @@
 package main
 
 import (
-	"corpos-christie/colors"
-	"corpos-christie/config"
-	"corpos-christie/core"
-	"corpos-christie/user"
-	"corpos-christie/utils"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/LucasNoga/corpos-christie/config"
+	"github.com/LucasNoga/corpos-christie/core"
+	"github.com/LucasNoga/corpos-christie/lib/colors"
+	"github.com/LucasNoga/corpos-christie/lib/utils"
+	"github.com/LucasNoga/corpos-christie/user"
 )
 
 // Configuration of the application
@@ -89,8 +90,8 @@ func main() {
 	// Init user
 	var user *user.User = new(user.User)
 
-	var keep bool
-	for ok := true; ok; ok = keep {
+	// Loop so start program until user wants to exit
+	for {
 		status := start(cfg, user)
 		if status {
 			log.Println(colors.Green("Core process successful"))
@@ -98,7 +99,12 @@ func main() {
 			log.Println(colors.Red("Core process failed"))
 		}
 		fmt.Println("--------------------------------------------------------------")
-		keep = askRestart()
+
+		// ask user to restart program else we exit
+		if askRestart() {
+			continue
+		}
+		break
 	}
 
 	log.Printf("Program exited...")

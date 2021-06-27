@@ -1,6 +1,6 @@
 package core
 
-import "corpos-christie/config"
+import "github.com/LucasNoga/corpos-christie/config"
 
 // Result from processing income
 type Result struct {

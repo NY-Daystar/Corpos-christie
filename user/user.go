@@ -1,11 +1,12 @@
 package user
 
 import (
-	"corpos-christie/colors"
-	"corpos-christie/utils"
 	"errors"
 	"fmt"
 	"log"
+
+	"github.com/LucasNoga/corpos-christie/lib/colors"
+	"github.com/LucasNoga/corpos-christie/lib/utils"
 )
 
 // Ask income to the user if ok return true, else return false
