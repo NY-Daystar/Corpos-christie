@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project release
+## [0.0.6] - 2021-06-28 - Restructure project
+> Fix: Restructure folders  
+> Fix: Update Readme  
+> Add: LICENSE.md file (GPL-3.0 License)  
+> Change module name  
 ## [0.0.5] - 2021-06-26 - table tax tranches
 > Add: table to get tax tranches  
 ## [0.0.4] - 2021-06-25 - Handle couple, children and parts
