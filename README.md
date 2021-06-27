@@ -7,7 +7,13 @@
 This project developped in Golang allows to calculate your taxes in the current year.  
 
 The government has created an explanatory sheet to understand the calculation of the tax rate but this calculation is relatively complex and we want to create a simpler interface to calculate things.  
-Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir
+Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir  
+
+Installation package
+```bash
+$ go get go get github.com/LucasNoga/corpos-christie
+```
+
 
 ## Table of contents
 - [Requirements](#requirements)

@@ -1,3 +1,4 @@
+// Core package
 package core
 
 import (
