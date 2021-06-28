@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project release
+## [0.0.7] - 2021-06-29 - Restructure project
+> Fix: Rename package `core` to `tax`  
+> Fix: Change config structure and add tag fiels in config struct  
+> Del: Remove struct.go file and add struct into package file  
 ## [0.0.6] - 2021-06-28 - Restructure project
 > Fix: Restructure folders  
 > Fix: Update Readme  
@@ -16,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 > Add: new process to integrate couple, children to process part and including them to the tax process  
 ## [0.0.3] - 2021-06-23 - Fix
 > Fix: Config doesn't exist  
-> Add: Testing script for config and core modules  
+> Add: Testing script for config and tax modules  
 ## [0.0.2] - 2021-06-22 - Calculate tax v1
 > Add: Configuration management
 > Add: Process to calculate tax from income 
