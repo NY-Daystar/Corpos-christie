@@ -1,4 +1,4 @@
-package core
+package tax
 
 import (
 	"fmt"
@@ -13,6 +13,20 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
+// Result from processing income
+type Result struct {
+	income      int          //Input income from the user
+	tax         float64      // Tax to pay from the user
+	remainder   float64      // Value Remain for the user
+	taxTranches []TaxTranche // List of tax by tranches
+}
+
+// Struct to catch tax capture for each tranche
+type TaxTranche struct {
+	tax     float64        // Tax in € on a tranche for the user
+	tranche config.Tranche // Param of this tranche (Min, Max, Percentage)
+}
+
 // Processing the tax to pay from the income
 func Process(user *user.User, cfg *config.Config) Result {
 	var tax float64
@@ -26,11 +40,6 @@ func Process(user *user.User, cfg *config.Config) Result {
 
 	// Store each tranche taxes
 	var taxTranches []TaxTranche = make([]TaxTranche, 0)
-
-	//var test2 map[string]interface{} = map[string]interface{}{"salut": "5"}
-	// taxTranches = append(taxTranches, map[string]interface{}{"salut": "5"})
-	// taxTranches = append(taxTranches, map[string]interface{}{"salut": "4"})
-	// log.Printf("Test %+v", taxTranches)
 
 	// for each tranche
 	for _, tranche := range cfg.Tax.Tranches {

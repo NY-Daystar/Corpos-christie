@@ -1,2 +1,6 @@
 .vscode/
+
+# build src
+build.sh
 corpos-christie
+build/

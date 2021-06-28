@@ -1,5 +1,5 @@
-// Core package
-package core
+// Tax package
+package tax
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ import (
 )
 
 // For testing
-// $ cd core
+// $ cd tax
 // $ go test -v
 
 // Global variables

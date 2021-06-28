@@ -7,9 +7,8 @@ import (
 	"os"
 
 	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/core"
 	"github.com/LucasNoga/corpos-christie/lib/colors"
-	"github.com/LucasNoga/corpos-christie/lib/utils"
+	"github.com/LucasNoga/corpos-christie/tax"
 	"github.com/LucasNoga/corpos-christie/user"
 )
 
@@ -40,7 +39,7 @@ func start(cfg *config.Config, user *user.User) bool {
 	}
 
 	// Calculate tax
-	result := core.Process(user, cfg)
+	result := tax.Process(user, cfg)
 
 	// Show user
 	user.Show()
@@ -50,24 +49,10 @@ func start(cfg *config.Config, user *user.User) bool {
 		if err != nil {
 			log.Printf("Error: asking tax details, details: %v", err)
 		}
-		core.ShowTaxTranche(result)
+		tax.ShowTaxTranche(result)
 	}
 
 	return true
-}
-
-// Ask user if he wants to restart program
-func askRestart() bool {
-	for {
-		fmt.Print("Would you want to enter a new income (Y/n): ")
-		var input string = utils.ReadValue()
-		if input == "Y" || input == "y" || input == "Yes" || input == "yes" {
-			log.Printf("Restarting program...")
-			return true
-		} else {
-			return false
-		}
-	}
 }
 
 // Init configuration file
@@ -95,14 +80,15 @@ func main() {
 	for {
 		status := start(cfg, user)
 		if status {
-			log.Println(colors.Green("Core process successful"))
+			log.Println(colors.Green("Tax process successful"))
 		} else {
-			log.Println(colors.Red("Core process failed"))
+			log.Println(colors.Red("Tax process failed"))
 		}
 		fmt.Println("--------------------------------------------------------------")
 
 		// ask user to restart program else we exit
-		if askRestart() {
+		if user.AskRestart() {
+			log.Printf("Restarting program...")
 			continue
 		}
 		break

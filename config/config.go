@@ -2,12 +2,32 @@ package config
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/LucasNoga/corpos-christie/lib/utils"
 )
+
+// Define the program config
+type Config struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+	Tax     Tax
+	TaxList []Tax `json:"tax"`
+}
+
+// Define the tranche on a specific year
+type Tax struct {
+	Year     int       `json:"year"`
+	Tranches []Tranche `json:"tranches"`
+}
+
+// Define one of the tranch of tax
+type Tranche struct {
+	Min        int     `json:"min"`
+	Max        int     `json:"max"`
+	Percentage float64 `json:"percentage"`
+}
 
 // Load configuration from config.json file
 func (cfg *Config) LoadConfiguration(file string) (bool, error) {
@@ -16,38 +36,17 @@ func (cfg *Config) LoadConfiguration(file string) (bool, error) {
 		file = "./config.json"
 	}
 
-	// Load json file
-	result, err := cfg.loadJson(file)
-	// var result map[string]interface{}, err Error := cfg.loadJson(file)
+	jsonFile, err := os.Open(file)
 	if err != nil {
 		return false, err
 	}
+	defer jsonFile.Close()
 
-	// Loop through the Items; we're not interested in the key, just the values
-	cfg.Name = result["name"].(string)
-	cfg.Version = result["version"].(string)
-
-	// JSON object parses into a map with string keys
-	taxMap := result["tax"].(map[string]interface{})
-
-	for key, value := range taxMap {
-		// Init item tax
-		var tax Tax
-		tax.Year, _ = utils.ConvertStringToInt(key)
-
-		// Initiate every tranche and add it to the list
-		var tranches []interface{} = value.(map[string]interface{})["tranches"].([]interface{})
-		for _, v := range tranches {
-			t := v.(map[string]interface{})
-			var tranche Tranche = Tranche{
-				Min:        int(t["min"].(float64)),
-				Max:        int(t["max"].(float64)),
-				Percentage: t["percentage"].(float64),
-			}
-			tax.Tranches = append(tax.Tranches, tranche)
-		}
-		// Add tax from the year into tax list
-		cfg.TaxList = append(cfg.TaxList, tax)
+	// Load json file
+	decoder := json.NewDecoder(jsonFile)
+	err = decoder.Decode(cfg)
+	if err != nil {
+		return false, err
 	}
 
 	// Define tax of the current year as reference
@@ -69,21 +68,6 @@ func (cfg *Config) loadTaxYear() {
 	if len(cfg.Tax.Tranches) == 0 {
 		cfg.Tax = cfg.TaxList[0]
 	}
-}
-
-// Load a json file into an interface array
-func (cfg *Config) loadJson(file string) (map[string]interface{}, error) {
-	jsonFile, err := os.Open(file)
-	if err != nil {
-		return nil, err
-	}
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var result map[string]interface{}
-	json.Unmarshal([]byte(byteValue), &result)
-	return result, nil
 }
 
 // Load default configuration file if we don't have a 'config.json file'

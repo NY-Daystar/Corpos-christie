@@ -23,7 +23,7 @@ $ go get go get github.com/LucasNoga/corpos-christie
 - [Suggestions](#suggestions)
 - [Credits](#credits)
 
-### Version 0.0.6
+### Version 0.0.7
 
 ## Requirements
 - [Golang](https://golang.org/dl/) >= 1.16.4
@@ -47,6 +47,11 @@ To import modules
 ```bash
 $ go mod init corpos-christie
 $ go mod download
+```
+
+To see go doc (ex: tax package)
+```bash
+$ go doc github.com/LucasNoga/corpos-christie/tax
 ```
 
 ## Configuration file (config.json)
