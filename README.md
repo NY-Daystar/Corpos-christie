@@ -23,12 +23,30 @@ $ go get go get github.com/LucasNoga/corpos-christie
 - [Suggestions](#suggestions)
 - [Credits](#credits)
 
-### Version 0.0.7
+### Version 0.0.8
+
+## How to launch program
+1. Get program
+```bash
+$ wget https://github.com/LucasNoga/corpos-christie/releases/download/v0.0.7/corpos-christie-0.0.8.zip
+```
+
+2. Unzip it
+```bash
+$ unzip corpos-christie-0.0.8.zip -d corpos-christie
+```
+
+3. Start program
+```bash
+$ cd corpos-christie
+$ ./corpos-christie
+```
 
 ## Requirements
 - [Golang](https://golang.org/dl/) >= 1.16.4
 
-## Get started
+## Developpers Get started
+Launch program basically
 ```bash
 $ go run main.go
 ```
@@ -38,9 +56,14 @@ $ go build
 $ ./corpos-christie
 ```
 
+Launch console mode
+```bash
+$ make runconsole
+```
+
 To launch tests
 ```bash
-$ go test ./...
+$ make test
 ```
 
 To import modules
@@ -57,24 +80,27 @@ $ go doc github.com/LucasNoga/corpos-christie/tax
 ## Configuration file (config.json)
 ```js
 {
-    "name": "Corpos-Christie",          // Name of the project
-    "version": "X.X.X",                 // Version of the project
-    "tranches": [      
-    // Tranches list see this document to understand https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir                
+    "tax": [ // Tax options
         {
-            "min": 0, // Minimun in euros to get in the tranche
-            "max": 10084, // Maximum in euros to get in the tranche
-            "percentage": 0 // Percentage taxable in euros in this tranche
-        },
-        {
-            "min": 10085,
-            "max": 25710,
-            "percentage": 11
-        },
-        {
-            "min": 25711,
-            "max": 73516,
-            "percentage": 30
+            "year": 2021, // Year of the tax specifications
+            "tranches": [
+            // Tranches list see this document to understand https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir      
+                {
+                    "min": 0, // Minimun in euros to get in the tranche
+                    "max": 10084, // Maximum in euros to get in the tranche
+                    "percentage": 0 // Percentage taxable in euros in this tranche
+                },
+                {
+                    "min": 10085,
+                    "max": 25710,
+                    "percentage": 11
+                },
+                {
+                    "min": 25711,
+                    "max": 73516,
+                    "percentage": 30
+                }
+            ]
         }
     ]
 }
