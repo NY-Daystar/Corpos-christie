@@ -18,15 +18,15 @@ type Config struct {
 
 // Define the tranche on a specific year
 type Tax struct {
-	Year     int       `json:"year"`
-	Tranches []Tranche `json:"tranches"`
+	Year     int       `json:"year"`     // Year of the tax specifications
+	Tranches []Tranche `json:"tranches"` // Tranches list of tax
 }
 
 // Define one of the tranch of tax
 type Tranche struct {
-	Min        int     `json:"min"`
-	Max        int     `json:"max"`
-	Percentage float64 `json:"percentage"`
+	Min        int     `json:"min"`        // Minimun in euros to get in the tranche
+	Max        int     `json:"max"`        // Maximum in euros to get in the tranche
+	Percentage float64 `json:"percentage"` // Percentage taxable in euros in this tranche
 }
 
 // Load configuration from config.json file
