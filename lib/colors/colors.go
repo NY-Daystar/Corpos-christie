@@ -2,12 +2,7 @@ package colors
 
 import "fmt"
 
-var (
-	Info = Teal
-	Warn = Yellow
-	Fata = Red
-)
-
+// Colors variables
 var (
 	Black   = Color("\033[1;30m%s\033[0m")
 	Red     = Color("\033[1;31m%s\033[0m")
@@ -19,6 +14,7 @@ var (
 	White   = Color("\033[1;37m%s\033[0m")
 )
 
+// Show string in a specific color
 func Color(colorString string) func(...interface{}) string {
 	sprint := func(args ...interface{}) string {
 		return fmt.Sprintf(colorString,
@@ -28,5 +24,5 @@ func Color(colorString string) func(...interface{}) string {
 }
 
 // func main() {
-// 	fmt.Println(Info("hello, world!"))
+// 	fmt.Println(Red("hello, world!"))
 // }
