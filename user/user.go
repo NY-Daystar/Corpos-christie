@@ -19,6 +19,13 @@ type User struct {
 	Children   int     // number of children of the user
 }
 
+// Handle command from user to know how do you do in console mode
+func (user *User) ChooseOption() string {
+	fmt.Print(colors.Green("Type an option > "))
+	var input string = utils.ReadValue()
+	return input
+}
+
 // Ask income to the user if ok return true, else return false
 func (user *User) AskIncome() (bool, error) {
 	fmt.Print("1. Enter your income (Revenu net imposable): ")
@@ -35,9 +42,7 @@ func (user *User) AskIncome() (bool, error) {
 // Ask if the user is in couple, ok return true, else return false
 func (user *User) AskIsInCouple() (bool, error) {
 	fmt.Print("2. Are you in couple (Y/n) ? ")
-
 	response, err := askYesNo()
-	log.Printf("%v", response)
 	if err != nil {
 		return false, err
 	}
@@ -105,12 +110,12 @@ func (user *User) Show() {
 	if user.IsInCouple {
 		isInCouple = "Yes"
 	}
-	fmt.Printf("Income:\t\t%v €\n", colors.Red(user.Income))
-	fmt.Printf("In couple:\t%v\n", colors.Red(isInCouple))
-	fmt.Printf("Children:\t%v\n", colors.Red(user.Children))
-	fmt.Printf("Parts:\t\t%v\n", colors.Red(user.Parts))
-	fmt.Printf("Tax:\t\t%v €\n", colors.Green(user.Tax))
-	fmt.Printf("Remainder:\t%v €\n", colors.Green(user.Remainder))
+	fmt.Printf("Income:\t\t%s €\n", colors.Red(user.Income))
+	fmt.Printf("In couple:\t%s\n", colors.Red(isInCouple))
+	fmt.Printf("Children:\t%s\n", colors.Red(user.Children))
+	fmt.Printf("Parts:\t\t%s\n", colors.Red(user.Parts))
+	fmt.Printf("Tax:\t\t%s €\n", colors.Green(user.Tax))
+	fmt.Printf("Remainder:\t%s €\n", colors.Green(user.Remainder))
 }
 
 // askYesNo is a function to handle response user that should be yes or no

@@ -18,7 +18,7 @@ func TestUserSingleOnlyIncome(t *testing.T) {
 
 	// Testing parts
 	if partsRef != user.Parts {
-		t.Errorf("Expected that the Parts \n%v\n should be equal to \n%v", partsRef, user.Parts)
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%v", partsRef, user.Parts)
 	}
 }
 
@@ -33,7 +33,7 @@ func TestUserInCoupleNoChildren(t *testing.T) {
 
 	// Testing parts
 	if partsRef != user.Parts {
-		t.Errorf("Expected that the Parts \n%v\n should be equal to \n%v", partsRef, user.Parts)
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%v", partsRef, user.Parts)
 	}
 
 }
@@ -50,6 +50,6 @@ func TestUserInCoupleWith3Children(t *testing.T) {
 
 	// Testing parts
 	if partsRef != user.Parts {
-		t.Errorf("Expected that the Parts \n%v\n should be equal to \n%v", partsRef, user.Parts)
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%v", partsRef, user.Parts)
 	}
 }
