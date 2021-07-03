@@ -366,3 +366,12 @@ func showTaxTranche(result Result, args ...interface{}) {
 	fmt.Println("\t\t\t Tax Details \t\t\t")
 	table.Render()
 }
+
+// Show to the user the tax list year
+func ShowTaxList(cfg config.Config) {
+	fmt.Println(colors.Yellow("Tax list year"))
+	for _, v := range cfg.TaxList {
+		fmt.Printf("- %s\n", colors.Teal(v.Year))
+	}
+	fmt.Println("----------------------------------------")
+}

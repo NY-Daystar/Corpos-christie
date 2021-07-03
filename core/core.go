@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/LucasNoga/corpos-christie/config"
 	"github.com/LucasNoga/corpos-christie/lib/colors"
@@ -44,7 +45,14 @@ func init() {
 			description: "Estimate your income from a tax amount (tax > income)",
 		},
 		{
-			index:   3,
+			index:       3,
+			name:        "show_tax_year_list",
+			command:     "show_tax_year_list",
+			exec:        func(cfg *config.Config, user *user.User) { tax.ShowTaxList(*cfg) },
+			description: "Estimate your income from a tax amount (tax > income)",
+		},
+		{
+			index:   4,
 			name:    "tax_history",
 			command: "tax_history",
 			exec: func(cfg *config.Config, user *user.User) {
@@ -53,7 +61,7 @@ func init() {
 			description: "[WIP] Show history of tax calculator",
 		},
 		{
-			index:   4,
+			index:   5,
 			name:    "db",
 			command: "db",
 			exec: func(cfg *config.Config, user *user.User) {
@@ -62,7 +70,7 @@ func init() {
 			description: "[WIP] Get Db information",
 		},
 		{
-			index:   5,
+			index:   6,
 			name:    "history",
 			command: "history",
 			exec: func(cfg *config.Config, user *user.User) {
@@ -71,7 +79,7 @@ func init() {
 			description: "Show command history",
 		},
 		{
-			index:       6,
+			index:       7,
 			name:        "options",
 			command:     "options",
 			exec:        func(cfg *config.Config, user *user.User) { showOptions() },
@@ -122,7 +130,7 @@ func Start(cfg *config.Config, user *user.User) {
 	// launch program
 	ok := mode.start()
 
-	tax.StartRevTaxCalulator(cfg, user) //TODO a remove
+	//tax.StartRevTaxCalulator(cfg, user) //TODO a remove
 
 	// if doesn't work launch console mode
 	if !ok {
@@ -184,6 +192,8 @@ func (mode ConsoleMode) start() bool {
 
 		// If option is valid we execute the associate command
 		mode.execCommand(cmd)
+
+		time.Sleep(700 * time.Millisecond)
 	}
 }
 
