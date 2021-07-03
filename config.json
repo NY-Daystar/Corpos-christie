@@ -6,27 +6,27 @@
                 {
                     "min": 0,
                     "max": 10084,
-                    "percentage": 0
+                    "rate": 0
                 },
                 {
                     "min": 10085,
                     "max": 25710,
-                    "percentage": 11
+                    "rate": 11
                 },
                 {
                     "min": 25711,
                     "max": 73516,
-                    "percentage": 30
+                    "rate": 30
                 },
                 {
                     "min": 73517,
                     "max": 158122,
-                    "percentage": 41
+                    "rate": 41
                 },
                 {
                     "min": 158123,
                     "max": 1000000,
-                    "percentage": 45
+                    "rate": 45
                 }
             ]
         }

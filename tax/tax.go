@@ -26,50 +26,35 @@ type Result struct {
 // Struct to catch tax capture for each tranche
 type TaxTranche struct {
 	tax     float64        // Tax in € on a tranche for the user
-	tranche config.Tranche // Param of this tranche (Min, Max, Percentage)
+	tranche config.Tranche // Param of this tranche (Min, Max, Rate)
 }
 
-// Start tax calculator from core program
-func Start(cfg *config.Config, user *user.User) {
-	for {
-		status := start(cfg, user)
-		if status {
-			fmt.Println(colors.Green("Tax process successful"))
-		} else {
-			fmt.Println(colors.Red("Tax process failed"))
-		}
-		fmt.Println("--------------------------------------------------------------")
-
-		// ask user to restart program else we exit
-		if user.AskRestart() {
-			log.Printf("Restarting program...")
-			continue
-		}
-		break
-	}
-}
-
-// Start tax calculator from input user
-func start(cfg *config.Config, user *user.User) bool {
+// Start tax calculator
+// Calculate from income seized by user
+func StartTaxCalulator(cfg *config.Config, user *user.User) {
+	var status bool = true
 	// Ask income's user
+	fmt.Print("1. Enter your income (Revenu net imposable): ")
 	_, err := user.AskIncome()
 	if err != nil {
 		log.Printf("Error: asking income for user, details: %v", err)
-		return false
+		status = false
 	}
 
 	// Ask if user is in couple
+	fmt.Print("2. Are you in couple (Y/n) ? ")
 	_, err = user.AskIsInCouple()
 	if err != nil {
 		log.Printf("Error: asking is in couple for user, details: %v", err)
-		return false
+		status = false
 	}
 
 	// Ask if user hasChildren
+	fmt.Print("3. How many children do you have ? ")
 	_, err = user.AskHasChildren()
 	if err != nil {
 		log.Printf("Error: asking has children, details: %v", err)
-		return false
+		status = false
 	}
 
 	// Calculate tax
@@ -86,7 +71,87 @@ func start(cfg *config.Config, user *user.User) bool {
 		showTaxTranche(result)
 	}
 
-	return true
+	if status {
+		fmt.Println(colors.Green("Tax process successful"))
+	} else {
+		fmt.Println(colors.Red("Tax process failed"))
+	}
+	fmt.Println("--------------------------------------------------------------")
+
+	// ask user to restart program else we exit
+	fmt.Print("Would you want to enter a new income (Y/n): ")
+	if user.AskRestart() {
+		fmt.Println("Restarting program...")
+		StartTaxCalulator(cfg, user)
+	} else {
+		fmt.Println("Quitting tax_calculator")
+	}
+}
+
+// Start reverse tax calculator
+// Calculate income needed from tax estimated after seized remainder income
+//TODO a faire
+func StartRevTaxCalulator(cfg *config.Config, user *user.User) {
+
+	// TODO Boss final (v0.0.9)
+	// TODO Pour l'exercice final on prendra le problème en sens inverse et on permettra à
+	// TODO l'utilisateur d'entrer la somme désiré (après impôt) et le système calculera les
+	// TODO revenus net à avoir pour obtenir cette somme après l'imposition.
+
+	var status bool = true
+	// Ask income's user
+	fmt.Print("1. Enter your income wished after taxes (Revenu après impot): ")
+	_, err := user.AskRemainder()
+	if err != nil {
+		log.Printf("Error: asking income for user, details: %v", err)
+		status = false
+	}
+
+	// Ask if user is in couple
+	fmt.Print("2. Are you in couple (Y/n) ? ")
+	_, err = user.AskIsInCouple()
+	if err != nil {
+		log.Printf("Error: asking is in couple for user, details: %v", err)
+		status = false
+	}
+
+	// Ask if user hasChildren
+	fmt.Print("3. How many children do you have ? ")
+	_, err = user.AskHasChildren()
+	if err != nil {
+		log.Printf("Error: asking has children, details: %v", err)
+		status = false
+	}
+
+	// Calculate tax
+	result := calculateReverseTax(user, cfg)
+
+	// Show user
+	user.Show()
+
+	// Ask user if he wants to see tax tranches
+	if ok, err := user.AskTaxDetails(); ok {
+		if err != nil {
+			log.Printf("Error: asking tax details, details: %v", err)
+		}
+		showTaxTranche(result)
+	}
+
+	if status {
+		fmt.Println(colors.Green("Tax process successful"))
+	} else {
+		fmt.Println(colors.Red("Tax process failed"))
+	}
+	fmt.Println("--------------------------------------------------------------")
+
+	// ask user to restart program else we exit
+	fmt.Print("Would you want to enter a new income (Y/n): ")
+	if user.AskRestart() {
+		fmt.Println("Restarting program...")
+		StartTaxCalulator(cfg, user)
+	} else {
+		fmt.Println("Quitting tax_calculator")
+	}
 }
 
 // Processing the tax to pay from the income
@@ -132,6 +197,62 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 	return result
 }
 
+// Processing the tax to pay from the remainder that the user want to get at the end
+func calculateReverseTax(user *user.User, cfg *config.Config) Result {
+
+	//TODO calcualte Tax
+	// Income on arrive a calculer les tax
+	// Remainder = Tax - Income
+
+	//TODO calculate Rev Tax
+	// Remainder on arrive a calculer les tax
+	// Income = Remainder + Tax
+
+	var tax float64
+	var remainder float64 = float64(user.Remainder)
+	// log.Printf("tax %v, remainder %v", tax, remainder)
+	user.CalculateParts()
+
+	// log.Printf("User %+v", user)
+
+	// // if user has parts then its imposable is divided by parts number
+	// if user.Parts != 0 {
+	// 	imposable /= user.Parts
+	// }
+
+	// Store each tranche taxes
+	var taxTranches []TaxTranche = make([]TaxTranche, 0)
+
+	// // for each tranche
+	for _, tranche := range cfg.Tax.Tranches {
+		var taxTranche = calculateReverseTranche(remainder, tranche)
+		log.Printf("Tax tranche %v", taxTranche)
+		taxTranches = append(taxTranches, taxTranche)
+
+		// add into final tax the tax tranche
+		tax += taxTranche.tax
+	}
+
+	// // if user has parts then its tax are multiplied by parts number after we calculate tax
+	// if user.Parts != 0 {
+	// 	tax *= user.Parts
+	// }
+
+	// Format to round in integer tax and remainder
+	result := Result{
+		income:      int(remainder) + int(tax),
+		tax:         math.Round(tax),
+		remainder:   user.Remainder,
+		taxTranches: taxTranches,
+	}
+
+	// Add data into the user
+	user.Tax = result.tax
+	user.Income = result.income
+
+	return result
+}
+
 // Calculate tax for each tranche of your imposable
 func calculateTranche(imposable float64, tranche config.Tranche) TaxTranche {
 	var taxTranche TaxTranche = TaxTranche{
@@ -140,10 +261,26 @@ func calculateTranche(imposable float64, tranche config.Tranche) TaxTranche {
 
 	// if income is superior to maximum of the tranche to pass to tranch superior
 	if int(imposable) > tranche.Max {
-		taxTranche.tax = float64(tranche.Max-tranche.Min) * (tranche.Percentage / 100) // Diff between min and max of the tranche applied tax percentage
+		taxTranche.tax = float64(tranche.Max-tranche.Min) * (tranche.Rate / 100) // Diff between min and max of the tranche applied tax rate
 	} else if int(imposable) > tranche.Min && int(imposable) < tranche.Max { // if your income is between min and max tranch is the last operation
-		taxTranche.tax = float64(int(imposable)-tranche.Min) * (tranche.Percentage / 100) // Diff between min of the tranche and the income of the user,applied tax percentage
+		taxTranche.tax = float64(int(imposable)-tranche.Min) * (tranche.Rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
 	}
+	return taxTranche
+}
+
+// Calculate reverse tax for each tranche from your remainder
+func calculateReverseTranche(remainder float64, tranche config.Tranche) TaxTranche {
+	var taxTranche TaxTranche = TaxTranche{
+		tranche: tranche,
+	}
+
+	// if income is superior to maximum of the tranche to pass to tranch superior
+	if int(remainder) > tranche.Max {
+		taxTranche.tax = float64(tranche.Max-tranche.Min) * (tranche.Rate / 100) // Diff between min and max of the tranche applied tax rate}
+	} else if int(remainder) > tranche.Min && int(remainder) < tranche.Max { // if your income is between min and max tranch is the last operation
+		taxTranche.tax = float64(int(remainder)-tranche.Min) * (tranche.Rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
+	}
+
 	return taxTranche
 }
 
@@ -167,7 +304,7 @@ func showTaxTranche(result Result, args ...interface{}) {
 		line[0] = fmt.Sprintf("Tranche %d", index)
 		line[1] = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Min))
 		line[2] = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Max))
-		line[3] = fmt.Sprintf("%s %%", strconv.Itoa(int(val.tranche.Percentage)))
+		line[3] = fmt.Sprintf("%s %%", strconv.Itoa(int(val.tranche.Rate)))
 		line[4] = fmt.Sprintf("%s €", strconv.Itoa(int(val.tax)))
 		data = append(data, line)
 	}
@@ -178,7 +315,7 @@ func showTaxTranche(result Result, args ...interface{}) {
 	table.SetBorder(true) // Set Border to false
 
 	// Setting header
-	var header []string = []string{"Tranche", "Min", "Max", "Percentage", "Tax"}
+	var header []string = []string{"Tranche", "Min", "Max", "Rate", "Tax"}
 	table.SetHeader(header)
 
 	// Add data and Highlights Data

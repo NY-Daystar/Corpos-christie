@@ -33,17 +33,15 @@ func init() {
 			index:       1,
 			name:        "tax_calculator",
 			command:     "tax_calculator",
-			exec:        func(cfg *config.Config, user *user.User) { tax.Start(cfg, user) },
+			exec:        func(cfg *config.Config, user *user.User) { tax.StartTaxCalulator(cfg, user) },
 			description: "Calculate your tax from your income (income > tax)",
 		},
 		{
-			index:   2,
-			name:    "reverse_tax_calculator",
-			command: "reverse_tax_calculator",
-			exec: func(cfg *config.Config, user *user.User) {
-				log.Println(colors.Yellow("Not implemented yet, comming soon"))
-			},
-			description: "[WIP] Estimate your income from a tax amount (tax > income)",
+			index:       2,
+			name:        "reverse_tax_calculator",
+			command:     "reverse_tax_calculator",
+			exec:        func(cfg *config.Config, user *user.User) { tax.StartRevTaxCalulator(cfg, user) },
+			description: "Estimate your income from a tax amount (tax > income)",
 		},
 		{
 			index:   3,
@@ -123,6 +121,8 @@ func Start(cfg *config.Config, user *user.User) {
 	}
 	// launch program
 	ok := mode.start()
+
+	tax.StartRevTaxCalulator(cfg, user) //TODO a remove
 
 	// if doesn't work launch console mode
 	if !ok {
