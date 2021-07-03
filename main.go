@@ -1,11 +1,12 @@
 package main
 
 import (
-	"corpos-christie/colors"
-	"corpos-christie/utils"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/LucasNoga/corpos-christie/colors"
+	"github.com/LucasNoga/corpos-christie/utils"
 )
 
 // Start tax calculator from input user
@@ -49,7 +50,7 @@ func askRestart() bool {
 
 func main() {
 	log.Printf("Project: %v", colors.Yellow("Corpos-Christie")) //TODO gerer le nom de projet dans un fichier de config
-	log.Printf("Version %v", colors.Yellow("1.0.0"))            //TODO gerer la version dynamiquemnt
+	log.Printf("Version %v", colors.Yellow("0.0.1"))            //TODO gerer la version dynamiquemnt
 
 	var keep bool
 	for ok := true; ok; ok = keep {
