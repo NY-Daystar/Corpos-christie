@@ -1,6 +1,8 @@
 # Income tax calculator
 
 [![ci](https://github.com/LucasNoga/corpos-christie/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/LucasNoga/corpos-christie/actions)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Version](https://img.shields.io/github/tag/LucasNoga/corpos-christie.svg)](https://github.com/LucasNoga/corpos-christie/releases)
 [![Total views](https://img.shields.io/sourcegraph/rrc/github.com/LucasNoga/corpos-christie.svg)](https://sourcegraph.com/github.com/LucasNoga/corpos-christie)
 [![Godoc](https://godoc.org/github.com/LucasNoga/corpos-christie?status.svg)](https://godoc.org/github.com/LucasNoga/corpos-christie)
 
@@ -33,7 +35,7 @@ $ go get go get github.com/LucasNoga/corpos-christie
 ## How to launch program
 1. Get program
 ```bash
-$ wget https://github.com/LucasNoga/corpos-christie/releases/download/v0.0.7/corpos-christie-0.0.8.zip
+$ wget https://github.com/LucasNoga/corpos-christie/releases/download/v0.0.8/corpos-christie-0.0.8.zip
 ```
 
 2. Unzip it

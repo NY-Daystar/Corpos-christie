@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project release
+## [0.0.8] - 2021-07-03 - Refactoring modules
+> Add: `Makefile` with bunch commands  
+> Add: index parameter for each commands  
+> Update: Simplify entrypoint `main.go`  
+> Update: `README` documentation  
+> Fix: Modules `core`, `tax`, `user`, `config`, `utils`, `colors`  
 ## [0.0.7] - 2021-06-29 - Restructure project
 > Fix: Rename package `core` to `tax`  
 > Fix: Change config structure and add tag fiels in config struct  
