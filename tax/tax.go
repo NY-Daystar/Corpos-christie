@@ -10,6 +10,7 @@ import (
 
 	"github.com/LucasNoga/corpos-christie/config"
 	"github.com/LucasNoga/corpos-christie/lib/colors"
+	"github.com/LucasNoga/corpos-christie/lib/utils"
 	"github.com/LucasNoga/corpos-christie/user"
 
 	"github.com/olekukonko/tablewriter"
@@ -259,11 +260,14 @@ func calculateTranche(imposable float64, tranche config.Tranche) TaxTranche {
 		tranche: tranche,
 	}
 
+	// convert rate string like '10%' into float 10.00
+	rate, _ := utils.ConvertPercentageToFloat64(tranche.Rate)
+
 	// if income is superior to maximum of the tranche to pass to tranch superior
 	if int(imposable) > tranche.Max {
-		taxTranche.tax = float64(tranche.Max-tranche.Min) * (tranche.Rate / 100) // Diff between min and max of the tranche applied tax rate
+		taxTranche.tax = float64(tranche.Max-tranche.Min) * (rate / 100) // Diff between min and max of the tranche applied tax rate
 	} else if int(imposable) > tranche.Min && int(imposable) < tranche.Max { // if your income is between min and max tranch is the last operation
-		taxTranche.tax = float64(int(imposable)-tranche.Min) * (tranche.Rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
+		taxTranche.tax = float64(int(imposable)-tranche.Min) * (rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
 	}
 	return taxTranche
 }
@@ -274,11 +278,14 @@ func calculateReverseTranche(remainder float64, tranche config.Tranche) TaxTranc
 		tranche: tranche,
 	}
 
+	// convert rate string like '10%' into float 10.00
+	rate, _ := utils.ConvertPercentageToFloat64(tranche.Rate)
+
 	// if income is superior to maximum of the tranche to pass to tranch superior
 	if int(remainder) > tranche.Max {
-		taxTranche.tax = float64(tranche.Max-tranche.Min) * (tranche.Rate / 100) // Diff between min and max of the tranche applied tax rate}
+		taxTranche.tax = float64(tranche.Max-tranche.Min) * (rate / 100) // Diff between min and max of the tranche applied tax rate}
 	} else if int(remainder) > tranche.Min && int(remainder) < tranche.Max { // if your income is between min and max tranch is the last operation
-		taxTranche.tax = float64(int(remainder)-tranche.Min) * (tranche.Rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
+		taxTranche.tax = float64(int(remainder)-tranche.Min) * (rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
 	}
 
 	return taxTranche
@@ -300,12 +307,19 @@ func showTaxTranche(result Result, args ...interface{}) {
 	for i, val := range result.taxTranches {
 		var index int = i + 1
 
+		var trancheNumber string = fmt.Sprintf("Tranche %d", index)
+		var min string = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Min))
+		var max string = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Max))
+		rate, _ := utils.ConvertPercentageToFloat64(val.tranche.Rate)
+		var rateStr string = fmt.Sprintf("%s %%", strconv.Itoa(int(rate)))
+		var tax string = fmt.Sprintf("%s €", strconv.Itoa(int(val.tax)))
+
 		var line []string = make([]string, 5)
-		line[0] = fmt.Sprintf("Tranche %d", index)
-		line[1] = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Min))
-		line[2] = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Max))
-		line[3] = fmt.Sprintf("%s %%", strconv.Itoa(int(val.tranche.Rate)))
-		line[4] = fmt.Sprintf("%s €", strconv.Itoa(int(val.tax)))
+		line[0] = trancheNumber
+		line[1] = min
+		line[2] = max
+		line[3] = rateStr
+		line[4] = tax
 		data = append(data, line)
 	}
 

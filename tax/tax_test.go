@@ -22,11 +22,11 @@ func init() {
 	CONFIG.Tax = config.Tax{
 		Year: 2021,
 		Tranches: []config.Tranche{
-			{Min: 0, Max: 10084, Rate: 0},
-			{Min: 10085, Max: 25710, Rate: 11},
-			{Min: 25711, Max: 73516, Rate: 30},
-			{Min: 73517, Max: 158122, Rate: 41},
-			{Min: 158123, Max: 1000000, Rate: 45},
+			{Min: 0, Max: 10084, Rate: "0%"},
+			{Min: 10085, Max: 25710, Rate: "11%"},
+			{Min: 25711, Max: 73516, Rate: "30%"},
+			{Min: 73517, Max: 158122, Rate: "41%"},
+			{Min: 158123, Max: 1000000, Rate: "45%"},
 		},
 	}
 }
@@ -73,7 +73,7 @@ func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
 }
 
 // Calculate reverse tax for a single person to get at the end 28395
-func TestCalculateReverseTaxForSinglePerson(t *testing.T) {
+func aTestCalculateReverseTaxForSinglePerson(t *testing.T) {
 	user := user.User{
 		Remainder: 28395,
 	}
@@ -92,7 +92,7 @@ func TestCalculateReverseTaxForSinglePerson(t *testing.T) {
 }
 
 // Calculate reverse tax for a couple with 2 children, testing parts with a couple and 2 childrens
-func TestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
+func aTestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
 	user := user.User{
 		Remainder:  53124,
 		IsInCouple: true,

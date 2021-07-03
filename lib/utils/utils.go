@@ -20,7 +20,18 @@ func ReadValue() string {
 
 // Convert string value to int
 func ConvertStringToInt(str string) (int, error) {
-	f, err := strconv.Atoi(str)
+	i, err := strconv.Atoi(str)
+	if err != nil {
+		return 0, err
+	}
+	return i, nil
+}
+
+// Convert string percentage like 5% into 5
+func ConvertPercentageToFloat64(str string) (float64, error) {
+	var s string = strings.TrimSuffix(str, "%")
+	i, err := strconv.Atoi(s)
+	f := float64(i)
 	if err != nil {
 		return 0, err
 	}

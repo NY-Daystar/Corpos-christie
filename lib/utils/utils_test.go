@@ -11,13 +11,30 @@ import (
 // Test string conversion to int
 func TestStringConvertToInt(t *testing.T) {
 	var stringRef string = "32000"
+	var expected int = 32000
 
 	val, err := ConvertStringToInt(stringRef)
-	// Testing parts
+	t.Logf("Value converted %d", val)
+
 	if err != nil {
 		t.Errorf("Impossible to convert this string %s, err: %v", stringRef, err)
-	} else if val != 32000 {
-		t.Errorf("Value '%d' is not the same as ref '%v'", val, stringRef)
+	} else if val != expected {
+		t.Errorf("Value '%d' is not the same as ref '%s'", val, stringRef)
+	}
+}
+
+// Test string percentage conversion to float64
+func TestConvertPercentageToFloat64(t *testing.T) {
+	var stringRef string = "15%"
+	var expected float64 = 15
+
+	val, err := ConvertPercentageToFloat64(stringRef)
+	t.Logf("Value converted %f", val)
+
+	if err != nil {
+		t.Errorf("Impossible to convert this string %s, err: %v", stringRef, err)
+	} else if val != expected {
+		t.Errorf("Value '%f' is not the same as ref '%s'", val, stringRef)
 	}
 }
 
