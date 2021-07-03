@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/LucasNoga/corpos-christie/config"
 	"github.com/LucasNoga/corpos-christie/lib/colors"
@@ -15,6 +16,7 @@ import (
 
 // List of the commands in console mod
 type Command struct {
+	index       int                              // number to type to exec command
 	name        string                           // Name of the command
 	command     string                           // Code name of the command
 	description string                           // Description of the command
@@ -22,43 +24,68 @@ type Command struct {
 }
 
 // List of options in console mode
-var OPTIONS = []Command{
-	{
-		name:        "tax_calculator",
-		command:     "tax_calculator",
-		exec:        func(cfg *config.Config, user *user.User) { tax.Start(cfg, user) },
-		description: "Calculate your tax from your income (income > tax)",
-	},
-	{
-		name:    "reverse_tax_calculator",
-		command: "reverse_tax_calculator",
-		exec: func(cfg *config.Config, user *user.User) {
-			log.Println(colors.Yellow("Not implemented yet, comming soon"))
+var OPTIONS []Command
+
+// Init Options variables
+func init() {
+	OPTIONS = []Command{
+		{
+			index:       1,
+			name:        "tax_calculator",
+			command:     "tax_calculator",
+			exec:        func(cfg *config.Config, user *user.User) { tax.Start(cfg, user) },
+			description: "Calculate your tax from your income (income > tax)",
 		},
-		description: "[WIP] Estimate your income from a tax amount (tax > income)",
-	},
-	{
-		name:    "tax_history",
-		command: "tax_history",
-		exec: func(cfg *config.Config, user *user.User) {
-			log.Println(colors.Yellow("Not implemented yet, comming soon"))
+		{
+			index:   2,
+			name:    "reverse_tax_calculator",
+			command: "reverse_tax_calculator",
+			exec: func(cfg *config.Config, user *user.User) {
+				log.Println(colors.Yellow("Not implemented yet, comming soon"))
+			},
+			description: "[WIP] Estimate your income from a tax amount (tax > income)",
 		},
-		description: "[WIP] Show history of tax calculator",
-	},
-	{
-		name:    "db",
-		command: "db",
-		exec: func(cfg *config.Config, user *user.User) {
-			log.Println(colors.Yellow("Not implemented yet, comming soon"))
+		{
+			index:   3,
+			name:    "tax_history",
+			command: "tax_history",
+			exec: func(cfg *config.Config, user *user.User) {
+				log.Println(colors.Yellow("Not implemented yet, comming soon"))
+			},
+			description: "[WIP] Show history of tax calculator",
 		},
-		description: "[WIP] Get Db information",
-	},
-	{
-		name:        "options",
-		command:     "options",
-		exec:        func(cfg *config.Config, user *user.User) {},
-		description: "Show options list",
-	},
+		{
+			index:   4,
+			name:    "db",
+			command: "db",
+			exec: func(cfg *config.Config, user *user.User) {
+				log.Println(colors.Yellow("Not implemented yet, comming soon"))
+			},
+			description: "[WIP] Get Db information",
+		},
+		{
+			index:   5,
+			name:    "history",
+			command: "history",
+			exec: func(cfg *config.Config, user *user.User) {
+				log.Println(colors.Yellow("Not implemented yet, comming soon"))
+			},
+			description: "Show command history",
+		},
+		{
+			index:       6,
+			name:        "options",
+			command:     "options",
+			exec:        func(cfg *config.Config, user *user.User) { showOptions() },
+			description: "Show options list",
+		},
+		{
+			name:        "quit",
+			command:     "quit",
+			exec:        func(cfg *config.Config, user *user.User) { log.Println("Quitting program"); os.Exit(0) },
+			description: "Quit program",
+		},
+	}
 }
 
 // Mode of program launc (Console or GUI)
@@ -83,15 +110,13 @@ type ConsoleMode struct {
 func Start(cfg *config.Config, user *user.User) {
 	var mode Mode
 
-	// var modeGUI *ConsoleMode = new(ConsoleMode)
-
 	var modeSelected string = selectMode(os.Args)
 
 	switch m := modeSelected; m {
 	case "GUI":
 		mode = GUIMode{config: cfg, user: user}
 	case "console":
-		// mode = ConsoleMode{config: cfg, user: user}
+		mode = ConsoleMode{config: cfg, user: user}
 	default:
 		mode = GUIMode{config: cfg, user: user}
 
@@ -99,13 +124,9 @@ func Start(cfg *config.Config, user *user.User) {
 	// launch program
 	ok := mode.start()
 
-	// if doesn't work launch console
+	// if doesn't work launch console mode
 	if !ok {
-		log.Printf(colors.Red("mode '%s' ")+colors.Red("cannot be launched. Launch console mode"), colors.Yellow(modeSelected))
-		// var modeConsole *ConsoleMode = new(ConsoleMode)
-
-		// modeConsole.start()
-
+		fmt.Printf(colors.Red("mode '%s' ")+colors.Red("cannot be launched. Launch console mode\n"), colors.Yellow(modeSelected))
 		ConsoleMode{config: cfg, user: user}.start()
 	}
 }
@@ -133,42 +154,41 @@ func (m GUIMode) start() bool {
 	return false
 }
 
+// Handle command from user to know how do you do in console mode
+func chooseOption() string {
+	fmt.Print(colors.Green("Type an option > "))
+	var input string = utils.ReadValue()
+	return input
+}
+
 // Start Core program in console mode
 // Show options to user
 // And redirect to good choice
 func (mode ConsoleMode) start() bool {
-	log.Printf("Project: %s", colors.Yellow(mode.config.Name))
-	log.Printf("Version: %s", colors.Yellow(mode.config.Version))
+	fmt.Printf("Project: %s\n", colors.Yellow(mode.config.Name))
+	fmt.Printf("Version: %s\b", colors.Yellow(mode.config.Version))
 
 	// Loop so start program until user wants to exit
 	for {
 		showOptions()
-		//TODO trouver un package qui fait de l'autocompletion pour mes commnades 'tax_calculator' etc...
-		var optionEntered string = mode.user.ChooseOption()
 
-		testOption, cmd := verifyOption(optionEntered)
+		var optionEntered string = chooseOption()
 
-		// if option is invalid
-		if !testOption {
-			fmt.Printf(colors.Red("Invalid option '%s', try again\n"), optionEntered)
+		optionVerified, cmd := verifyOption(optionEntered)
+
+		// if option doesn't exists
+		if !optionVerified {
+			fmt.Printf(colors.Red("Invalid option")+"'%s'. "+colors.Red("Try again\n"), colors.Yellow(optionEntered))
 			continue
 		}
 
-		// Execute command if it's a command to execute
+		// If option is valid we execute the associate command
 		mode.execCommand(cmd)
 	}
 }
 
-// Launch function from Cmd
-// return true if the command is not the end, false if we have to return to the main options
+// Launch function of the command
 func (mode ConsoleMode) execCommand(cmd Command) {
-	// if commande is to show options
-	if cmd.name == "options" {
-		showOptions()
-		return
-	}
-
-	// it's another command we execute it
 	cmd.exec(mode.config, mode.user)
 }
 
@@ -176,7 +196,7 @@ func (mode ConsoleMode) execCommand(cmd Command) {
 func showOptions() {
 	// prepend example command
 	fmt.Println(colors.Yellow("\t\t\t List of options"))
-	var exCommand Command = Command{name: "Exemple Command", description: "Description"}
+	var exCommand Command = Command{index: 0, name: "Exemple Command", description: "Description"}
 
 	// Get all keys from console options list
 	// to get max length of index for padding
@@ -185,10 +205,10 @@ func showOptions() {
 	cmdsName = append([]string{exCommand.name}, cmdsName...)
 
 	// Show example command
-	fmt.Printf(colors.Black("- [%s] %s %s\n"), exCommand.name, utils.SetPadding(cmdsName, exCommand.name), exCommand.description)
+	fmt.Printf(colors.Black("- [%d] - [%s] %s %s\n"), exCommand.index, exCommand.name, utils.SetPadding(cmdsName, exCommand.name), exCommand.description)
 	// Show each options
 	for _, cmd := range OPTIONS {
-		fmt.Printf("- [%s] %s %s\n", colors.Magenta(cmd.name), utils.SetPadding(cmdsName, cmd.name), colors.Teal(cmd.description))
+		fmt.Printf("- [%s] - [%s] %s %s\n", colors.Black(cmd.index), colors.Magenta(cmd.name), utils.SetPadding(cmdsName, cmd.name), colors.Teal(cmd.description))
 	}
 	fmt.Println()
 }
@@ -207,6 +227,9 @@ func verifyOption(optionEntered string) (bool, Command) {
 	for _, cmd := range OPTIONS {
 		// if it's the command
 		if cmd.command == optionEntered {
+			return true, cmd
+		} else if strconv.Itoa(cmd.index) == optionEntered { // if it's an index of command
+			fmt.Printf("You selected the commmand %s\n", colors.Yellow(cmd.name))
 			return true, cmd
 		}
 	}

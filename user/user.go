@@ -19,13 +19,6 @@ type User struct {
 	Children   int     // number of children of the user
 }
 
-// Handle command from user to know how do you do in console mode
-func (user *User) ChooseOption() string {
-	fmt.Print(colors.Green("Type an option > "))
-	var input string = utils.ReadValue()
-	return input
-}
-
 // Ask income to the user if ok return true, else return false
 func (user *User) AskIncome() (bool, error) {
 	fmt.Print("1. Enter your income (Revenu net imposable): ")

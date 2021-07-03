@@ -17,13 +17,18 @@ $ go get go get github.com/LucasNoga/corpos-christie
 
 ## Table of contents
 - [Requirements](#requirements)
-- [Get started](#get-started)
+- [How to launch program](#how-to-launch-program)
+- [For Developpers](#for-developpers)
 - [Configuration file](#configuration-file-configjson)
 - [Installing and Setup Golang](#installing-and-setup-golang)
 - [Suggestions](#suggestions)
+- [TODOLIST](#todolist)
 - [Credits](#credits)
 
 ### Version 0.0.8
+
+## Requirements
+- [Golang](https://golang.org/dl/) >= 1.16.4
 
 ## How to launch program
 1. Get program
@@ -42,10 +47,7 @@ $ cd corpos-christie
 $ ./corpos-christie
 ```
 
-## Requirements
-- [Golang](https://golang.org/dl/) >= 1.16.4
-
-## Developpers Get started
+## For Developpers
 Launch program basically
 ```bash
 $ go run main.go
@@ -54,6 +56,11 @@ or
 ```
 $ go build
 $ ./corpos-christie
+```
+
+Import module for an other project
+```bash
+go get github.com/LucasNoga/corpos-christie
 ```
 
 Launch console mode
@@ -109,8 +116,8 @@ $ go doc github.com/LucasNoga/corpos-christie/tax
 ## Installing and Setup Golang
 To install golang
 ```bash
-$ wget https://golang.org/dl/go1.16.4.linux-amd64.tar.gz
-$ tar -xvf go1.16.4.linux-amd64.tar.gz
+$ wget https://golang.org/dl/go1.16.5.linux-amd64.tar.gz
+$ tar -xvf go1.16.5.linux-amd64.tar.gz
 $ sudo mv go /usr/lib
 $ go version
 ```
@@ -120,17 +127,17 @@ $ go version
 - To summon an issue: https://github.com/LucasNoga/corpos-christie/issues
 - For any specific demand by mail: luc4snoga@gmail.com
 
-## TODO
+## TODOLIST
 - ~~Starting project~~ - `done`
 - ~~Tax calculator v1~~ - `done`
 - ~~Tax calculator v2~~ - `done`
 - ~~Display tax tranches~~ - `done`
+- ~~Portability tests~~ - `done`
+- ~~Features command line management~~ - `done`
 - Add GoDoc
-- Portability tests
 - Docker
 - Tax calculator v3
 - Tax calculator v4
-- Features command line management
 - GUI
 
 

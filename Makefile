@@ -1,6 +1,6 @@
 
 EXE="corpos-christie"
-VERSION="0.0.7"
+VERSION="0.0.8"
 
 all: build
 
@@ -8,7 +8,7 @@ all: build
 .PHONY: build
 build:
 	@echo Building executable ${EXE}...
-	@./build.sh
+	@./build.sh ${VERSION}
 	@echo "${EXE} built"
 
 # Test building

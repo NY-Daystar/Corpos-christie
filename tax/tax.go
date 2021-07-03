@@ -34,9 +34,9 @@ func Start(cfg *config.Config, user *user.User) {
 	for {
 		status := start(cfg, user)
 		if status {
-			log.Println(colors.Green("Tax process successful"))
+			fmt.Println(colors.Green("Tax process successful"))
 		} else {
-			log.Println(colors.Red("Tax process failed"))
+			fmt.Println(colors.Red("Tax process failed"))
 		}
 		fmt.Println("--------------------------------------------------------------")
 

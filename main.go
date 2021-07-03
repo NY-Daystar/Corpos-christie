@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	APP_NAME    string = "Corpos-Christie"
+	APP_NAME    string = "corpos-christie"
 	APP_VERSION string = "0.0.8"
 )
 
