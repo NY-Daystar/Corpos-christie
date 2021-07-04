@@ -1,6 +1,7 @@
 package config
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
@@ -21,7 +22,7 @@ func init() {
 			{Min: 10085, Max: 25710, Rate: "11%"},
 			{Min: 25711, Max: 73516, Rate: "30%"},
 			{Min: 73517, Max: 158122, Rate: "41%"},
-			{Min: 158123, Max: 1000000, Rate: "45%"},
+			{Min: 158123, Max: math.MaxInt64, Rate: "45%"},
 		},
 	}
 }
@@ -32,6 +33,7 @@ func TestValidConfig(t *testing.T) {
 
 	var cfg Config
 	cfg.LoadConfiguration("../config.json")
+	cfg.addMaxValue()
 	t.Logf("Config loaded %+v", cfg)
 
 	if !reflect.DeepEqual(CONFIG_REFERENCE.Tax.Tranches, cfg.Tax.Tranches) {
@@ -66,7 +68,7 @@ func TestConfigLoadedFitWithInterface(t *testing.T) {
 				{Min: 10085, Max: 25710, Rate: "11%"},
 				{Min: 25711, Max: 73516, Rate: "30%"},
 				{Min: 73517, Max: 158122, Rate: "41%"},
-				{Min: 158123, Max: 1000000, Rate: "45%"},
+				{Min: 158123, Max: math.MaxInt64, Rate: "45%"},
 			},
 		},
 	}

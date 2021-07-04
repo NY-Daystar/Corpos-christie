@@ -3,7 +3,6 @@ package core
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"time"
@@ -31,62 +30,60 @@ var OPTIONS []Command
 func init() {
 	OPTIONS = []Command{
 		{
-			index:       1,
 			name:        "tax_calculator",
 			command:     "tax_calculator",
 			exec:        func(cfg *config.Config, user *user.User) { tax.StartTaxCalculator(cfg, user) },
 			description: "Calculate your tax from your incomes (income > tax)",
 		},
 		{
-			index:       2,
 			name:        "reverse_tax_calculator",
 			command:     "reverse_tax_calculator",
-			exec:        func(cfg *config.Config, user *user.User) { tax.StartRevTaxCalculator(cfg, user) },
+			exec:        func(cfg *config.Config, user *user.User) { tax.StartReverseTaxCalculator(cfg, user) },
 			description: "Estimate your incomes from a tax amount (tax > income)",
 		},
 		{
-			index:       3,
 			name:        "show_tax_year_list",
 			command:     "show_tax_year_list",
 			exec:        func(cfg *config.Config, user *user.User) { tax.ShowTaxList(*cfg) },
 			description: "Show the list of years to calculate your taxes",
 		},
 		{
-			index:       4,
 			name:        "show_tax_year_used",
 			command:     "show_tax_year_used",
 			exec:        func(cfg *config.Config, user *user.User) { tax.ShowTaxListUsed(*cfg) },
 			description: "Show the year base to calculate your taxes",
 		},
 		{
-			index:   5,
+			name:        "select_tax_year",
+			command:     "select_tax_year",
+			exec:        func(cfg *config.Config, user *user.User) { tax.SelectTaxYear(cfg, user) },
+			description: "Select a tax year if you want to calculate your taxes based on metrics of another year",
+		},
+		{
 			name:    "tax_history",
 			command: "tax_history",
 			exec: func(cfg *config.Config, user *user.User) {
-				log.Println(colors.Yellow("Not implemented yet, comming soon"))
+				fmt.Println(colors.Yellow("Not implemented yet, comming soon"))
 			},
 			description: "[WIP] Show history of tax calculator",
 		},
 		{
-			index:   6,
 			name:    "db",
 			command: "db",
 			exec: func(cfg *config.Config, user *user.User) {
-				log.Println(colors.Yellow("Not implemented yet, comming soon"))
+				fmt.Println(colors.Yellow("Not implemented yet, comming soon"))
 			},
 			description: "[WIP] Get Db information",
 		},
 		{
-			index:   7,
 			name:    "history",
 			command: "history",
 			exec: func(cfg *config.Config, user *user.User) {
-				log.Println(colors.Yellow("Not implemented yet, comming soon"))
+				fmt.Println(colors.Yellow("Not implemented yet, comming soon"))
 			},
 			description: "Show command history",
 		},
 		{
-			index:       8,
 			name:        "options",
 			command:     "options",
 			exec:        func(cfg *config.Config, user *user.User) { showOptions() },
@@ -95,9 +92,17 @@ func init() {
 		{
 			name:        "quit",
 			command:     "quit",
-			exec:        func(cfg *config.Config, user *user.User) { log.Println("Quitting program"); os.Exit(0) },
+			exec:        func(cfg *config.Config, user *user.User) { fmt.Println("Quitting program"); os.Exit(0) },
 			description: "Quit program",
 		},
+	}
+
+	// Insert index command
+	for i, v := range OPTIONS {
+		if v.name == "quit" {
+			continue
+		}
+		OPTIONS[i].index = i + 1
 	}
 }
 
@@ -136,8 +141,6 @@ func Start(cfg *config.Config, user *user.User) {
 	}
 	// launch program
 	ok := mode.start()
-
-	//tax.StartRevTaxCalulator(cfg, user) //TODO a remove
 
 	// if doesn't work launch console mode
 	if !ok {

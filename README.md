@@ -11,11 +11,6 @@ This project developped in Golang allows to calculate your taxes in the current 
 The government has created an explanatory sheet to understand the calculation of the tax rate but this calculation is relatively complex and we want to create a simpler interface to calculate things.  
 Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir  
 
-Installation package
-```bash
-$ go get go get github.com/LucasNoga/corpos-christie
-```
-
 
 ## Table of contents
 - [Requirements](#requirements)
@@ -27,7 +22,7 @@ $ go get go get github.com/LucasNoga/corpos-christie
 - [TODOLIST](#todolist)
 - [Credits](#credits)
 
-### Version 0.0.8
+### Version 0.0.9
 
 ## Requirements
 - [Golang](https://golang.org/dl/) >= 1.16.4
@@ -35,12 +30,12 @@ $ go get go get github.com/LucasNoga/corpos-christie
 ## How to launch program
 1. Get program
 ```bash
-$ wget https://github.com/LucasNoga/corpos-christie/releases/download/v0.0.8/corpos-christie-0.0.8.zip
+$ wget https://github.com/LucasNoga/corpos-christie/releases/download/v0.0.9/corpos-christie-0.0.9.zip
 ```
 
 2. Unzip it
 ```bash
-$ unzip corpos-christie-0.0.8.zip -d corpos-christie
+$ unzip corpos-christie-0.0.9.zip -d corpos-christie
 ```
 
 3. Start program
@@ -70,6 +65,11 @@ Launch console mode
 $ make runconsole
 ```
 
+To build program 
+```bash
+$ make
+```
+
 To launch tests
 ```bash
 $ make test
@@ -86,6 +86,8 @@ To see go doc (ex: tax package)
 $ go doc github.com/LucasNoga/corpos-christie/tax
 ```
 
+See [Project dependencies](https://deps.dev/go/github.com%2Flucasnoga%2Fcorpos-christie/v0.0.9/dependencies) To watch go project used in this program
+
 ## Configuration file (config.json)
 ```js
 {
@@ -97,17 +99,17 @@ $ go doc github.com/LucasNoga/corpos-christie/tax
                 {
                     "min": 0, // Minimun in euros to get in the tranche
                     "max": 10084, // Maximum in euros to get in the tranche
-                    "percentage": 0 // Percentage taxable in euros in this tranche
+                    "rate": 0 // Rate taxable in euros in this tranche
                 },
                 {
                     "min": 10085,
                     "max": 25710,
-                    "percentage": 11
+                    "rate": 11
                 },
                 {
                     "min": 25711,
                     "max": 73516,
-                    "percentage": 30
+                    "rate": 30
                 }
             ]
         }
@@ -129,16 +131,16 @@ $ go version
 - To summon an issue: https://github.com/LucasNoga/corpos-christie/issues
 - For any specific demand by mail: luc4snoga@gmail.com
 
-## TODOLIST
+## List of futures features
 - ~~Starting project~~ - `done`
 - ~~Tax calculator v1~~ - `done`
 - ~~Tax calculator v2~~ - `done`
 - ~~Display tax tranches~~ - `done`
 - ~~Portability tests~~ - `done`
 - ~~Features command line management~~ - `done`
+- ~~Tax calculator v3~~ - `done`
 - Add GoDoc
 - Docker
-- Tax calculator v3
 - Tax calculator v4
 - GUI
 

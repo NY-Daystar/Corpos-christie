@@ -92,17 +92,9 @@ func (user *User) AskRestart() bool {
 	return response
 }
 
-// Processing to calculate part of the user
-func (user *User) CalculateParts() {
-	var parts float64
-	// if user is in couple we have 2 parts
-	if user.IsInCouple {
-		parts = 2
-	}
-
-	// for each child of the user we put 0.5 parts
-	parts += float64(user.Children) * 0.5
-	user.Parts = parts
+// Get the parts of the user
+func (user *User) GetParts() float64 {
+	return user.Parts
 }
 
 // Show user fields

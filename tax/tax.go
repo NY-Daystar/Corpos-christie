@@ -22,6 +22,7 @@ type Result struct {
 	tax         float64      // Tax to pay from the user
 	remainder   float64      // Value Remain for the user
 	taxTranches []TaxTranche // List of tax by tranches
+	parts       float64      // parts calculate for the user
 }
 
 // Struct to catch tax capture for each tranche
@@ -41,6 +42,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	if err != nil {
 		log.Printf("Error: asking income for user, details: %v", err)
 		status = false
+		return
 	}
 
 	// Ask if user is in couple
@@ -49,6 +51,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	if err != nil {
 		log.Printf("Error: asking is in couple for user, details: %v", err)
 		status = false
+		return
 	}
 
 	// Ask if user hasChildren
@@ -57,10 +60,12 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	if err != nil {
 		log.Printf("Error: asking has children, details: %v", err)
 		status = false
+		return
 	}
 
 	// Calculate tax
 	result := calculateTax(user, cfg)
+	user.Parts = result.parts
 
 	// Show user
 	user.Show()
@@ -92,8 +97,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 
 // Start reverse tax calculator
 // Calculate income needed from tax estimated after seized remainder income
-//TODO a faire
-func StartRevTaxCalculator(cfg *config.Config, user *user.User) {
+func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
 	// Ask income's user
@@ -122,6 +126,7 @@ func StartRevTaxCalculator(cfg *config.Config, user *user.User) {
 
 	// Calculate tax
 	result := calculateReverseTax(user, cfg)
+	user.Parts = result.parts
 
 	// Show user
 	user.Show()
@@ -145,7 +150,7 @@ func StartRevTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Print("Would you want to enter a new income (Y/n): ")
 	if user.AskRestart() {
 		fmt.Println("Restarting program...")
-		StartTaxCalculator(cfg, user)
+		StartReverseTaxCalculator(cfg, user)
 	} else {
 		fmt.Println("Quitting tax_calculator")
 	}
@@ -155,12 +160,10 @@ func StartRevTaxCalculator(cfg *config.Config, user *user.User) {
 func calculateTax(user *user.User, cfg *config.Config) Result {
 	var tax float64
 	var imposable float64 = float64(user.Income)
-	user.CalculateParts()
+	var parts float64 = getParts(*user)
 
-	// if user has parts then its imposable is divided by parts number
-	if user.Parts != 0 {
-		imposable /= user.Parts
-	}
+	// Divide imposable by parts
+	imposable /= parts
 
 	// Store each tranche taxes
 	var taxTranches []TaxTranche = make([]TaxTranche, 0)
@@ -174,10 +177,8 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 		tax += taxTranche.tax
 	}
 
-	// if user has parts then its tax are multiplied by parts number after we calculate tax
-	if user.Parts != 0 {
-		tax *= user.Parts
-	}
+	// Reajust tax by parts
+	tax *= parts
 
 	// Format to round in integer tax and remainder
 	result := Result{
@@ -185,6 +186,7 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 		tax:         math.Round(tax),
 		remainder:   float64(user.Income) - math.Round(tax),
 		taxTranches: taxTranches,
+		parts:       parts,
 	}
 
 	// Add data into the user
@@ -195,49 +197,56 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 }
 
 // Processing the tax to pay from the remainder that the user want to get at the end
-//TODO a finir
 func calculateReverseTax(user *user.User, cfg *config.Config) Result {
-	var tax float64
-	var remainder float64 = float64(user.Remainder)
-	// log.Printf("tax %v, remainder %v", tax, remainder)
-	user.CalculateParts()
+	var income float64
 
-	// log.Printf("User %+v", user)
+	var taxTranches []TaxTranche
+	var parts = getParts(*user)
 
-	// // if user has parts then its imposable is divided by parts number
-	// if user.Parts != 0 {
-	// 	imposable /= user.Parts
-	// }
+	var incomeAfterTaxes float64 = user.Remainder
+	var target float64 = incomeAfterTaxes // income to find
 
-	// Store each tranche taxes
-	var taxTranches []TaxTranche = make([]TaxTranche, 0)
+	// Divide imposable by parts
+	target /= parts
 
-	// // for each tranche
-	for _, tranche := range cfg.GetTax().Tranches {
-		var taxTranche = calculateReverseTranche(remainder, tranche)
-		log.Printf("Tax tranche %v", taxTranche)
-		taxTranches = append(taxTranches, taxTranche)
+	// Brut force to find target with incomeAfterTaxes
+	for {
 
-		// add into final tax the tax tranche
-		tax += taxTranche.tax
+		var tax float64
+
+		taxTranches = make([]TaxTranche, 0)
+		// for each tranche
+		for _, tranche := range cfg.GetTax().Tranches {
+			var taxTranche = calculateTranche(target, tranche)
+			taxTranches = append(taxTranches, taxTranche)
+
+			// add into final tax the tax tranche
+			tax += taxTranche.tax
+		}
+
+		tax *= parts
+
+		// When target has been reached
+		if incomeAfterTaxes <= target*parts-tax {
+			income = target*parts - parts
+			break
+		}
+		// Increase target to find if we not find
+		target++
 	}
-
-	// // if user has parts then its tax are multiplied by parts number after we calculate tax
-	// if user.Parts != 0 {
-	// 	tax *= user.Parts
-	// }
 
 	// Format to round in integer tax and remainder
 	result := Result{
-		income:      int(remainder) + int(tax),
-		tax:         math.Round(tax),
-		remainder:   user.Remainder,
+		income:      int(income),
+		tax:         math.Round(income - incomeAfterTaxes),
+		remainder:   incomeAfterTaxes,
 		taxTranches: taxTranches,
+		parts:       parts,
 	}
 
 	// Add data into the user
-	user.Tax = result.tax
 	user.Income = result.income
+	user.Tax = result.tax
 
 	return result
 }
@@ -260,23 +269,18 @@ func calculateTranche(imposable float64, tranche config.Tranche) TaxTranche {
 	return taxTranche
 }
 
-// Calculate reverse tax for each tranche from your remainder
-func calculateReverseTranche(remainder float64, tranche config.Tranche) TaxTranche {
-	var taxTranche TaxTranche = TaxTranche{
-		tranche: tranche,
+// Calculate parts of the user
+func getParts(user user.User) float64 {
+	var parts float64 = 1 // single person 1 part
+
+	// if user is in couple we have 2 parts,
+	if user.IsInCouple {
+		parts = 2
 	}
 
-	// convert rate string like '10%' into float 10.00
-	rate, _ := utils.ConvertPercentageToFloat64(tranche.Rate)
-
-	// if income is superior to maximum of the tranche to pass to tranch superior
-	if int(remainder) > tranche.Max {
-		taxTranche.tax = float64(tranche.Max-tranche.Min) * (rate / 100) // Diff between min and max of the tranche applied tax rate}
-	} else if int(remainder) > tranche.Min && int(remainder) < tranche.Max { // if your income is between min and max tranch is the last operation
-		taxTranche.tax = float64(int(remainder)-tranche.Min) * (rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
-	}
-
-	return taxTranche
+	// for each child of the user we put 0.5 parts
+	parts += float64(user.Children) * 0.5
+	return parts
 }
 
 // Show every tax at each tranch

@@ -2,9 +2,11 @@ package config
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
+	"math"
 	"os"
 
+	"github.com/LucasNoga/corpos-christie/lib/colors"
 	"github.com/LucasNoga/corpos-christie/lib/utils"
 )
 
@@ -29,6 +31,8 @@ type Tranche struct {
 	Rate string `json:"rate"` // Rate taxable in euros in this tranche
 }
 
+// TODO TROUVER LE MOYEN DE METTRE INFINITY EN MAX de tranche Infinity
+
 // Load configuration from config.json file
 func (cfg *Config) LoadConfiguration(file string) (bool, error) {
 	// default path
@@ -49,10 +53,20 @@ func (cfg *Config) LoadConfiguration(file string) (bool, error) {
 		return false, err
 	}
 
+	cfg.addMaxValue()
+
 	// Define tax of the current year as reference
 	cfg.loadTaxYear()
 
 	return true, nil
+}
+
+// Define max value for the last tranche
+func (cfg *Config) addMaxValue() {
+	// for last tranch of each tax in the list
+	for _, tax := range cfg.TaxList {
+		tax.Tranches[len(tax.Tranches)-1].Max = math.MaxInt64
+	}
 }
 
 // Define the tax of the current year
@@ -70,14 +84,26 @@ func (cfg *Config) loadTaxYear() {
 	}
 }
 
-// Get Tax used to calculate taxes among of TaxList
+// Get tax used to calculate taxes among of TaxList
 func (cfg *Config) GetTax() Tax {
 	return cfg.Tax
 }
 
+// Change tax year among of TaxList
+func (cfg *Config) ChangeTax(year int) {
+	for _, tax := range cfg.TaxList {
+		if tax.Year == year {
+			cfg.Tax = tax
+			return
+		}
+	}
+	fmt.Printf(colors.Red("%d is not on the list\n"), year)
+	fmt.Printf(colors.Red("Get default tax year: %d\n"), cfg.GetTax().Year)
+}
+
 // Load default configuration file if we don't have a 'config.json file'
 func (cfg *Config) LoadDefaultConfiguration() {
-	log.Printf("Loading Default configuration...")
+	fmt.Println("Loading Default configuration...")
 	cfg.Name = "Corpos-Christie"
 	cfg.Version = "1.0.0"
 	cfg.Tax = Tax{
@@ -87,7 +113,7 @@ func (cfg *Config) LoadDefaultConfiguration() {
 			{Min: 10085, Max: 25710, Rate: "11%"},
 			{Min: 25711, Max: 73516, Rate: "30%"},
 			{Min: 73517, Max: 158122, Rate: "41%"},
-			{Min: 158123, Max: 1000000, Rate: "45%"},
+			{Min: 158123, Max: math.MaxInt64, Rate: "45%"},
 		},
 	}
 	cfg.TaxList = append(cfg.TaxList, cfg.Tax)

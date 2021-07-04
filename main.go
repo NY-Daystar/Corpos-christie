@@ -12,7 +12,7 @@ import (
 
 const (
 	APP_NAME    string = "corpos-christie"
-	APP_VERSION string = "0.0.8"
+	APP_VERSION string = "0.0.9"
 )
 
 // Configuration of the application
@@ -20,6 +20,9 @@ var cfg *config.Config
 
 // Init configuration file
 func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile) // get line and file log
+
+	// Setup config
 	cfg = new(config.Config)
 	cfg.Name = APP_NAME
 	cfg.Version = APP_VERSION
@@ -28,9 +31,6 @@ func init() {
 		log.Printf(colors.Red("Unable to load config.json file, details: %s"), colors.Red(err))
 		cfg.LoadDefaultConfiguration()
 	}
-
-	// get line and file log
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
 
 // Starting program
