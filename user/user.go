@@ -21,7 +21,6 @@ type User struct {
 
 // Ask income to the user if ok return true, else return false
 func (user *User) AskIncome() (bool, error) {
-	fmt.Print("1. Enter your income (Revenu net imposable): ")
 	var input string = utils.ReadValue()
 	income, err := utils.ConvertStringToInt(input)
 	if err != nil {
@@ -32,9 +31,20 @@ func (user *User) AskIncome() (bool, error) {
 	return true, nil
 }
 
+// Ask remainder to the user if ok return true, else return false
+func (user *User) AskRemainder() (bool, error) {
+	var input string = utils.ReadValue()
+	remainder, err := utils.ConvertStringToInt(input)
+	if err != nil {
+		log.Printf("Error: Tax remainder is not convertible in int, details: %v", err)
+		return false, err
+	}
+	user.Remainder = float64(remainder)
+	return true, nil
+}
+
 // Ask if the user is in couple, ok return true, else return false
 func (user *User) AskIsInCouple() (bool, error) {
-	fmt.Print("2. Are you in couple (Y/n) ? ")
 	response, err := askYesNo()
 	if err != nil {
 		return false, err
@@ -49,7 +59,6 @@ func (user *User) AskIsInCouple() (bool, error) {
 
 // Ask if the user does have children and how many
 func (user *User) AskHasChildren() (bool, error) {
-	fmt.Print("3.2 How many children do you have ? ")
 	var input string = utils.ReadValue()
 
 	// user can skip the question
@@ -79,7 +88,6 @@ func (user *User) AskTaxDetails() (bool, error) {
 
 // Ask user if he wants to restart program
 func (user *User) AskRestart() bool {
-	fmt.Print("Would you want to enter a new income (Y/n): ")
 	response, _ := askYesNo()
 	return response
 }

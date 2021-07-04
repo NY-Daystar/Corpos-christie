@@ -94,11 +94,6 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 // Calculate income needed from tax estimated after seized remainder income
 //TODO a faire
 func StartRevTaxCalculator(cfg *config.Config, user *user.User) {
-
-	// TODO Boss final (v0.0.9)
-	// TODO Pour l'exercice final on prendra le problème en sens inverse et on permettra à
-	// TODO l'utilisateur d'entrer la somme désiré (après impôt) et le système calculera les
-	// TODO revenus net à avoir pour obtenir cette somme après l'imposition.
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
 	// Ask income's user
@@ -200,16 +195,8 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 }
 
 // Processing the tax to pay from the remainder that the user want to get at the end
+//TODO a finir
 func calculateReverseTax(user *user.User, cfg *config.Config) Result {
-
-	//TODO calcualte Tax
-	// Income on arrive a calculer les tax
-	// Remainder = Tax - Income
-
-	//TODO calculate Rev Tax
-	// Remainder on arrive a calculer les tax
-	// Income = Remainder + Tax
-
 	var tax float64
 	var remainder float64 = float64(user.Remainder)
 	// log.Printf("tax %v, remainder %v", tax, remainder)
@@ -384,4 +371,34 @@ func ShowTaxList(cfg config.Config) {
 // Show to the user the tax year used
 func ShowTaxListUsed(cfg config.Config) {
 	fmt.Printf("The tax year base to calculate your taxes is %s\n", colors.Teal(cfg.GetTax().Year))
+}
+
+// Select Tax year for the user
+// Ask to the user if he wants to calculate taxes from another year
+// bool false = invalid answer or no change require
+func SelectTaxYear(cfg *config.Config, user *user.User) {
+	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
+
+	// Asking year
+	fmt.Print("List of years: ")
+	for _, v := range cfg.TaxList {
+		var year string = strconv.Itoa(v.Year)
+		if cfg.GetTax().Year == v.Year {
+			year = colors.Green(v.Year)
+		}
+		fmt.Printf("%s ", year)
+	}
+	fmt.Print("\nWhich year do you want ? ")
+
+	var input string = utils.ReadValue()
+
+	year, err := utils.ConvertStringToInt(input)
+	if err != nil {
+		log.Printf("Error: Tax year is not convertible in int, details: %v", err)
+		return
+	}
+
+	cfg.ChangeTax(year)
+	fmt.Printf("The tax year is now based on %s\n", colors.Teal(cfg.GetTax().Year))
+
 }
