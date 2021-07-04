@@ -34,25 +34,32 @@ func init() {
 			index:       1,
 			name:        "tax_calculator",
 			command:     "tax_calculator",
-			exec:        func(cfg *config.Config, user *user.User) { tax.StartTaxCalulator(cfg, user) },
-			description: "Calculate your tax from your income (income > tax)",
+			exec:        func(cfg *config.Config, user *user.User) { tax.StartTaxCalculator(cfg, user) },
+			description: "Calculate your tax from your incomes (income > tax)",
 		},
 		{
 			index:       2,
 			name:        "reverse_tax_calculator",
 			command:     "reverse_tax_calculator",
-			exec:        func(cfg *config.Config, user *user.User) { tax.StartRevTaxCalulator(cfg, user) },
-			description: "Estimate your income from a tax amount (tax > income)",
+			exec:        func(cfg *config.Config, user *user.User) { tax.StartRevTaxCalculator(cfg, user) },
+			description: "Estimate your incomes from a tax amount (tax > income)",
 		},
 		{
 			index:       3,
 			name:        "show_tax_year_list",
 			command:     "show_tax_year_list",
 			exec:        func(cfg *config.Config, user *user.User) { tax.ShowTaxList(*cfg) },
-			description: "Estimate your income from a tax amount (tax > income)",
+			description: "Show the list of years to calculate your taxes",
 		},
 		{
-			index:   4,
+			index:       4,
+			name:        "show_tax_year_used",
+			command:     "show_tax_year_used",
+			exec:        func(cfg *config.Config, user *user.User) { tax.ShowTaxListUsed(*cfg) },
+			description: "Show the year base to calculate your taxes",
+		},
+		{
+			index:   5,
 			name:    "tax_history",
 			command: "tax_history",
 			exec: func(cfg *config.Config, user *user.User) {
@@ -61,7 +68,7 @@ func init() {
 			description: "[WIP] Show history of tax calculator",
 		},
 		{
-			index:   5,
+			index:   6,
 			name:    "db",
 			command: "db",
 			exec: func(cfg *config.Config, user *user.User) {
@@ -70,7 +77,7 @@ func init() {
 			description: "[WIP] Get Db information",
 		},
 		{
-			index:   6,
+			index:   7,
 			name:    "history",
 			command: "history",
 			exec: func(cfg *config.Config, user *user.User) {
@@ -79,7 +86,7 @@ func init() {
 			description: "Show command history",
 		},
 		{
-			index:       7,
+			index:       8,
 			name:        "options",
 			command:     "options",
 			exec:        func(cfg *config.Config, user *user.User) { showOptions() },
@@ -194,12 +201,14 @@ func (mode ConsoleMode) start() bool {
 		mode.execCommand(cmd)
 
 		time.Sleep(700 * time.Millisecond)
+
 	}
 }
 
 // Launch function of the command
 func (mode ConsoleMode) execCommand(cmd Command) {
 	cmd.exec(mode.config, mode.user)
+	fmt.Println("----------------------------------------")
 }
 
 // Show list of options

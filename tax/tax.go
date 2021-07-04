@@ -32,7 +32,8 @@ type TaxTranche struct {
 
 // Start tax calculator
 // Calculate from income seized by user
-func StartTaxCalulator(cfg *config.Config, user *user.User) {
+func StartTaxCalculator(cfg *config.Config, user *user.User) {
+	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
 	// Ask income's user
 	fmt.Print("1. Enter your income (Revenu net imposable): ")
@@ -77,13 +78,13 @@ func StartTaxCalulator(cfg *config.Config, user *user.User) {
 	} else {
 		fmt.Println(colors.Red("Tax process failed"))
 	}
-	fmt.Println("--------------------------------------------------------------")
+	fmt.Println("----------------------------------------")
 
 	// ask user to restart program else we exit
 	fmt.Print("Would you want to enter a new income (Y/n): ")
 	if user.AskRestart() {
 		fmt.Println("Restarting program...")
-		StartTaxCalulator(cfg, user)
+		StartTaxCalculator(cfg, user)
 	} else {
 		fmt.Println("Quitting tax_calculator")
 	}
@@ -92,13 +93,13 @@ func StartTaxCalulator(cfg *config.Config, user *user.User) {
 // Start reverse tax calculator
 // Calculate income needed from tax estimated after seized remainder income
 //TODO a faire
-func StartRevTaxCalulator(cfg *config.Config, user *user.User) {
+func StartRevTaxCalculator(cfg *config.Config, user *user.User) {
 
 	// TODO Boss final (v0.0.9)
 	// TODO Pour l'exercice final on prendra le problème en sens inverse et on permettra à
 	// TODO l'utilisateur d'entrer la somme désiré (après impôt) et le système calculera les
 	// TODO revenus net à avoir pour obtenir cette somme après l'imposition.
-
+	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
 	// Ask income's user
 	fmt.Print("1. Enter your income wished after taxes (Revenu après impot): ")
@@ -143,13 +144,13 @@ func StartRevTaxCalulator(cfg *config.Config, user *user.User) {
 	} else {
 		fmt.Println(colors.Red("Tax process failed"))
 	}
-	fmt.Println("--------------------------------------------------------------")
+	fmt.Println("----------------------------------------")
 
 	// ask user to restart program else we exit
 	fmt.Print("Would you want to enter a new income (Y/n): ")
 	if user.AskRestart() {
 		fmt.Println("Restarting program...")
-		StartTaxCalulator(cfg, user)
+		StartTaxCalculator(cfg, user)
 	} else {
 		fmt.Println("Quitting tax_calculator")
 	}
@@ -170,7 +171,7 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 	var taxTranches []TaxTranche = make([]TaxTranche, 0)
 
 	// for each tranche
-	for _, tranche := range cfg.Tax.Tranches {
+	for _, tranche := range cfg.GetTax().Tranches {
 		var taxTranche = calculateTranche(imposable, tranche)
 		taxTranches = append(taxTranches, taxTranche)
 
@@ -225,7 +226,7 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 	var taxTranches []TaxTranche = make([]TaxTranche, 0)
 
 	// // for each tranche
-	for _, tranche := range cfg.Tax.Tranches {
+	for _, tranche := range cfg.GetTax().Tranches {
 		var taxTranche = calculateReverseTranche(remainder, tranche)
 		log.Printf("Tax tranche %v", taxTranche)
 		taxTranches = append(taxTranches, taxTranche)
@@ -370,8 +371,17 @@ func showTaxTranche(result Result, args ...interface{}) {
 // Show to the user the tax list year
 func ShowTaxList(cfg config.Config) {
 	fmt.Println(colors.Yellow("Tax list year"))
+	fmt.Println("-------------")
 	for _, v := range cfg.TaxList {
-		fmt.Printf("- %s\n", colors.Teal(v.Year))
+		var year string = strconv.Itoa(v.Year)
+		if cfg.GetTax().Year == v.Year {
+			year = "* " + colors.Green(v.Year)
+		}
+		fmt.Printf("%s\n", year)
 	}
-	fmt.Println("----------------------------------------")
+}
+
+// Show to the user the tax year used
+func ShowTaxListUsed(cfg config.Config) {
+	fmt.Printf("The tax year base to calculate your taxes is %s\n", colors.Teal(cfg.GetTax().Year))
 }

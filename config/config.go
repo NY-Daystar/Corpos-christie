@@ -70,6 +70,11 @@ func (cfg *Config) loadTaxYear() {
 	}
 }
 
+// Get Tax used to calculate taxes among of TaxList
+func (cfg *Config) GetTax() Tax {
+	return cfg.Tax
+}
+
 // Load default configuration file if we don't have a 'config.json file'
 func (cfg *Config) LoadDefaultConfiguration() {
 	log.Printf("Loading Default configuration...")
