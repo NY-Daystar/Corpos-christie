@@ -2,10 +2,11 @@
 EXE="corpos-christie"
 VERSION="0.0.9"
 
+.PHONY: build run runconsole rungui
+
 all: build
 
 # Building executable
-.PHONY: build
 build:
 	@echo Building executable ${EXE}...
 	@./build.sh ${VERSION}
@@ -19,16 +20,13 @@ testbuild:
 	@./build/${EXE}
 
 # Run program
-.PHONY: run
 run:
 	go run main.go
 
 # Run program in console mode
-.PHONY: runconsole
 runconsole:
 	go run main.go --console
 
-.PHONY: rungui
 rungui:
 	go run main.go --gui
 
@@ -39,6 +37,15 @@ test:
 # See doc
 doc:
 	go doc
+
+# Docker build
+docker-build: 
+	go build
+	docker build -t ${EXE}:${VERSION} .
+
+# Docker run
+docker-run:
+	docker run -it --rm --name ${EXE} ${EXE}:${VERSION}
 
 # list all target in makefile
 list:

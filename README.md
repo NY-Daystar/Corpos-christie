@@ -6,7 +6,7 @@
 [![Total views](https://img.shields.io/sourcegraph/rrc/github.com/LucasNoga/corpos-christie.svg)](https://sourcegraph.com/github.com/LucasNoga/corpos-christie)
 [![Godoc](https://godoc.org/github.com/LucasNoga/corpos-christie?status.svg)](https://godoc.org/github.com/LucasNoga/corpos-christie)
 
-This project developped in Golang allows to calculate your taxes in the current year.  
+This project has been developped in Golang allows to calculate your taxes in the current year.    
 
 The government has created an explanatory sheet to understand the calculation of the tax rate but this calculation is relatively complex and we want to create a simpler interface to calculate things.  
 Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir  
@@ -16,13 +16,12 @@ Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-
 - [Requirements](#requirements)
 - [How to launch program](#how-to-launch-program)
 - [For Developpers](#for-developpers)
+- [Docker](#docker)
 - [Configuration file](#configuration-file-configjson)
 - [Installing and Setup Golang](#installing-and-setup-golang)
 - [Suggestions](#suggestions)
 - [TODOLIST](#todolist)
 - [Credits](#credits)
-
-### Version 0.0.9
 
 ## Requirements
 - [Golang](https://golang.org/dl/) >= 1.16.4
@@ -45,6 +44,11 @@ $ ./corpos-christie
 ```
 
 ## For Developpers
+Clone th repository
+```bash
+$ git clone https://github.com/lucasnoga/corpos-christie.git
+```
+
 Launch program basically
 ```bash
 $ go run main.go
@@ -87,6 +91,24 @@ $ go doc github.com/LucasNoga/corpos-christie/tax
 ```
 
 See [Project dependencies](https://deps.dev/go/github.com%2Flucasnoga%2Fcorpos-christie/v0.0.9/dependencies) To watch go project used in this program
+
+## Docker
+The official image of this projet: https://hub.docker.com/r/lucasnoga/corpos-christie  
+
+To use this image
+```bash
+$ docker pull lucasnoga/corpos-christie
+$ docker run -it --rm --name corpos-christie lucasnoga/corpos-christie
+```
+To build a new docker image
+```bash
+$ make docker-build
+```
+
+To run this image
+```bash
+$ make docker-run
+```
 
 ## Configuration file (config.json)
 ```js
