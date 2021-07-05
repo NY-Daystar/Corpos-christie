@@ -1,14 +1,15 @@
 package main
 
 import (
-	"corpos-christie/colors"
-	"corpos-christie/config"
-	"corpos-christie/core"
-	"corpos-christie/user"
-	"corpos-christie/utils"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/LucasNoga/corpos-christie/colors"
+	"github.com/LucasNoga/corpos-christie/config"
+	"github.com/LucasNoga/corpos-christie/core"
+	"github.com/LucasNoga/corpos-christie/user"
+	"github.com/LucasNoga/corpos-christie/utils"
 )
 
 // Configuration of the application

@@ -1,10 +1,11 @@
 package core
 
 import (
-	"corpos-christie/colors"
-	"corpos-christie/config"
-	"corpos-christie/user"
 	"testing"
+
+	"github.com/LucasNoga/corpos-christie/colors"
+	"github.com/LucasNoga/corpos-christie/config"
+	"github.com/LucasNoga/corpos-christie/user"
 )
 
 // For testing

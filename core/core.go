@@ -1,13 +1,14 @@
 package core
 
 import (
-	"corpos-christie/config"
-	"corpos-christie/user"
 	"fmt"
 	"math"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/LucasNoga/corpos-christie/config"
+	"github.com/LucasNoga/corpos-christie/user"
 
 	"github.com/olekukonko/tablewriter"
 )
