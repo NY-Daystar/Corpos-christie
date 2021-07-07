@@ -1,4 +1,7 @@
-// Main package to start program
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package is the entrypoint of the program
 package main
 
 import (
@@ -11,8 +14,8 @@ import (
 )
 
 const (
-	APP_NAME    string = "corpos-christie"
-	APP_VERSION string = "0.0.9"
+	APP_NAME    string = "corpos-christie" // Name of the program
+	APP_VERSION string = "1.0.0"           // Version of the program
 )
 
 // Configuration of the application
@@ -33,7 +36,7 @@ func init() {
 	}
 }
 
-// Starting program
+// Launching program
 func main() {
 	// Init user
 	var user *user.User = new(user.User)

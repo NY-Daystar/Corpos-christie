@@ -1,3 +1,7 @@
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package utils define functions to multiple uses
 package utils
 
 import (

@@ -1,3 +1,7 @@
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package config define the loading of configuration of the program
 package config
 
 import (

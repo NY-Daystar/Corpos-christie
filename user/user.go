@@ -1,3 +1,7 @@
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package uses store function to interact with user
 package user
 
 import (
@@ -9,7 +13,7 @@ import (
 	"github.com/LucasNoga/corpos-christie/lib/utils"
 )
 
-// Define a user
+// User defines a the user of the program
 type User struct {
 	Income     int     // Income (Revenu imposable) of the user
 	Tax        float64 // Tax to pay for the user
@@ -19,7 +23,8 @@ type User struct {
 	Children   int     // number of children of the user
 }
 
-// Ask income to the user if ok return true, else return false
+// AskIncome asks the income of the user to calculate tax and set it into user struct
+// if value is set returns true, otherwise false
 func (user *User) AskIncome() (bool, error) {
 	var input string = utils.ReadValue()
 	income, err := utils.ConvertStringToInt(input)
@@ -31,7 +36,8 @@ func (user *User) AskIncome() (bool, error) {
 	return true, nil
 }
 
-// Ask remainder to the user if ok return true, else return false
+// AskRemainder asks the remainder of the user to calculate reverse tax and set it into user struct
+// if value is set returns true, otherwise false
 func (user *User) AskRemainder() (bool, error) {
 	var input string = utils.ReadValue()
 	remainder, err := utils.ConvertStringToInt(input)
@@ -43,7 +49,8 @@ func (user *User) AskRemainder() (bool, error) {
 	return true, nil
 }
 
-// Ask if the user is in couple, ok return true, else return false
+// AskIsInCouple asks if the user is in couple set it into user struct
+// returns response of the user
 func (user *User) AskIsInCouple() (bool, error) {
 	response, err := askYesNo()
 	if err != nil {
@@ -57,7 +64,8 @@ func (user *User) AskIsInCouple() (bool, error) {
 	return response, nil
 }
 
-// Ask if the user does have children and how many
+// AskHasChildren asks the number of children of the user and set it into user struct
+// if value is set returns true, otherwise false
 func (user *User) AskHasChildren() (bool, error) {
 	var input string = utils.ReadValue()
 
@@ -76,7 +84,8 @@ func (user *User) AskHasChildren() (bool, error) {
 	return true, nil
 }
 
-// Ask if the user does have children and how many
+// AskTaxDetails asks to the user if he wants to see details of his taxes
+// returns true if wants otherwise false
 func (user *User) AskTaxDetails() (bool, error) {
 	fmt.Print("Do you want to see tax details (Y/n) ? ")
 	response, err := askYesNo()
@@ -86,18 +95,19 @@ func (user *User) AskTaxDetails() (bool, error) {
 	return response, nil
 }
 
-// Ask user if he wants to restart program
+// AskRestart asks the user if he wants to retry a calculation of tax
+// returns true if wants otherwise false
 func (user *User) AskRestart() bool {
 	response, _ := askYesNo()
 	return response
 }
 
-// Get the parts of the user
+// GetParts returns the parts of the user
 func (user *User) GetParts() float64 {
 	return user.Parts
 }
 
-// Show user fields
+// Show show details of the user struct
 func (user *User) Show() {
 	var isInCouple = "No"
 	if user.IsInCouple {
@@ -111,7 +121,9 @@ func (user *User) Show() {
 	fmt.Printf("Remainder:\t%s €\n", colors.Green(user.Remainder))
 }
 
-// askYesNo is a function to handle response user that should be yes or no
+// askYesNo handle the interaction of the user if he has to answer by 'yes' or 'no'
+// returns true if the user say 'yes', false if he answered 'no'
+// returns an error if the seize is not interpretable
 func askYesNo() (bool, error) {
 	var input string = utils.ReadValue()
 	if input == "Y" || input == "y" || input == "Yes" || input == "yes" {

@@ -1,4 +1,7 @@
-// Handle program command
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package core define the mode of the program console or gui
 package core
 
 import (

@@ -1,3 +1,7 @@
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package tax is the algorithm to calculate taxes
 package tax
 
 import (
@@ -16,7 +20,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-// Result from processing income
+// Result define the result after calculating tax
 type Result struct {
 	income      int          // Input income from the user
 	tax         float64      // Tax to pay from the user
@@ -25,19 +29,18 @@ type Result struct {
 	parts       float64      // parts calculate for the user
 }
 
-// Struct to catch tax capture for each tranche
+// TaxTranche represent the tax calculating for each tranch when we calculate tax
 type TaxTranche struct {
 	tax     float64        // Tax in € on a tranche for the user
-	tranche config.Tranche // Param of this tranche (Min, Max, Rate)
+	tranche config.Tranche // Param of the tranche calculated (Min, Max, Rate)
 }
 
-// Start tax calculator
-// Calculate from income seized by user
+// StartTaxCalculator calculate taxes from income seized by user
 func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
 	// Ask income's user
-	fmt.Print("1. Enter your income (Revenu net imposable): ")
+	fmt.Print("1. Enter your income (Taxable income (en) / Revenu net imposable (fr)): ")
 	_, err := user.AskIncome()
 	if err != nil {
 		log.Printf("Error: asking income for user, details: %v", err)
@@ -95,8 +98,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	}
 }
 
-// Start reverse tax calculator
-// Calculate income needed from tax estimated after seized remainder income
+// StartReverseTaxCalculator calculate income needed from remainder seized by user
 func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
@@ -156,21 +158,22 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 	}
 }
 
-// Processing the tax to pay from the income
+// calculateTax determine the tax to pay from the income of the user
+// returns the result of the processing
 func calculateTax(user *user.User, cfg *config.Config) Result {
 	var tax float64
-	var imposable float64 = float64(user.Income)
+	var taxable float64 = float64(user.Income)
 	var parts float64 = getParts(*user)
 
-	// Divide imposable by parts
-	imposable /= parts
+	// Divide taxable by parts
+	taxable /= parts
 
 	// Store each tranche taxes
 	var taxTranches []TaxTranche = make([]TaxTranche, 0)
 
 	// for each tranche
 	for _, tranche := range cfg.GetTax().Tranches {
-		var taxTranche = calculateTranche(imposable, tranche)
+		var taxTranche = calculateTranche(taxable, tranche)
 		taxTranches = append(taxTranches, taxTranche)
 
 		// add into final tax the tax tranche
@@ -196,7 +199,8 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 	return result
 }
 
-// Processing the tax to pay from the remainder that the user want to get at the end
+// calculateReverseTax determine the income to have, and tax to pay from the remainder of the user
+// returns the result of the processing
 func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 	var income float64
 
@@ -206,7 +210,7 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 	var incomeAfterTaxes float64 = user.Remainder
 	var target float64 = incomeAfterTaxes // income to find
 
-	// Divide imposable by parts
+	// Divide taxable by parts
 	target /= parts
 
 	// Brut force to find target with incomeAfterTaxes
@@ -251,8 +255,9 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 	return result
 }
 
-// Calculate tax for each tranche of your imposable
-func calculateTranche(imposable float64, tranche config.Tranche) TaxTranche {
+// calculateTranche calculate the tax for the tranche base on your taxable income
+// returns TaxTranche which amount to pay for the specific tranche
+func calculateTranche(taxable float64, tranche config.Tranche) TaxTranche {
 	var taxTranche TaxTranche = TaxTranche{
 		tranche: tranche,
 	}
@@ -261,15 +266,19 @@ func calculateTranche(imposable float64, tranche config.Tranche) TaxTranche {
 	rate, _ := utils.ConvertPercentageToFloat64(tranche.Rate)
 
 	// if income is superior to maximum of the tranche to pass to tranch superior
-	if int(imposable) > tranche.Max {
-		taxTranche.tax = float64(tranche.Max-tranche.Min) * (rate / 100) // Diff between min and max of the tranche applied tax rate
-	} else if int(imposable) > tranche.Min && int(imposable) < tranche.Max { // if your income is between min and max tranch is the last operation
-		taxTranche.tax = float64(int(imposable)-tranche.Min) * (rate / 100) // Diff between min of the tranche and the income of the user,applied tax rate
+	// Diff between min and max of the tranche applied tax rate
+	if int(taxable) > tranche.Max {
+		taxTranche.tax = float64(tranche.Max-tranche.Min) * (rate / 100)
+	} else if int(taxable) > tranche.Min && int(taxable) < tranche.Max {
+		// else if your income taxable is between min and max tranch is the last operation
+		// Diff between min of the tranche and the income of the user applied tax rate
+		taxTranche.tax = float64(int(taxable)-tranche.Min) * (rate / 100)
 	}
 	return taxTranche
 }
 
-// Calculate parts of the user
+// getParts calculate parts of the user
+// returns the parts calculated
 func getParts(user user.User) float64 {
 	var parts float64 = 1 // single person 1 part
 
@@ -283,7 +292,7 @@ func getParts(user user.User) float64 {
 	return parts
 }
 
-// Show every tax at each tranch
+// showTaxTranche show details of calculation showing every tax at each tranche
 func showTaxTranche(result Result, args ...interface{}) {
 	var highlighted bool = false // if you want highlight data in table
 
@@ -359,7 +368,7 @@ func showTaxTranche(result Result, args ...interface{}) {
 	table.Render()
 }
 
-// Show to the user the tax list year
+// ShowTaxList show in the console the list of year metrics
 func ShowTaxList(cfg config.Config) {
 	fmt.Println(colors.Yellow("Tax list year"))
 	fmt.Println("-------------")
@@ -372,14 +381,14 @@ func ShowTaxList(cfg config.Config) {
 	}
 }
 
-// Show to the user the tax year used
+// ShowTaxListUsed show the current tax used in the console
 func ShowTaxListUsed(cfg config.Config) {
 	fmt.Printf("The tax year base to calculate your taxes is %s\n", colors.Teal(cfg.GetTax().Year))
 }
 
-// Select Tax year for the user
-// Ask to the user if he wants to calculate taxes from another year
-// bool false = invalid answer or no change require
+// SelectTaxYear ask in console if you want
+// Ask to the user if he wants to change the year of the tax metrics
+// to calculate taxes from another year
 func SelectTaxYear(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 

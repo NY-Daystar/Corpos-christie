@@ -1,3 +1,7 @@
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package core define the mode of the program console or gui
 package core
 
 import (
@@ -13,13 +17,13 @@ import (
 	"github.com/LucasNoga/corpos-christie/user"
 )
 
-// Program in console mode
+// ConsoleMode represents the program parameters to launch in console mode the application
 type ConsoleMode struct {
 	config *config.Config // Config to use correctly the program
 	user   *user.User     // User param to use program
 }
 
-// List of the commands in console mod
+// Command define a command to use in console mode
 type Command struct {
 	index       int                              // number to type to exec command
 	name        string                           // Name of the command
@@ -28,10 +32,10 @@ type Command struct {
 	exec        func(*config.Config, *user.User) // Function to execute command
 }
 
-// List of options in console mode
+// OPTIONS is the list of options usable in console mode
 var OPTIONS []Command
 
-// Init Options variables
+// Init OPTIONS variables
 func init() {
 	OPTIONS = []Command{
 		{
@@ -111,9 +115,9 @@ func init() {
 	}
 }
 
-// Start Core program in console mode
-// Show options to user
-// And redirect to good choice
+// start launch core program in console mode
+// Show options to user in the console
+// Interact with the user depending of the option selected
 func (mode ConsoleMode) start() bool {
 	fmt.Printf("Project: %s\n", colors.Yellow(mode.config.Name))
 	fmt.Printf("Version: %s\b", colors.Yellow(mode.config.Version))
@@ -140,13 +144,13 @@ func (mode ConsoleMode) start() bool {
 	}
 }
 
-// Launch function of the command
+// execCommand execute the function set in the exec field of the cmd
 func (mode ConsoleMode) execCommand(cmd Command) {
 	cmd.exec(mode.config, mode.user)
 	fmt.Println("----------------------------------------")
 }
 
-// Show list of options
+// showOptions show in the console the list of options which can be selected
 func showOptions() {
 	// prepend example command
 	fmt.Println(colors.Yellow("\t\t\t List of options"))
@@ -167,7 +171,7 @@ func showOptions() {
 	fmt.Println()
 }
 
-// Get only the name of the options for console mode
+// getOptionsName returns in a list the name of the commands in OPTIONS variable
 func getOptionsName(cmds []Command) []string {
 	var list []string = make([]string, 0, len(OPTIONS))
 	for _, cmd := range cmds {
@@ -176,7 +180,9 @@ func getOptionsName(cmds []Command) []string {
 	return list
 }
 
-// Verify if option entered by a user is valid
+// verifyOption check if option entered by a user is valid
+// return true if the option exists, false if not
+// if option exist return the Command struct associate to the option name
 func verifyOption(optionEntered string) (bool, Command) {
 	for _, cmd := range OPTIONS {
 		// if it's the command
@@ -190,7 +196,8 @@ func verifyOption(optionEntered string) (bool, Command) {
 	return false, Command{}
 }
 
-// Handle command from user to know how do you do in console mode
+// chooseOption ask to the user which command he wants to execute in console mode
+// returns string seized in console mode by the user (define the command name)
 func chooseOption() string {
 	fmt.Print(colors.Green("Type an option > "))
 	var input string = utils.ReadValue()

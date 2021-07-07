@@ -1,3 +1,7 @@
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package colors is used to display text with color in terminal
 package colors
 
 import "fmt"
@@ -14,7 +18,7 @@ var (
 	White   = Color("\033[1;37m%s\033[0m")
 )
 
-// Show string in a specific color
+// Color return string in a color specified
 func Color(colorString string) func(...interface{}) string {
 	sprint := func(args ...interface{}) string {
 		return fmt.Sprintf(colorString,

@@ -1,4 +1,7 @@
-// Tax package
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package tax is the algorithm to calculate taxes
 package tax
 
 import (

@@ -1,3 +1,7 @@
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package config define the loading of configuration of the program
 package config
 
 import (
@@ -10,7 +14,7 @@ import (
 	"github.com/LucasNoga/corpos-christie/lib/utils"
 )
 
-// Define the program config
+// Config represents the configuration of the program with the tax metrics
 type Config struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
@@ -18,22 +22,23 @@ type Config struct {
 	TaxList []Tax `json:"tax"`
 }
 
-// Define the tranche on a specific year
+// Tax represent the metrics of french tax in a specific year
+// This metrics are called 'tranche'
 type Tax struct {
 	Year     int       `json:"year"`     // Year of the tax specifications
-	Tranches []Tranche `json:"tranches"` // Tranches list of tax
+	Tranches []Tranche `json:"tranches"` // List of Tranches
 }
 
-// Define one of the tranch of tax
+// Tranche is a unit to define several metrics to calculate tax
 type Tranche struct {
 	Min  int    `json:"min"`  // Minimun in euros to get in the tranche
 	Max  int    `json:"max"`  // Maximum in euros to get in the tranche
 	Rate string `json:"rate"` // Rate taxable in euros in this tranche
 }
 
-// TODO TROUVER LE MOYEN DE METTRE INFINITY EN MAX de tranche Infinity
-
-// Load configuration from config.json file
+// LoadConfiguration load in struct cfg Config the configuration present in the file config.json
+// return true is the config is loaded false if not,
+// also return an error if a fail happened while loading config
 func (cfg *Config) LoadConfiguration(file string) (bool, error) {
 	// default path
 	if file == "" {
@@ -61,7 +66,7 @@ func (cfg *Config) LoadConfiguration(file string) (bool, error) {
 	return true, nil
 }
 
-// Define max value for the last tranche
+// addMaxValue set an infinite value for the last tranche for each year of tax metrics present in cfg Config
 func (cfg *Config) addMaxValue() {
 	// for last tranch of each tax in the list
 	for _, tax := range cfg.TaxList {
@@ -69,7 +74,9 @@ func (cfg *Config) addMaxValue() {
 	}
 }
 
-// Define the tax of the current year
+// loadTaxYear set a default tax metrics among the year of tax metrics set in cfg Config
+// If we have the metrics of current year we set this
+// If not we set the last tax metrics present in the cfg Config
 func (cfg *Config) loadTaxYear() {
 	for _, tax := range cfg.TaxList {
 		if tax.Year == utils.GetCurrentYear() { // get tax of current year
@@ -84,12 +91,12 @@ func (cfg *Config) loadTaxYear() {
 	}
 }
 
-// Get tax used to calculate taxes among of TaxList
+// GetTax returns the Tax metrics to calculate tax of user
 func (cfg *Config) GetTax() Tax {
 	return cfg.Tax
 }
 
-// Change tax year among of TaxList
+// ChangeTax get in Taxlist of cfg the metrics of the year wished
 func (cfg *Config) ChangeTax(year int) {
 	for _, tax := range cfg.TaxList {
 		if tax.Year == year {
@@ -101,7 +108,7 @@ func (cfg *Config) ChangeTax(year int) {
 	fmt.Printf(colors.Red("Get default tax year: %d\n"), cfg.GetTax().Year)
 }
 
-// Load default configuration file if we don't have a 'config.json file'
+// LoadDefaultConfiguration load a default configuration into struct cfg Config if the file 'config.json' is not found
 func (cfg *Config) LoadDefaultConfiguration() {
 	fmt.Println("Loading Default configuration...")
 	cfg.Name = "Corpos-Christie"

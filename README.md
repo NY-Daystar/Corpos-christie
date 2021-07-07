@@ -161,10 +161,10 @@ $ go version
 - ~~Portability tests~~ - `done`
 - ~~Features command line management~~ - `done`
 - ~~Tax calculator v3~~ - `done`
+- ~~Docker~~ - `done`
 - Add GoDoc
-- Docker
+- Cross-Plateform
 - Tax calculator v4
-- GUI
 
 
 ## Credits

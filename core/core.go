@@ -1,4 +1,7 @@
-// Handle program command
+// Copyright 2016 The corpos-christie author
+// Licensed under GPLv3.
+
+// Package core define the mode of the program console or gui
 package core
 
 import (
@@ -10,13 +13,13 @@ import (
 	"github.com/LucasNoga/corpos-christie/user"
 )
 
-// Mode of program launch (Console or GUI)
+// Mode define the program mode (Console or GUI)
 type Mode interface {
 	start() bool // Start program in mode GUI or console
 }
 
 // Start Core program
-// Get Options passed on program and launch systems
+// Get Options passed on program and launch appropriate system
 func Start(cfg *config.Config, user *user.User) {
 	var mode Mode
 
@@ -41,7 +44,8 @@ func Start(cfg *config.Config, user *user.User) {
 	}
 }
 
-// Return which mode to launch between GUI or console
+// selectMode Check args passed in launch
+// returns which mode to launch between GUI or console
 func selectMode(args []string) string {
 	// if no args specified launch GUI
 	if len(args) < 2 {
