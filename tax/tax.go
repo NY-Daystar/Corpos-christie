@@ -10,7 +10,6 @@ import (
 	"math"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/LucasNoga/corpos-christie/config"
 	"github.com/LucasNoga/corpos-christie/lib/colors"
@@ -40,7 +39,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
 	// Ask income's user
-	fmt.Print("1. Enter your income (Taxable income (en) / Revenu net imposable (fr)): ")
+	fmt.Print("1. Enter your income\n    (en) Taxable income\n    (fr) Revenus net imposable\n> ")
 	_, err := user.AskIncome()
 	if err != nil {
 		log.Printf("Error: asking income for user, details: %v", err)
@@ -78,7 +77,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 		if err != nil {
 			log.Printf("Error: asking tax details, details: %v", err)
 		}
-		showTaxTranche(result)
+		showTaxTranche(result, cfg.Tax.Year)
 	}
 
 	if status {
@@ -103,7 +102,7 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 	var status bool = true
 	// Ask income's user
-	fmt.Print("1. Enter your income wished after taxes (Revenu après impot): ")
+	fmt.Print("1. Enter your income wished\n    (en) Income after taxes income\n    (fr) Revenus après impot\n> ")
 	_, err := user.AskRemainder()
 	if err != nil {
 		log.Printf("Error: asking income for user, details: %v", err)
@@ -138,7 +137,7 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 		if err != nil {
 			log.Printf("Error: asking tax details, details: %v", err)
 		}
-		showTaxTranche(result)
+		showTaxTranche(result, cfg.Tax.Year)
 	}
 
 	if status {
@@ -293,17 +292,18 @@ func getParts(user user.User) float64 {
 }
 
 // showTaxTranche show details of calculation showing every tax at each tranche
-func showTaxTranche(result Result, args ...interface{}) {
-	var highlighted bool = false // if you want highlight data in table
+func showTaxTranche(result Result, year int) {
 
-	// Test args
-	if len(args) > 0 {
-		if args[0].(string) != "" {
-			highlighted = true
-		}
-	}
+	// Install this: $ go get https://github.com/olekukonko/tablewriter
+	// Create table
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetBorder(true) // Set Border to false
 
-	// Crete data to append on the table
+	// Setting header
+	var header []string = []string{"Tranche", "Min", "Max", "Rate", "Tax"}
+	table.SetHeader(header)
+
+	// Create data to append on the table
 	var data [][]string
 	for i, val := range result.taxTranches {
 		var index int = i + 1
@@ -324,35 +324,8 @@ func showTaxTranche(result Result, args ...interface{}) {
 		data = append(data, line)
 	}
 
-	// Install this: $ go get https://github.com/olekukonko/tablewriter
-	// Create table
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetBorder(true) // Set Border to false
-
-	// Setting header
-	var header []string = []string{"Tranche", "Min", "Max", "Rate", "Tax"}
-	table.SetHeader(header)
-
-	// Add data and Highlights Data
-	if highlighted {
-		for _, row := range data {
-			tax, _ := strconv.ParseInt(strings.TrimSpace(strings.TrimSuffix(row[4], "€")), 10, 64)
-
-			// if tax > 0 € red color
-			if tax > 0 {
-				table.Rich(row, []tablewriter.Colors{
-					{},
-					{},
-					{},
-					{},
-					{tablewriter.Bold, tablewriter.FgRedColor}})
-			} else {
-				table.Append(row)
-			}
-		}
-	} else { //Add classy data
-		table.AppendBulk(data)
-	}
+	// Add data in table
+	table.AppendBulk(data)
 
 	// Add footer
 	var footer []string = []string{
@@ -364,7 +337,8 @@ func showTaxTranche(result Result, args ...interface{}) {
 	}
 	table.SetFooter(footer)
 
-	fmt.Println("\t\t\t Tax Details \t\t\t")
+	fmt.Println(colors.Yellow("\t\t\t Tax Details \t\t\t"))
+	fmt.Printf("For an income of %s € in %s\n", colors.Teal(result.income), colors.Teal(year))
 	table.Render()
 }
 
