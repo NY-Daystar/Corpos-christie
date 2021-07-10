@@ -112,7 +112,7 @@ func TestCalculateTaxForSinglePersonIn2019(t *testing.T) {
 	CONFIG.ChangeTax(2021)
 }
 
-// Calculate tax for a couple with 2 children, testing parts with a couple and 2 childrens
+// Calculate tax for a couple with 2 children, testing shares with a couple and 2 childrens
 func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
 	user := user.User{
 		Income:     55950,
@@ -133,7 +133,7 @@ func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
 	}
 }
 
-// Calculate tax for a couple with 3 children, testing parts with a couple and 3 childrens
+// Calculate tax for a couple with 3 children, testing shares with a couple and 3 childrens
 func TestCalculateTaxForCoupleWith3Children(t *testing.T) {
 	user := user.User{
 		Income:     100000,
@@ -173,7 +173,7 @@ func TestCalculateReverseTaxForSinglePerson(t *testing.T) {
 	}
 }
 
-// Calculate reverse tax for a couple with 2 children, testing parts with a couple and 2 childrens
+// Calculate reverse tax for a couple with 2 children, testing shares with a couple and 2 childrens
 func TestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
 	user := user.User{
 		Remainder:  53124,
@@ -194,7 +194,7 @@ func TestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
 	}
 }
 
-// Calculate reverse tax for a couple with 3 children, testing parts with a couple and 3 childrens
+// Calculate reverse tax for a couple with 3 children, testing shares with a couple and 3 childrens
 func TestCalculateReverseTaxForCoupleWith3Children(t *testing.T) {
 	user := user.User{
 		Remainder:  93437,
@@ -215,92 +215,92 @@ func TestCalculateReverseTaxForCoupleWith3Children(t *testing.T) {
 	}
 }
 
-// Create user single with no children and check parts
+// Create user single with no children and check shares
 func TestUserSingleOnlyIncome(t *testing.T) {
-	var partsRef float64 = 1.
+	var sharesRef float64 = 1.
 
 	var user user.User = user.User{
 		IsInCouple: false,
 		Children:   0,
 	}
 
-	var parts float64 = getParts(user)
+	var shares float64 = getShares(user)
 	t.Logf("User reference %+v", user)
 
-	// Testing parts
-	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
+	// Testing shares
+	if sharesRef != shares {
+		t.Errorf("Expected that the Shares \n%f\n should be equal to \n%f", sharesRef, shares)
 	}
 }
 
-// Create user in couple with no children and check parts
+// Create user in couple with no children and check shares
 func TestUserInCoupleNoChildren(t *testing.T) {
-	var partsRef float64 = 2.
+	var sharesRef float64 = 2.
 
 	var user user.User = user.User{
 		IsInCouple: true,
 		Children:   0,
 	}
 
-	var parts float64 = getParts(user)
+	var shares float64 = getShares(user)
 	t.Logf("User reference %+v", user)
 
-	// Testing parts
-	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
+	// Testing shares
+	if sharesRef != shares {
+		t.Errorf("Expected that the Shares \n%f\n should be equal to \n%f", sharesRef, shares)
 	}
 }
 
-// Create user in couple with 3 children and check parts
+// Create user in couple with 3 children and check shares
 func TestUserInCoupleWith3Children(t *testing.T) {
-	var partsRef float64 = 4
+	var sharesRef float64 = 4
 
 	var user user.User = user.User{
 		IsInCouple: true,
 		Children:   3,
 	}
 
-	var parts float64 = getParts(user)
+	var shares float64 = getShares(user)
 	t.Logf("User reference %+v", user)
 
-	// Testing parts
-	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
+	// Testing shares
+	if sharesRef != shares {
+		t.Errorf("Expected that the Shares \n%f\n should be equal to \n%f", sharesRef, shares)
 	}
 }
 
-// Create user single with 4 children and check parts
+// Create user single with 4 children and check shares
 func TestUserInSingleWith4Children(t *testing.T) {
-	var partsRef float64 = 4
+	var sharesRef float64 = 4
 
 	var user user.User = user.User{
 		IsInCouple: false,
 		Children:   4,
 	}
 
-	var parts float64 = getParts(user)
+	var shares float64 = getShares(user)
 	t.Logf("User reference %+v", user)
 
-	// Testing parts
-	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
+	// Testing shares
+	if sharesRef != shares {
+		t.Errorf("Expected that the Shares \n%f\n should be equal to \n%f", sharesRef, shares)
 	}
 }
 
-// Create user in couple with 4 children and check parts
+// Create user in couple with 4 children and check shares
 func TestUserInCoupleWith4Children(t *testing.T) {
-	var partsRef float64 = 5
+	var sharesRef float64 = 5
 
 	var user user.User = user.User{
 		IsInCouple: true,
 		Children:   4,
 	}
 
-	var parts float64 = getParts(user)
+	var shares float64 = getShares(user)
 	t.Logf("User reference %+v", user)
 
-	// Testing parts
-	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
+	// Testing shares
+	if sharesRef != shares {
+		t.Errorf("Expected that the Shares \n%f\n should be equal to \n%f", sharesRef, shares)
 	}
 }

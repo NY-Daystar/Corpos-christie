@@ -18,7 +18,7 @@ type User struct {
 	Income     int     // Income (Revenu imposable) of the user
 	Tax        float64 // Tax to pay for the user
 	Remainder  float64 // Money remind after tax paid
-	Parts      float64 // Parts of the user (calculate from isInCouple, childre)
+	Shares     float64 // Shares (or Parts in french) is the family quotient base on if you are in couple and if you have children to adjust your taxes
 	IsInCouple bool    // User is he in couple or not
 	Children   int     // number of children of the user
 }
@@ -102,9 +102,9 @@ func (user *User) AskRestart() bool {
 	return response
 }
 
-// GetParts returns the parts of the user
-func (user *User) GetParts() float64 {
-	return user.Parts
+// GetShares returns the shares of the user
+func (user *User) GetShares() float64 {
+	return user.Shares
 }
 
 // Show show details of the user struct
@@ -116,7 +116,7 @@ func (user *User) Show() {
 	fmt.Printf("Income:\t\t%s €\n", colors.Red(user.Income))
 	fmt.Printf("In couple:\t%s\n", colors.Red(isInCouple))
 	fmt.Printf("Children:\t%s\n", colors.Red(user.Children))
-	fmt.Printf("Parts:\t\t%s\n", colors.Red(user.Parts))
+	fmt.Printf("Shares:\t\t%s\n", colors.Red(user.Shares))
 	fmt.Printf("Tax:\t\t%s €\n", colors.Green(user.Tax))
 	fmt.Printf("Remainder:\t%s €\n", colors.Green(user.Remainder))
 }

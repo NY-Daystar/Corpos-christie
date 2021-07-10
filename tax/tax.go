@@ -25,7 +25,7 @@ type Result struct {
 	tax         float64      // Tax to pay from the user
 	remainder   float64      // Value Remain for the user
 	taxTranches []TaxTranche // List of tax by tranches
-	parts       float64      // parts calculate for the user
+	shares      float64      // family quotient to adjust taxes (parts in french)
 }
 
 // TaxTranche represent the tax calculating for each tranch when we calculate tax
@@ -67,7 +67,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 
 	// Calculate tax
 	result := calculateTax(user, cfg)
-	user.Parts = result.parts
+	user.Shares = result.shares
 
 	// Show user
 	user.Show()
@@ -127,7 +127,7 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 
 	// Calculate tax
 	result := calculateReverseTax(user, cfg)
-	user.Parts = result.parts
+	user.Shares = result.shares
 
 	// Show user
 	user.Show()
@@ -162,10 +162,10 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 func calculateTax(user *user.User, cfg *config.Config) Result {
 	var tax float64
 	var taxable float64 = float64(user.Income)
-	var parts float64 = getParts(*user)
+	var shares float64 = getShares(*user)
 
-	// Divide taxable by parts
-	taxable /= parts
+	// Divide taxable by shares
+	taxable /= shares
 
 	// Store each tranche taxes
 	var taxTranches []TaxTranche = make([]TaxTranche, 0)
@@ -179,8 +179,8 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 		tax += taxTranche.tax
 	}
 
-	// Reajust tax by parts
-	tax *= parts
+	// Reajust tax by shares
+	tax *= shares
 
 	// Format to round in integer tax and remainder
 	result := Result{
@@ -188,7 +188,7 @@ func calculateTax(user *user.User, cfg *config.Config) Result {
 		tax:         math.Round(tax),
 		remainder:   float64(user.Income) - math.Round(tax),
 		taxTranches: taxTranches,
-		parts:       parts,
+		shares:      shares,
 	}
 
 	// Add data into the user
@@ -204,13 +204,13 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 	var income float64
 
 	var taxTranches []TaxTranche
-	var parts = getParts(*user)
+	var shares = getShares(*user)
 
 	var incomeAfterTaxes float64 = user.Remainder
 	var target float64 = incomeAfterTaxes // income to find
 
-	// Divide taxable by parts
-	target /= parts
+	// Divide taxable by shares
+	target /= shares
 
 	// Brut force to find target with incomeAfterTaxes
 	for {
@@ -227,11 +227,11 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 			tax += taxTranche.tax
 		}
 
-		tax *= parts
+		tax *= shares
 
 		// When target has been reached
-		if incomeAfterTaxes <= target*parts-tax {
-			income = target*parts - parts
+		if incomeAfterTaxes <= target*shares-tax {
+			income = target*shares - shares
 			break
 		}
 		// Increase target to find if we not find
@@ -244,7 +244,7 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 		tax:         math.Round(income - incomeAfterTaxes),
 		remainder:   incomeAfterTaxes,
 		taxTranches: taxTranches,
-		parts:       parts,
+		shares:      shares,
 	}
 
 	// Add data into the user
@@ -276,29 +276,28 @@ func calculateTranche(taxable float64, tranche config.Tranche) TaxTranche {
 	return taxTranche
 }
 
-// getParts calculate parts of the user
-// returns the parts calculated
-func getParts(user user.User) float64 {
-	var parts float64 = 1 // single person 1 part
+// getShares calculate the family quotiet of the user (parts in french)
+// returns the shares calculated
+func getShares(user user.User) float64 {
+	var shares float64 = 1 // single person only 1 share
 
-	// if user is in couple we have 1 more parts,
+	// if user is in couple we have 1 more shares,
 	if user.IsInCouple {
-		parts += 1
+		shares += 1
 	}
 
 	// For the two first children we add 0.5
 	for i := 1; i <= user.Children && i <= 2; i++ {
-		parts += 0.5
+		shares += 0.5
 	}
 
 	// For the others children we add 1
 	for i := 3; i <= user.Children; i++ {
-		parts += 1
+		shares += 1
 	}
 
-	// for each child of the user we put 0.5 parts
-	//parts += float64(user.Children) * 0.5
-	return parts
+	// for each child of the user we put 0.5 shares
+	return shares
 }
 
 // showTaxTranche show details of calculation showing every tax at each tranche
