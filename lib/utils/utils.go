@@ -5,7 +5,8 @@
 package utils
 
 import (
-	"fmt"
+	"bufio"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -18,9 +19,9 @@ const (
 
 // ReadValue read input from terminal and returns its value
 func ReadValue() string {
-	var value string
-	fmt.Scanf("%s", &value)
-	return value
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	return scanner.Text()
 }
 
 // ConvertStringToInt convert str string to an int and returns it

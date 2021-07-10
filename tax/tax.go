@@ -276,7 +276,7 @@ func calculateTranche(taxable float64, tranche config.Tranche) TaxTranche {
 	return taxTranche
 }
 
-// getShares calculate the family quotiet of the user (parts in french)
+// getShares calculate the family quotient of the user (parts in french)
 // returns the shares calculated
 func getShares(user user.User) float64 {
 	var shares float64 = 1 // single person only 1 share
