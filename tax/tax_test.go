@@ -133,6 +133,27 @@ func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
 	}
 }
 
+// Calculate tax for a couple with 3 children, testing parts with a couple and 3 childrens
+func TestCalculateTaxForCoupleWith3Children(t *testing.T) {
+	user := user.User{
+		Income:     100000,
+		IsInCouple: true,
+		Children:   3,
+	}
+
+	result := calculateTax(&user, CONFIG)
+	t.Logf("Function result:\t%+v", result)
+
+	expected := Result{income: 100000, tax: 6563, remainder: 93437}
+	t.Logf("Expected:\t\t%+v", expected)
+
+	if result.income != expected.income || result.tax != expected.tax || result.remainder != expected.remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	}
+}
+
 // Calculate reverse tax for a single person to get at the end 28395
 func TestCalculateReverseTaxForSinglePerson(t *testing.T) {
 	user := user.User{
@@ -158,13 +179,33 @@ func TestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
 		Remainder:  53124,
 		IsInCouple: true,
 		Children:   2,
-		Parts:      3,
 	}
 
 	result := calculateReverseTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{income: 55950, tax: 2826, remainder: 53124}
+	t.Logf("Expected:\t\t%+v", expected)
+
+	if result.income != expected.income && result.tax != expected.tax && result.remainder != expected.remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	}
+}
+
+// Calculate reverse tax for a couple with 3 children, testing parts with a couple and 3 childrens
+func TestCalculateReverseTaxForCoupleWith3Children(t *testing.T) {
+	user := user.User{
+		Remainder:  93437,
+		IsInCouple: true,
+		Children:   3,
+	}
+
+	result := calculateReverseTax(&user, CONFIG)
+	t.Logf("Function result:\t%+v", result)
+
+	expected := Result{income: 100000, tax: 6563, remainder: 93437}
 	t.Logf("Expected:\t\t%+v", expected)
 
 	if result.income != expected.income && result.tax != expected.tax && result.remainder != expected.remainder {
@@ -188,7 +229,7 @@ func TestUserSingleOnlyIncome(t *testing.T) {
 
 	// Testing parts
 	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%v", partsRef, parts)
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
 	}
 }
 
@@ -206,13 +247,13 @@ func TestUserInCoupleNoChildren(t *testing.T) {
 
 	// Testing parts
 	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%v", partsRef, parts)
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
 	}
 }
 
 // Create user in couple with 3 children and check parts
 func TestUserInCoupleWith3Children(t *testing.T) {
-	var partsRef float64 = 3.5
+	var partsRef float64 = 4
 
 	var user user.User = user.User{
 		IsInCouple: true,
@@ -224,6 +265,42 @@ func TestUserInCoupleWith3Children(t *testing.T) {
 
 	// Testing parts
 	if partsRef != parts {
-		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%v", partsRef, parts)
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
+	}
+}
+
+// Create user single with 4 children and check parts
+func TestUserInSingleWith4Children(t *testing.T) {
+	var partsRef float64 = 4
+
+	var user user.User = user.User{
+		IsInCouple: false,
+		Children:   4,
+	}
+
+	var parts float64 = getParts(user)
+	t.Logf("User reference %+v", user)
+
+	// Testing parts
+	if partsRef != parts {
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
+	}
+}
+
+// Create user in couple with 4 children and check parts
+func TestUserInCoupleWith4Children(t *testing.T) {
+	var partsRef float64 = 5
+
+	var user user.User = user.User{
+		IsInCouple: true,
+		Children:   4,
+	}
+
+	var parts float64 = getParts(user)
+	t.Logf("User reference %+v", user)
+
+	// Testing parts
+	if partsRef != parts {
+		t.Errorf("Expected that the Parts \n%f\n should be equal to \n%f", partsRef, parts)
 	}
 }

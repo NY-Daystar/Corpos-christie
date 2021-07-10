@@ -281,13 +281,23 @@ func calculateTranche(taxable float64, tranche config.Tranche) TaxTranche {
 func getParts(user user.User) float64 {
 	var parts float64 = 1 // single person 1 part
 
-	// if user is in couple we have 2 parts,
+	// if user is in couple we have 1 more parts,
 	if user.IsInCouple {
-		parts = 2
+		parts += 1
+	}
+
+	// For the two first children we add 0.5
+	for i := 1; i <= user.Children && i <= 2; i++ {
+		parts += 0.5
+	}
+
+	// For the others children we add 1
+	for i := 3; i <= user.Children; i++ {
+		parts += 1
 	}
 
 	// for each child of the user we put 0.5 parts
-	parts += float64(user.Children) * 0.5
+	//parts += float64(user.Children) * 0.5
 	return parts
 }
 
