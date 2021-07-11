@@ -1,16 +1,32 @@
 
 EXE="corpos-christie"
-VERSION="0.0.9"
+VERSION="1.0.0"
 
-.PHONY: build run runconsole rungui
+.PHONY: build buildLinux buildWindows buildMac
+.PHONY: run runconsole rungui
 
 all: build
 
-# Building executable
-build:
+# Building executable for all OS
+build: build-linux build-windows build-mac
 	@echo Building executable ${EXE}...
 	@./build.sh ${VERSION}
 	@echo "${EXE} built"
+
+# build executable for linux 
+build-linux:
+	@echo "Build for Linux"
+	GOOS=linux GOARCH=amd64 go build -o build/linux-corpos-christie
+
+# build executable for Windows 
+build-windows:
+	@echo "Build for Windows"
+	GOOS=windows GOARCH=amd64 go build -o build/windows-corpos-christie.exe
+
+# build executable for MacOS
+build-mac:
+	@echo "Build for Mac"
+	GOOS=darwin GOARCH=amd64 go build -o build/mac-corpos-christie
 
 # Test building
 testbuild:
@@ -40,8 +56,8 @@ doc:
 
 # Docker build
 docker-build: 
-	go build
-	docker build -t ${EXE}:${VERSION} .
+	go build -o ${EXE}
+	docker build -t ${EXE}:${VERSION} . && rm ${EXE}
 
 # Docker run
 docker-run:

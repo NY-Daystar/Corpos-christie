@@ -69,30 +69,6 @@ func init() {
 			description: "Select a tax year if you want to calculate your taxes based on metrics of another year",
 		},
 		{
-			name:    "tax_history",
-			command: "tax_history",
-			exec: func(cfg *config.Config, user *user.User) {
-				fmt.Println(colors.Yellow("Not implemented yet, comming soon"))
-			},
-			description: "[WIP] Show history of tax calculator",
-		},
-		{
-			name:    "db",
-			command: "db",
-			exec: func(cfg *config.Config, user *user.User) {
-				fmt.Println(colors.Yellow("Not implemented yet, comming soon"))
-			},
-			description: "[WIP] Get Db information",
-		},
-		{
-			name:    "history",
-			command: "history",
-			exec: func(cfg *config.Config, user *user.User) {
-				fmt.Println(colors.Yellow("Not implemented yet, comming soon"))
-			},
-			description: "Show command history",
-		},
-		{
 			name:        "options",
 			command:     "options",
 			exec:        func(cfg *config.Config, user *user.User) { showOptions() },
