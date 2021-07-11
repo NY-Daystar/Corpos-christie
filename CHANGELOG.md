@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project release
+## [1.0.0] - 2021-07-10 - Public version
+> Update: Split Execution mode `GUI` & `Console`  
+> Update: Change `Parts` field into `User` struct to `Shares`  
+> Fix: Method `GetShares` get shares of the user  
+> Fix: Method to read data from console    
+> Add: Docker features  
+> Add: Go documentation 
+> Add: Tax details such as income and year of tax metrics  
 ## [0.0.9] - 2021-07-04 - Calculate tax v3
 > Add: reverse tax calculator  
 > Add: Command `show_tax_year_list`  
