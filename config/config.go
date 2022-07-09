@@ -5,10 +5,8 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
 	"math"
-	"os"
 
 	"github.com/LucasNoga/corpos-christie/lib/colors"
 	"github.com/LucasNoga/corpos-christie/lib/utils"
@@ -19,59 +17,77 @@ type Config struct {
 	Name    string
 	Version string
 	Tax     Tax
-	TaxList []Tax `json:"tax"`
+	TaxList []Tax
 }
 
 // Tax represent the metrics of french tax in a specific year
 // This metrics are called 'tranche'
 type Tax struct {
-	Year     int       `json:"year"`     // Year of the tax specifications
-	Tranches []Tranche `json:"tranches"` // List of Tranches
+	Year     int       // Year of the tax specifications
+	Tranches []Tranche // List of Tranches
 }
 
 // Tranche is a unit to define several metrics to calculate tax
 type Tranche struct {
-	Min  int    `json:"min"`  // Minimun in euros to get in the tranche
-	Max  int    `json:"max"`  // Maximum in euros to get in the tranche
-	Rate string `json:"rate"` // Rate taxable in euros in this tranche
+	Min  int    // Minimun in euros to get in the tranche
+	Max  int    // Maximum in euros to get in the tranche
+	Rate string // Rate taxable in euros in this tranche
 }
 
-// LoadConfiguration load in struct cfg Config the configuration present in the file config.json
-// return true is the config is loaded false if not,
-// also return an error if a fail happened while loading config
-func (cfg *Config) LoadConfiguration(file string) (bool, error) {
-	// default path
-	if file == "" {
-		file = "./config.json"
+// New create new configuration
+func New(name, version string) *Config {
+	var config Config = Config{
+		Name:    name,
+		Version: version,
+		TaxList: []Tax{
+			{
+				Year: 2022,
+				Tranches: []Tranche{
+
+					{Min: 0, Max: 10225, Rate: "0%"},
+					{Min: 10226, Max: 26070, Rate: "11%"},
+					{Min: 26071, Max: 74545, Rate: "30%"},
+					{Min: 74546, Max: 160336, Rate: "41%"},
+					{Min: 160337, Max: math.MaxInt64, Rate: "45%"},
+				},
+			},
+			{
+				Year: 2021,
+				Tranches: []Tranche{
+					{Min: 0, Max: 10084, Rate: "0%"},
+					{Min: 10085, Max: 25710, Rate: "11%"},
+					{Min: 25711, Max: 73516, Rate: "30%"},
+					{Min: 73517, Max: 158122, Rate: "41%"},
+					{Min: 158123, Max: math.MaxInt64, Rate: "45%"},
+				},
+			},
+			{
+				Year: 2020,
+				Tranches: []Tranche{
+					{Min: 0, Max: 10064, Rate: "0%"},
+					{Min: 10065, Max: 25659, Rate: "11%"},
+					{Min: 25660, Max: 73369, Rate: "30%"},
+					{Min: 73370, Max: 157806, Rate: "41%"},
+					{Min: 157807, Max: math.MaxInt64, Rate: "45%"},
+				},
+			},
+			{
+				Year: 2019,
+				Tranches: []Tranche{
+					{Min: 0, Max: 10064, Rate: "0%"},
+					{Min: 10065, Max: 27794, Rate: "14%"},
+					{Min: 27795, Max: 74517, Rate: "30%"},
+					{Min: 74518, Max: 157806, Rate: "41%"},
+					{Min: 157807, Max: math.MaxInt64, Rate: "45%"},
+				},
+			},
+		},
 	}
 
-	jsonFile, err := os.Open(file)
-	if err != nil {
-		return false, err
-	}
-	defer jsonFile.Close()
+	// set tax list of current year
+	config.loadTaxYear()
 
-	// Load json file
-	decoder := json.NewDecoder(jsonFile)
-	err = decoder.Decode(cfg)
-	if err != nil {
-		return false, err
-	}
-
-	cfg.addMaxValue()
-
-	// Define tax of the current year as reference
-	cfg.loadTaxYear()
-
-	return true, nil
-}
-
-// addMaxValue set an infinite value for the last tranche for each year of tax metrics present in cfg Config
-func (cfg *Config) addMaxValue() {
-	// for last tranch of each tax in the list
-	for _, tax := range cfg.TaxList {
-		tax.Tranches[len(tax.Tranches)-1].Max = math.MaxInt64
-	}
+	return &config
 }
 
 // loadTaxYear set a default tax metrics among the year of tax metrics set in cfg Config
