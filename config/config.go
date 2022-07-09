@@ -16,8 +16,8 @@ import (
 
 // Config represents the configuration of the program with the tax metrics
 type Config struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
+	Name    string
+	Version string
 	Tax     Tax
 	TaxList []Tax `json:"tax"`
 }
@@ -114,13 +114,13 @@ func (cfg *Config) LoadDefaultConfiguration() {
 	cfg.Name = "Corpos-Christie"
 	cfg.Version = "1.0.0"
 	cfg.Tax = Tax{
-		Year: 2021,
+		Year: 2022,
 		Tranches: []Tranche{
-			{Min: 0, Max: 10084, Rate: "0%"},
-			{Min: 10085, Max: 25710, Rate: "11%"},
-			{Min: 25711, Max: 73516, Rate: "30%"},
-			{Min: 73517, Max: 158122, Rate: "41%"},
-			{Min: 158123, Max: math.MaxInt64, Rate: "45%"},
+			{Min: 0, Max: 10225, Rate: "0%"},
+			{Min: 10226, Max: 26070, Rate: "11%"},
+			{Min: 26071, Max: 74545, Rate: "30%"},
+			{Min: 74546, Max: 160336, Rate: "41%"},
+			{Min: 160337, Max: math.MaxInt64, Rate: "45%"},
 		},
 	}
 	cfg.TaxList = append(cfg.TaxList, cfg.Tax)

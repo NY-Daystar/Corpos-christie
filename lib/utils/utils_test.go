@@ -42,16 +42,6 @@ func TestConvertPercentageToFloat64(t *testing.T) {
 	}
 }
 
-// Test currentYear
-func TestUserInCoupleNoChildren(t *testing.T) {
-	var currentYear int = 2021
-
-	var year = GetCurrentYear()
-	if currentYear != year {
-		t.Errorf("The currentYear '%d' is not return by the function GetCurrentYear() '%d'", currentYear, year)
-	}
-}
-
 // Test if function return the maxLength among this item
 func TestMaxLength(t *testing.T) {
 	var longItem string = "test max length"
