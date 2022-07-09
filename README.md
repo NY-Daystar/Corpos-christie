@@ -24,7 +24,8 @@ Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-
 - [Credits](#credits)
 
 ## Requirements
-- [Golang](https://golang.org/dl/) >= 1.16.4
+
+- [Golang](https://golang.org/dl/) >= 1.18.3
 
 ## How to launch program
 1. Get program
