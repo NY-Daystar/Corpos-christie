@@ -1,11 +1,15 @@
 
 EXE="corpos-christie"
-VERSION="1.0.0"
+VERSION="1.1.0"
 
 .PHONY: build buildLinux buildWindows buildMac
 .PHONY: run runconsole rungui
 
-all: build
+all: clean build
+
+clean: 
+	@echo "Cleaning build/ folder"
+	@rm -rf build/*
 
 # Building executable for all OS
 build: build-linux build-windows build-mac
@@ -13,27 +17,32 @@ build: build-linux build-windows build-mac
 	@./build.sh ${VERSION}
 	@echo "${EXE} built"
 
-# build executable for linux 
+# build executable for Linux
 build-linux:
 	@echo "Build for Linux"
-	GOOS=linux GOARCH=amd64 go build -o build/linux-corpos-christie
+	@GOOS=linux GOARCH=amd64 go build -o build/linux-${EXE}
 
-# build executable for Windows 
+# build executable for Windows
 build-windows:
 	@echo "Build for Windows"
-	GOOS=windows GOARCH=amd64 go build -o build/windows-corpos-christie.exe
+	@echo "Creating icon file"
+	@rsrc -ico assets/logo.ico -o ${EXE}.syso
+	@GOOS=windows GOARCH=amd64 go build -o windows-${EXE}.exe
+	@mv ${EXE}.syso build/${EXE}.syso
+	@mv windows-${EXE}.exe build/windows-${EXE}.exe
+	
 
 # build executable for MacOS
 build-mac:
-	@echo "Build for Mac"
-	GOOS=darwin GOARCH=amd64 go build -o build/mac-corpos-christie
+	@echo "Build for MacOS"
+	@GOOS=darwin GOARCH=amd64 go build -o build/mac-${EXE}
 
 # Test building
 testbuild:
 	@echo Unzip build ${EXE}...
-	@unzip build/Corpos-christie-${VERSION}.zip -d build
+	@unzip build/linux/${EXE}-${VERSION}.zip -d build/test
 	@pwd
-	@./build/${EXE}
+	@./build/test/${EXE}
 
 # Run program
 run:

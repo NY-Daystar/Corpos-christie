@@ -1,4 +1,4 @@
-FROM golang:1.16.5
+FROM golang:1.18.3-alpine
 
 LABEL maintainer="Lucas Noga <luc4snoga@gmail.com>"
 
