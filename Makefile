@@ -5,7 +5,11 @@ VERSION="1.0.0"
 .PHONY: build buildLinux buildWindows buildMac
 .PHONY: run runconsole rungui
 
-all: build
+all: clean build
+
+clean: 
+	@echo "Cleaning build/ folder"
+	@rm -f build/*
 
 # Building executable for all OS
 build: build-linux build-windows build-mac
