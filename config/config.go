@@ -123,21 +123,3 @@ func (cfg *Config) ChangeTax(year int) {
 	fmt.Printf(colors.Red("%d is not on the list\n"), year)
 	fmt.Printf(colors.Red("Get default tax year: %d\n"), cfg.GetTax().Year)
 }
-
-// LoadDefaultConfiguration load a default configuration into struct cfg Config if the file 'config.json' is not found
-func (cfg *Config) LoadDefaultConfiguration() {
-	fmt.Println("Loading Default configuration...")
-	cfg.Name = "Corpos-Christie"
-	cfg.Version = "1.0.0"
-	cfg.Tax = Tax{
-		Year: 2022,
-		Tranches: []Tranche{
-			{Min: 0, Max: 10225, Rate: "0%"},
-			{Min: 10226, Max: 26070, Rate: "11%"},
-			{Min: 26071, Max: 74545, Rate: "30%"},
-			{Min: 74546, Max: 160336, Rate: "41%"},
-			{Min: 160337, Max: math.MaxInt64, Rate: "45%"},
-		},
-	}
-	cfg.TaxList = append(cfg.TaxList, cfg.Tax)
-}

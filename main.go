@@ -14,7 +14,7 @@ import (
 
 const (
 	APP_NAME    string = "corpos-christie" // Name of the program
-	APP_VERSION string = "1.0.0"           // Version of the program
+	APP_VERSION string = "1.1.0"           // Version of the program
 )
 
 // Configuration of the application
