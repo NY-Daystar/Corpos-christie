@@ -159,18 +159,17 @@ func TestCalculateTaxForCoupleWithNoChildren(t *testing.T) {
 	}
 }
 
-// Calculate tax for a couple with 3 children, testing shares with a couple and 3 childrens
-func TestCalculateTaxForCoupleWith3Children(t *testing.T) {
+func TestCalculateTaxForIsolatedParent(t *testing.T) {
 	user := user.User{
-		Income:     100000,
-		IsInCouple: true,
-		Children:   3,
+		Income:     30000,
+		IsInCouple: false,
+		Children:   2,
 	}
 
 	result := calculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 100000, tax: 6563, remainder: 93437}
+	expected := Result{income: 30000, tax: 488, remainder: 29512}
 	t.Logf("Expected:\t\t%+v", expected)
 
 	if result.income != expected.income || result.tax != expected.tax || result.remainder != expected.remainder {
@@ -297,7 +296,7 @@ func TestUserInCoupleWith3Children(t *testing.T) {
 
 // Create user single with 4 children and check shares
 func TestUserInSingleWith4Children(t *testing.T) {
-	var sharesRef float64 = 4
+	var sharesExpected float64 = 4.5
 
 	var user user.User = user.User{
 		IsInCouple: false,
@@ -308,8 +307,8 @@ func TestUserInSingleWith4Children(t *testing.T) {
 	t.Logf("User reference %+v", user)
 
 	// Testing shares
-	if sharesRef != shares {
-		t.Errorf("Expected that the Shares \n%f\n should be equal to \n%f", sharesRef, shares)
+	if sharesExpected != shares {
+		t.Errorf("Expected that the Shares \n%f\n should be equal to \n%f", sharesExpected, shares)
 	}
 }
 

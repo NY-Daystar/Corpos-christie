@@ -286,6 +286,11 @@ func getShares(user user.User) float64 {
 		shares += 1
 	}
 
+	// if parent is single and have children it's a isolated parent
+	if user.IsIsolated() {
+		shares += 0.5
+	}
+
 	// For the two first children we add 0.5
 	for i := 1; i <= user.Children && i <= 2; i++ {
 		shares += 0.5

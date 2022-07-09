@@ -107,6 +107,11 @@ func (user *User) GetShares() float64 {
 	return user.Shares
 }
 
+// IsIsolated return bool if parent has children to raise alone
+func (user User) IsIsolated() bool {
+	return !user.IsInCouple && user.Children > 0
+}
+
 // Show show details of the user struct
 func (user *User) Show() {
 	var isInCouple = "No"
