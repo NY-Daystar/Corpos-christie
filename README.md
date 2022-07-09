@@ -19,7 +19,6 @@ Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-
 - [Docker](#docker)
 - [Installing and Setup Golang](#installing-and-setup-golang)
 - [Suggestions](#suggestions)
-- [TODOLIST](#todolist)
 - [Credits](#credits)
 
 ## Requirements
@@ -28,23 +27,23 @@ Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-
 
 ## How to launch program
 
-1. Get program
-   1.1 Linux
+1. Get program  
+    1.1 Linux
 
    ```bash
-   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.0.0/linux-corpos-christie-1.0.0.zip -O corpos-christie.zip
+   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/linux-corpos-christie-1.1.0.zip -O corpos-christie.zip
    ```
 
    1.2 Windows
 
    ```bash
-   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.0.0/windows-corpos-christie-1.0.0.zip -O corpos-christie.zip
+   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/windows-corpos-christie-1.1.0.zip -O corpos-christie.zip
    ```
 
    1.3 Mac
 
    ```bash
-   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.0.0/mac-corpos-christie-1.0.0.zip -O corpos-christie.zip
+   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/mac-corpos-christie-1.1.0.zip -O corpos-christie.zip
    ```
 
 2. Unzip it
@@ -159,20 +158,6 @@ $ go version
 - To make a pull request: https://github.com/LucasNoga/corpos-christie/pulls
 - To summon an issue: https://github.com/LucasNoga/corpos-christie/issues
 - For any specific demand by mail: luc4snoga@gmail.com
-
-## List of futures features
-
-- Tax calculator v4
-- ~~Cross-Plateform~~ - `done`
-- ~~Add GoDoc~~ - `done`
-- ~~Docker~~ - `done`
-- ~~Tax calculator v3~~ - `done`
-- ~~Features command line management~~ - `done`
-- ~~Portability tests~~ - `done`
-- ~~Display tax tranches~~ - `done`
-- ~~Tax calculator v2~~ - `done`
-- ~~Tax calculator v1~~ - `done`
-- ~~Starting project~~ - `done`
 
 ## Credits
 
