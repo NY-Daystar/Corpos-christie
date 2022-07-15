@@ -70,7 +70,7 @@ $ git clone https://github.com/lucasnoga/corpos-christie.git
 Launch program basically
 
 ```bash
-$ go run main.go
+$ go run .
 ```
 
 or

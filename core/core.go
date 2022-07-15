@@ -5,17 +5,15 @@
 package core
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/lib/colors"
 	"github.com/LucasNoga/corpos-christie/user"
 )
 
 // Mode define the program mode (Console or GUI)
 type Mode interface {
-	start() bool // Start program in mode GUI or console
+	start() // Start program in mode GUI or console
 }
 
 // Start Core program
@@ -35,17 +33,12 @@ func Start(cfg *config.Config, user *user.User) {
 
 	}
 	// launch program
-	ok := mode.start()
-
-	// if doesn't work launch console mode
-	if !ok {
-		fmt.Printf(colors.Red("mode '%s' ")+colors.Red("cannot be launched. Launch console mode\n"), colors.Yellow(modeSelected))
-		ConsoleMode{config: cfg, user: user}.start()
-	}
+	mode.start()
 }
 
 // selectMode Check args passed in launch
 // returns which mode to launch between GUI or console
+// TODO faire un ENUM
 func selectMode(args []string) string {
 	// if no args specified launch GUI
 	if len(args) < 2 {

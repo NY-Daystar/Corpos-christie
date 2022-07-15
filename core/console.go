@@ -94,7 +94,7 @@ func init() {
 // start launch core program in console mode
 // Show options to user in the console
 // Interact with the user depending of the option selected
-func (mode ConsoleMode) start() bool {
+func (mode ConsoleMode) start() {
 	fmt.Printf("Project: %s\n", colors.Yellow(mode.config.Name))
 	fmt.Printf("Version: %s\b", colors.Yellow(mode.config.Version))
 

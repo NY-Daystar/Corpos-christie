@@ -83,7 +83,7 @@ func TestCalculateTaxForSinglePerson(t *testing.T) {
 	var user user.User = user.User{}
 	user.Income = 30000
 
-	result := calculateTax(&user, CONFIG)
+	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{income: 30000, tax: 2922, remainder: 27078}
@@ -104,7 +104,7 @@ func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
 		Children:   2,
 	}
 
-	result := calculateTax(&user, CONFIG)
+	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{income: 60000, tax: 3225, remainder: 56775}
@@ -125,7 +125,7 @@ func TestCalculateTaxForCoupleWith3Children(t *testing.T) {
 		Children:   3,
 	}
 
-	result := calculateTax(&user, CONFIG)
+	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{income: 100000, tax: 6501, remainder: 93499}
@@ -146,7 +146,7 @@ func TestCalculateTaxForCoupleWithNoChildren(t *testing.T) {
 		Children:   0,
 	}
 
-	result := calculateTax(&user, CONFIG)
+	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{income: 60000, tax: 5843, remainder: 54157}
@@ -166,7 +166,7 @@ func TestCalculateTaxForIsolatedParent(t *testing.T) {
 		Children:   2,
 	}
 
-	result := calculateTax(&user, CONFIG)
+	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{income: 30000, tax: 488, remainder: 29512}

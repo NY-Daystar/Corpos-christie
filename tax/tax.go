@@ -66,7 +66,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	}
 
 	// Calculate tax
-	result := calculateTax(user, cfg)
+	result := CalculateTax(user, cfg)
 	user.Shares = result.shares
 
 	// Show user
@@ -159,7 +159,7 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 
 // calculateTax determine the tax to pay from the income of the user
 // returns the result of the processing
-func calculateTax(user *user.User, cfg *config.Config) Result {
+func CalculateTax(user *user.User, cfg *config.Config) Result {
 	var tax float64
 	var taxable float64 = float64(user.Income)
 	var shares float64 = getShares(*user)

@@ -40,7 +40,6 @@ function main {
 }
 
 # Build executables for one os
-# TODO faire un folder par os
 function build_os {
     os=$1
     version=$2
@@ -66,9 +65,9 @@ function build_os {
 
     cd ${os}
 
-    zip_file="${EXECUTABLE}-${version}.zip"
-    tar_file="${EXECUTABLE}-${version}.tar"
-    targz_file="${EXECUTABLE}-${version}.tar.gz"
+    zip_file="${os}-${EXECUTABLE}-${version}.zip"
+    tar_file="${os}-${EXECUTABLE}-${version}.tar"
+    targz_file="${os}-${EXECUTABLE}-${version}.tar.gz"
 
     echo "Zip Program into ${zip_file}"
     zip ${zip_file} ${executable_name} ${syso_file}
