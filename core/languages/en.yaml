@@ -1,0 +1,19 @@
+themes:
+  dark: Dark
+  light: Light
+languages:
+  french: French
+  english: English
+file: File
+settings: Settings
+income: Enter your income
+status: Marital status
+children: Select children number
+save_tax: Save
+language: Languages
+theme: Themes
+help: Help
+about: About
+author: Author
+close: Close
+quit: Quit

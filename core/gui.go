@@ -7,14 +7,17 @@ package core
 import (
 	"fmt"
 	"image/color"
+	"io/ioutil"
 	"log"
 	"net/url"
+	"reflect"
 	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/validation"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
@@ -22,32 +25,94 @@ import (
 	"github.com/LucasNoga/corpos-christie/core/themes"
 	"github.com/LucasNoga/corpos-christie/tax"
 	"github.com/LucasNoga/corpos-christie/user"
+	"gopkg.in/yaml.v3"
 )
 
 // GUIMode represents the program parameters to launch in console mode the application
 type GUIMode struct {
-	config         *config.Config     // Config to use correctly the program
-	user           *user.User         // User param to use program
-	themeName      string             // name of the theme for fyne theme (Dark or Light)
-	theme          themes.Theme       // Fyne theme for the application
-	app            fyne.App           // TODO comment
-	window         fyne.Window        // TODO comment
-	entryIncome    *widget.Entry      // TODO comment
-	radioStatus    *widget.RadioGroup // TODO comment
-	selectChildren *widget.Select     // TODO comment
+	config         *config.Config      // Config to use correctly the program
+	user           *user.User          // User param to use program
+	themeName      string              // name of the theme for fyne theme (Dark or Light)
+	theme          themes.Theme        // Fyne theme for the application
+	app            fyne.App            // Fyne application
+	window         fyne.Window         // Fyne window
+	language       Yaml                // Yaml struct with all language data
+	labelIncome    *widget.Label       // Label for income
+	entryIncome    *widget.Entry       // Input Entry to set income
+	labelStatus    *widget.Label       // Label for status
+	radioStatus    *widget.RadioGroup  // Input Radio buttons to get status
+	labelChildren  *widget.Label       // Label for children
+	selectChildren *widget.SelectEntry // Input Select to know how children
 }
 
-// TODO every string in variables
+// LanguageYaml Yaml struct to get language data
+type Yaml struct {
+	code         string       // code of the language (fr, en, etc...)
+	Theme        ThemeYaml    `yaml:"themes"`
+	Languages    LanguageYaml `yaml:"languages"`
+	File         string       `yaml:"file"`
+	Settings     string       `yaml:"settings"`
+	Income       string       `yaml:"income"`
+	Status       string       `yaml:"status"`
+	Children     string       `yaml:"children"`
+	SaveTax      string       `yaml:"save_tax"`
+	ThemeCode    string       `yaml:"theme"`
+	LanguageCode string       `yaml:"language"`
+	Help         string       `yaml:"help"`
+	About        string       `yaml:"about"`
+	Author       string       `yaml:"author"`
+	Close        string       `yaml:"close"`
+	Quit         string       `yaml:"quit"`
+}
+
+// ThemeYml Yaml struct for theme's app
+type ThemeYaml struct {
+	Dark  string `yaml:"dark"`
+	Light string `yaml:"light"`
+}
+
+// Languages Yaml struct for theme's app
+type LanguageYaml struct {
+	English string `yaml:"english"`
+	French  string `yaml:"french"`
+}
+
+// getThemes parse ThemeYaml struct to get value of each field
+func (t ThemeYaml) getThemes() []string {
+	v := reflect.ValueOf(t)
+	themes := make([]string, v.NumField())
+	for i := 0; i < v.NumField(); i++ {
+		themes[i] = v.Field(i).String()
+	}
+	return themes
+}
+
+// getLanguages parse LanguagesXml struct to get value of each field
+func (l LanguageYaml) getLanguages() []string {
+	v := reflect.ValueOf(l)
+	languages := make([]string, v.NumField())
+	for i := 0; i < v.NumField(); i++ {
+		languages[i] = v.Field(i).String()
+	}
+	return languages
+}
+
 // start launch core program in GUI Mode
 func (gui GUIMode) start() {
 	gui.app = app.New()
-	gui.window = gui.app.NewWindow("Corpos-Christie")
+	gui.window = gui.app.NewWindow(config.APP_NAME)
 
-	// Set theme
-	gui.setTheme(gui.getTheme())
+	// Set Theme
+	var theme string = gui.getTheme()
+	gui.setTheme(theme)
+
+	// Set Language
+	var language string = gui.getLanguage()
+	gui.setLanguage(language)
 
 	// Set Icon
-	r, _ := fyne.LoadResourceFromPath("./assets/logo.ico")
+	var iconPath string = "./assets/logo.ico"
+	r, _ := fyne.LoadResourceFromPath(iconPath)
 	gui.window.SetIcon(r)
 
 	// Size and Position
@@ -60,21 +125,23 @@ func (gui GUIMode) start() {
 	gui.setRadioStatus()
 	gui.setSelectChildren()
 
+	// Handle Events
 	gui.setEvents()
+
 	// Layout income
-	labelIncome := widget.NewLabel("Enter your income")
-	incomeLayout := container.New(layout.NewFormLayout(), labelIncome, gui.entryIncome)
+	gui.labelIncome = widget.NewLabel(gui.language.Income)
+	incomeLayout := container.New(layout.NewFormLayout(), gui.labelIncome, gui.entryIncome)
 
 	// Layout status
-	labelStatus := widget.NewLabel("Marital status")
-	statusLayout := container.NewHBox(labelStatus, container.New(layout.NewVBoxLayout(), gui.radioStatus))
+	gui.labelStatus = widget.NewLabel(gui.language.Status)
+	statusLayout := container.NewHBox(gui.labelStatus, container.New(layout.NewVBoxLayout(), gui.radioStatus))
 
 	// Layout children
-	labelChildren := widget.NewLabel("Children ? ")
-	childrenLayout := container.NewHBox(labelChildren, container.New(layout.NewVBoxLayout(), gui.selectChildren))
+	gui.labelChildren = widget.NewLabel(gui.language.Children)
+	childrenLayout := container.NewHBox(gui.labelChildren, container.New(layout.NewVBoxLayout(), gui.selectChildren))
 
 	// Layout button
-	button := widget.NewButton("Calculate Tax", func() {
+	button := widget.NewButton(gui.language.SaveTax, func() {
 		result := gui.calculate()
 		log.Printf("Result - %#v ", result)
 	})
@@ -91,50 +158,68 @@ func (gui GUIMode) start() {
 // SetMenu create mainMenu for window
 func (gui *GUIMode) setMenu() *fyne.MainMenu {
 
-	selectTheme := widget.NewSelect([]string{"Dark", "Light"}, func(val string) {
+	selectTheme := widget.NewSelect(gui.language.Theme.getThemes(), func(val string) {
 		gui.setTheme(val)
 		// TODO save data in .settings
 	})
 	selectTheme.SetSelected(gui.themeName)
 
-	fileMenu := fyne.NewMenu("File",
-		fyne.NewMenuItem("Settings", func() {
-			dialog.ShowCustom("Settings", "Close", container.NewVBox(
+	selectLanguage := widget.NewSelect(gui.language.Languages.getLanguages(), nil)
+	selectLanguage.OnChanged = func(s string) {
+		index := selectLanguage.SelectedIndex()
+		var getLanguage = func() string {
+			switch index {
+			case 0:
+				return "en" // TODO enum
+			case 1:
+				return "fr"
+			}
+			// TODO error log
+			return "fr"
+		}
+
+		language := getLanguage()
+
+		gui.setLanguage(language)
+		gui.reload()
+		// TODO save data in .settings
+
+	}
+
+	fileMenu := fyne.NewMenu(gui.language.File,
+		fyne.NewMenuItem(gui.language.Settings, func() {
+			dialog.ShowCustom(gui.language.Settings, gui.language.Close, container.NewVBox(
 				container.NewHBox(
-					widget.NewLabel("Theme"),
+					widget.NewLabel(gui.language.ThemeCode),
 					selectTheme,
 				),
 				widget.NewSeparator(),
 				container.NewHBox(
-					widget.NewLabel("Languages"),
-					widget.NewSelect([]string{"FR", "EN"}, func(s string) {
-						log.Printf("Languages %s", s)
-						// TODO change language + refresh
-						// TODO save data in .settings
-					}),
+					widget.NewLabel(gui.language.LanguageCode),
+					selectLanguage,
 				),
 			), gui.window)
 		}),
-		fyne.NewMenuItem("Quit", func() { gui.app.Quit() }),
+		fyne.NewMenuItem(gui.language.Quit, func() { gui.app.Quit() }),
 	)
 
 	url, _ := url.Parse(config.APP_LINK)
 
-	helpMenu := fyne.NewMenu("Help",
-		fyne.NewMenuItem("About", func() {
-			dialog.ShowCustom("About", "Close", container.NewVBox(
-				widget.NewLabel(fmt.Sprintf("Welcome to %s, a Desktop app to calculate your tax in France.", config.APP_NAME)),
+	helpMenu := fyne.NewMenu(gui.language.Help,
+		fyne.NewMenuItem(gui.language.About, func() {
+			dialog.ShowCustom(gui.language.About, gui.language.Close, container.NewVBox(
+				widget.NewLabel(fmt.Sprintf("Welcome to %s, a Desktop app to calculate your taxes in France.", config.APP_NAME)), // TODO language
 				container.NewHBox(
-					widget.NewLabel("This"),
-					widget.NewHyperlink("GitHub Project", url),
-					widget.NewLabel("is open-source."),
+					widget.NewLabel("This"),                    // TODO language
+					widget.NewHyperlink("GitHub Project", url), // TODO language
+					widget.NewLabel("is open-source."),         // TODO language
 				),
 				widget.NewLabel("Developped in Go with Fyne."),
 				container.NewHBox(
 					widget.NewLabel("Version:"),
 					canvas.NewText(fmt.Sprintf("v%s", config.APP_VERSION), color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
 				),
-				widget.NewLabel(fmt.Sprintf("Author: %s", config.APP_AUTHOR)),
+				widget.NewLabel(fmt.Sprintf("%s: %s", gui.language.Author, config.APP_AUTHOR)),
 			), gui.window)
 		}))
 	return fyne.NewMainMenu(fileMenu, helpMenu)
@@ -144,19 +229,21 @@ func (gui *GUIMode) setMenu() *fyne.MainMenu {
 func (gui *GUIMode) setEntryIncome() {
 	gui.entryIncome = widget.NewEntry()
 	gui.entryIncome.SetPlaceHolder("30000")
+	gui.entryIncome.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number") // TODO language
 }
 
 // setRadioStatus create widget radioGroup for marital status
 func (gui *GUIMode) setRadioStatus() {
-	gui.radioStatus = widget.NewRadioGroup([]string{"Single", "Couple"}, nil)
+	gui.radioStatus = widget.NewRadioGroup([]string{"Single", "Couple"}, nil) // TODO language
 	gui.radioStatus.SetSelected("Single")
 	gui.radioStatus.Horizontal = true
 }
 
 // setComboChildren create widget select for children
 func (gui *GUIMode) setSelectChildren() {
-	gui.selectChildren = widget.NewSelect([]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}, nil)
-	gui.selectChildren.SetSelectedIndex(0)
+	gui.selectChildren = widget.NewSelectEntry([]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"})
+	gui.selectChildren.SetText("0")
+	gui.selectChildren.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number") // TODO language
 }
 
 // setEvents set the events/trigger of gui widgets
@@ -170,6 +257,7 @@ func (gui *GUIMode) setEvents() {
 	gui.selectChildren.OnChanged = func(input string) {
 		gui.calculate()
 	}
+
 }
 
 // getIncome get value of widget entry
@@ -183,12 +271,12 @@ func (gui *GUIMode) getIncome() int {
 
 // getStatus get value of widget radioGroup
 func (gui *GUIMode) getStatus() bool {
-	return gui.radioStatus.Selected == "Couple"
+	return gui.radioStatus.Selected == "Couple" // TODO language ou mettre un id
 }
 
 // getChildren get value of widget select
 func (gui *GUIMode) getChildren() int {
-	children, err := strconv.Atoi(gui.selectChildren.Selected)
+	children, err := strconv.Atoi(gui.selectChildren.Entry.Text)
 	if err != nil {
 		return 0
 	}
@@ -214,13 +302,41 @@ func (gui *GUIMode) setTheme(theme string) {
 	gui.app.Settings().SetTheme(gui.theme)
 }
 
+// getLanguage get value of last language selected (fr, en)
+func (gui *GUIMode) getLanguage() string {
+	// TODO get value from .setting file
+	// TODO log debug to show change language
+	return "en"
+}
+
+// setLanguage change language of the application
+func (gui *GUIMode) setLanguage(code string) {
+	var language Yaml = Yaml{code: code}
+	var languageFile string = fmt.Sprintf("./core/languages/%s.yaml", language.code)
+	yamlFile, _ := ioutil.ReadFile(languageFile)
+	err := yaml.Unmarshal(yamlFile, &gui.language)
+	if err != nil {
+		log.Fatalf("Unmarshal language file %s: %v", languageFile, err)
+	}
+
+	log.Printf("Debug languages: %+v", gui.language) // TODO log debug to show change theme
+}
+
+// reload Refresh widget who needed specially when language changed
+func (gui *GUIMode) reload() {
+	gui.labelIncome.SetText(gui.language.Income)
+	gui.labelStatus.SetText(gui.language.Status)
+	gui.labelChildren.SetText(gui.language.Children)
+	// TODO ajouter tous les elements impacter par le changement
+}
+
 // calculate get values of gui to calculate tax
 func (gui *GUIMode) calculate() tax.Result {
 	gui.user.Income = gui.getIncome()
 	gui.user.IsInCouple = gui.getStatus()
 	gui.user.Children = gui.getChildren()
 	result := tax.CalculateTax(gui.user, gui.config)
-	log.Printf("Result - %#v ", result)
+	// log.Printf("Result - %#v ", result)
 	return result
 	// TODO insted of return set a new widget to show values in EAST part of window
 }

@@ -1,0 +1,19 @@
+themes:
+  dark: Sombre
+  light: Clair
+languages:
+  french: Francais
+  english: Anglais
+file: Fichier
+settings: Paramètres
+income: Entrer vos revenus
+status: Statut marital
+children: Saisissez le nombre d'enfants
+save_tax: Sauvegarder
+language: Langues
+theme: Themes
+help: Aide
+about: A propos
+author: Auteur
+close: Fermer
+quit: Quitter
