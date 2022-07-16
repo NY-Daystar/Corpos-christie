@@ -35,10 +35,10 @@ type Tranche struct {
 }
 
 // New create new configuration
-func New(name, version string) *Config {
+func New() *Config {
 	var config Config = Config{
-		Name:    name,
-		Version: version,
+		Name:    APP_NAME,
+		Version: APP_VERSION,
 		TaxList: []Tax{
 			{
 				Year: 2022,

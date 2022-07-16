@@ -12,11 +12,6 @@ import (
 	"github.com/LucasNoga/corpos-christie/user"
 )
 
-const (
-	APP_NAME    string = "corpos-christie" // Name of the program
-	APP_VERSION string = "1.1.0"           // Version of the program
-)
-
 // Configuration of the application
 var cfg *config.Config
 
@@ -25,7 +20,7 @@ func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile) // get line and file log
 
 	// Setup config
-	cfg = config.New(APP_NAME, APP_VERSION)
+	cfg = config.New()
 }
 
 // Launching program
