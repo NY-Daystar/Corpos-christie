@@ -26,28 +26,35 @@ import (
 
 // GUIMode represents the program parameters to launch in console mode the application
 type GUIMode struct {
-	config         *config.Config // Config to use correctly the program
-	user           *user.User     // User param to use program
-	entryIncome    *widget.Entry
-	radioStatus    *widget.RadioGroup
-	selectChildren *widget.Select
+	config         *config.Config     // Config to use correctly the program
+	user           *user.User         // User param to use program
+	themeName      string             // name of the theme for fyne theme (Dark or Light)
+	theme          themes.Theme       // Fyne theme for the application
+	app            fyne.App           // TODO comment
+	window         fyne.Window        // TODO comment
+	entryIncome    *widget.Entry      // TODO comment
+	radioStatus    *widget.RadioGroup // TODO comment
+	selectChildren *widget.Select     // TODO comment
 }
 
+// TODO every string in variables
 // start launch core program in GUI Mode
 func (gui GUIMode) start() {
-	app := app.New()
+	gui.app = app.New()
+	gui.window = gui.app.NewWindow("Corpos-Christie")
 
-	window := app.NewWindow("Corpos-Christie")
-	app.Settings().SetTheme(themes.LightTheme{})
+	// Set theme
+	gui.setTheme(gui.getTheme())
+
 	// Set Icon
 	r, _ := fyne.LoadResourceFromPath("./assets/logo.ico")
-	window.SetIcon(r)
+	gui.window.SetIcon(r)
 
 	// Size and Position
-	window.Resize(fyne.NewSize(760, 480))
-	window.CenterOnScreen()
+	gui.window.Resize(fyne.NewSize(760, 480))
+	gui.window.CenterOnScreen()
 
-	window.SetMainMenu(gui.setMenu(app, window))
+	gui.window.SetMainMenu(gui.setMenu())
 
 	gui.setEntryIncome()
 	gui.setRadioStatus()
@@ -64,9 +71,9 @@ func (gui GUIMode) start() {
 
 	// Layout children
 	labelChildren := widget.NewLabel("Children ? ")
-
 	childrenLayout := container.NewHBox(labelChildren, container.New(layout.NewVBoxLayout(), gui.selectChildren))
 
+	// Layout button
 	button := widget.NewButton("Calculate Tax", func() {
 		result := gui.calculate()
 		log.Printf("Result - %#v ", result)
@@ -77,23 +84,25 @@ func (gui GUIMode) start() {
 
 	content := container.New(layout.NewGridLayout(2), form)
 
-	window.SetContent(content)
-	window.ShowAndRun()
+	gui.window.SetContent(content)
+	gui.window.ShowAndRun()
 }
 
 // SetMenu create mainMenu for window
-// TODO gerer la config
-func (g *GUIMode) setMenu(app fyne.App, window fyne.Window) *fyne.MainMenu {
+func (gui *GUIMode) setMenu() *fyne.MainMenu {
+
+	selectTheme := widget.NewSelect([]string{"Dark", "Light"}, func(val string) {
+		gui.setTheme(val)
+		// TODO save data in .settings
+	})
+	selectTheme.SetSelected(gui.themeName)
+
 	fileMenu := fyne.NewMenu("File",
 		fyne.NewMenuItem("Settings", func() {
 			dialog.ShowCustom("Settings", "Close", container.NewVBox(
 				container.NewHBox(
-
 					widget.NewLabel("Theme"),
-					widget.NewSelect([]string{"Dark", "Light"}, func(s string) {
-						log.Printf("Theme %s", s)
-						// TODO change theme
-					}),
+					selectTheme,
 				),
 				widget.NewSeparator(),
 				container.NewHBox(
@@ -101,11 +110,12 @@ func (g *GUIMode) setMenu(app fyne.App, window fyne.Window) *fyne.MainMenu {
 					widget.NewSelect([]string{"FR", "EN"}, func(s string) {
 						log.Printf("Languages %s", s)
 						// TODO change language + refresh
+						// TODO save data in .settings
 					}),
 				),
-			), window)
+			), gui.window)
 		}),
-		fyne.NewMenuItem("Quit", func() { app.Quit() }),
+		fyne.NewMenuItem("Quit", func() { gui.app.Quit() }),
 	)
 
 	url, _ := url.Parse(config.APP_LINK)
@@ -125,7 +135,7 @@ func (g *GUIMode) setMenu(app fyne.App, window fyne.Window) *fyne.MainMenu {
 					canvas.NewText(fmt.Sprintf("v%s", config.APP_VERSION), color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
 				),
 				widget.NewLabel(fmt.Sprintf("Author: %s", config.APP_AUTHOR)),
-			), window)
+			), gui.window)
 		}))
 	return fyne.NewMainMenu(fileMenu, helpMenu)
 }
@@ -183,6 +193,25 @@ func (gui *GUIMode) getChildren() int {
 		return 0
 	}
 	return children
+}
+
+// getTheme get value of last theme selected
+func (gui *GUIMode) getTheme() string {
+	// TODO get value from .setting file
+	// TODO log debug to show change theme
+	return "Dark"
+}
+
+// setTheme change Theme of the application
+func (gui *GUIMode) setTheme(theme string) {
+	// TODO log debug to show change theme
+	gui.themeName = theme
+	if gui.themeName == themes.DARK {
+		gui.theme = themes.DarkTheme{}
+	} else {
+		gui.theme = themes.LightTheme{}
+	}
+	gui.app.Settings().SetTheme(gui.theme)
 }
 
 // calculate get values of gui to calculate tax
