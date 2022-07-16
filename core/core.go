@@ -16,6 +16,12 @@ type Mode interface {
 	start() // Start program in mode GUI or console
 }
 
+// Enum for mode
+const (
+	GUI     string = "GUI"
+	CONSOLE string = "console"
+)
+
 // Start Core program
 // Get Options passed on program and launch appropriate system
 func Start(cfg *config.Config, user *user.User) {
@@ -38,20 +44,19 @@ func Start(cfg *config.Config, user *user.User) {
 
 // selectMode Check args passed in launch
 // returns which mode to launch between GUI or console
-// TODO faire un ENUM
 func selectMode(args []string) string {
 	// if no args specified launch GUI
 	if len(args) < 2 {
-		return "GUI"
+		return GUI
 	} else {
 		var mode string = args[1]
 		switch m := mode; m {
 		case "--gui":
-			return "GUI"
+			return GUI
 		case "--console":
-			return "console"
+			return CONSOLE
 		default:
-			return "default"
+			return GUI
 		}
 	}
 }
