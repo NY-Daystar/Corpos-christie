@@ -21,11 +21,11 @@ import (
 
 // Result define the result after calculating tax
 type Result struct {
-	income      int          // Input income from the user
-	tax         float64      // Tax to pay from the user
-	remainder   float64      // Value Remain for the user
-	taxTranches []TaxTranche // List of tax by tranches
-	shares      float64      // family quotient to adjust taxes (parts in french)
+	Income      int          // Input income from the user
+	Tax         float64      // Tax to pay from the user
+	Remainder   float64      // Value Remain for the user
+	TaxTranches []TaxTranche // List of tax by tranches
+	Shares      float64      // family quotient to adjust taxes (parts in french)
 }
 
 // TaxTranche represent the tax calculating for each tranch when we calculate tax
@@ -67,7 +67,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 
 	// Calculate tax
 	result := CalculateTax(user, cfg)
-	user.Shares = result.shares
+	user.Shares = result.Shares
 
 	// Show user
 	user.Show()
@@ -127,7 +127,7 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 
 	// Calculate tax
 	result := calculateReverseTax(user, cfg)
-	user.Shares = result.shares
+	user.Shares = result.Shares
 
 	// Show user
 	user.Show()
@@ -184,16 +184,16 @@ func CalculateTax(user *user.User, cfg *config.Config) Result {
 
 	// Format to round in integer tax and remainder
 	result := Result{
-		income:      user.Income,
-		tax:         math.Round(tax),
-		remainder:   float64(user.Income) - math.Round(tax),
-		taxTranches: taxTranches,
-		shares:      shares,
+		Income:      user.Income,
+		Tax:         math.Round(tax),
+		Remainder:   float64(user.Income) - math.Round(tax),
+		TaxTranches: taxTranches,
+		Shares:      shares,
 	}
 
 	// Add data into the user
-	user.Tax = result.tax
-	user.Remainder = result.remainder
+	user.Tax = result.Tax
+	user.Remainder = result.Remainder
 
 	return result
 }
@@ -240,16 +240,16 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 
 	// Format to round in integer tax and remainder
 	result := Result{
-		income:      int(income),
-		tax:         math.Round(income - incomeAfterTaxes),
-		remainder:   incomeAfterTaxes,
-		taxTranches: taxTranches,
-		shares:      shares,
+		Income:      int(income),
+		Tax:         math.Round(income - incomeAfterTaxes),
+		Remainder:   incomeAfterTaxes,
+		TaxTranches: taxTranches,
+		Shares:      shares,
 	}
 
 	// Add data into the user
-	user.Income = result.income
-	user.Tax = result.tax
+	user.Income = result.Income
+	user.Tax = result.Tax
 
 	return result
 }
@@ -319,7 +319,7 @@ func showTaxTranche(result Result, year int) {
 
 	// Create data to append on the table
 	var data [][]string
-	for i, val := range result.taxTranches {
+	for i, val := range result.TaxTranches {
 		var index int = i + 1
 
 		var trancheNumber string = fmt.Sprintf("Tranche %d", index)
@@ -345,14 +345,14 @@ func showTaxTranche(result Result, year int) {
 	var footer []string = []string{
 		"Result",
 		"Remainder",
-		fmt.Sprintf("%s €", strconv.Itoa(int(result.remainder))),
+		fmt.Sprintf("%s €", strconv.Itoa(int(result.Remainder))),
 		"Total Tax",
-		fmt.Sprintf("%s €", strconv.Itoa(int(result.tax))),
+		fmt.Sprintf("%s €", strconv.Itoa(int(result.Tax))),
 	}
 	table.SetFooter(footer)
 
 	fmt.Println(colors.Yellow("\t\t\t Tax Details \t\t\t"))
-	fmt.Printf("For an income of %s € in %s\n", colors.Teal(result.income), colors.Teal(year))
+	fmt.Printf("For an income of %s € in %s\n", colors.Teal(result.Income), colors.Teal(year))
 	table.Render()
 }
 

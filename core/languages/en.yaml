@@ -9,6 +9,9 @@ settings: Settings
 income: Enter your income
 status: Marital status
 children: Select children number
+tax: Taxes
+remainder: Remainder
+share: Shares
 save_tax: Save
 language: Languages
 theme: Themes

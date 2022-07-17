@@ -86,13 +86,13 @@ func TestCalculateTaxForSinglePerson(t *testing.T) {
 	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 30000, tax: 2922, remainder: 27078}
+	expected := Result{Income: 30000, Tax: 2922, Remainder: 27078}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income || result.tax != expected.tax || result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 
@@ -107,13 +107,13 @@ func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
 	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 60000, tax: 3225, remainder: 56775}
+	expected := Result{Income: 60000, Tax: 3225, Remainder: 56775}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income || result.tax != expected.tax || result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 
@@ -128,13 +128,13 @@ func TestCalculateTaxForCoupleWith3Children(t *testing.T) {
 	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 100000, tax: 6501, remainder: 93499}
+	expected := Result{Income: 100000, Tax: 6501, Remainder: 93499}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income || result.tax != expected.tax || result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 
@@ -149,13 +149,13 @@ func TestCalculateTaxForCoupleWithNoChildren(t *testing.T) {
 	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 60000, tax: 5843, remainder: 54157}
+	expected := Result{Income: 60000, Tax: 5843, Remainder: 54157}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income || result.tax != expected.tax || result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 
@@ -169,13 +169,13 @@ func TestCalculateTaxForIsolatedParent(t *testing.T) {
 	result := CalculateTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 30000, tax: 488, remainder: 29512}
+	expected := Result{Income: 30000, Tax: 488, Remainder: 29512}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income || result.tax != expected.tax || result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 
@@ -188,13 +188,13 @@ func TestCalculateReverseTaxForSinglePerson(t *testing.T) {
 	result := calculateReverseTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 32000, tax: 3605, remainder: 28395}
+	expected := Result{Income: 32000, Tax: 3605, Remainder: 28395}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income && result.tax != expected.tax && result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income && result.Tax != expected.Tax && result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 
@@ -209,13 +209,13 @@ func TestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
 	result := calculateReverseTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 55950, tax: 2826, remainder: 53124}
+	expected := Result{Income: 55950, Tax: 2826, Remainder: 53124}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income && result.tax != expected.tax && result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income && result.Tax != expected.Tax && result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 
@@ -230,13 +230,13 @@ func TestCalculateReverseTaxForCoupleWith3Children(t *testing.T) {
 	result := calculateReverseTax(&user, CONFIG)
 	t.Logf("Function result:\t%+v", result)
 
-	expected := Result{income: 100000, tax: 6563, remainder: 93437}
+	expected := Result{Income: 100000, Tax: 6563, Remainder: 93437}
 	t.Logf("Expected:\t\t%+v", expected)
 
-	if result.income != expected.income && result.tax != expected.tax && result.remainder != expected.remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.income), colors.Red(result.income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.tax), colors.Red(result.tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.remainder), colors.Red(result.remainder))
+	if result.Income != expected.Income && result.Tax != expected.Tax && result.Remainder != expected.Remainder {
+		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
+		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
+		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
 	}
 }
 

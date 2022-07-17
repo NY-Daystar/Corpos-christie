@@ -118,6 +118,7 @@ func (user *User) Show() {
 	if user.IsInCouple {
 		isInCouple = "Yes"
 	}
+	fmt.Println(colors.Yellow("\tTax Results"))
 	fmt.Printf("Income:\t\t%s €\n", colors.Red(user.Income))
 	fmt.Printf("In couple:\t%s\n", colors.Red(isInCouple))
 	fmt.Printf("Children:\t%s\n", colors.Red(user.Children))

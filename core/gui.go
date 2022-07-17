@@ -23,6 +23,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/LucasNoga/corpos-christie/config"
 	"github.com/LucasNoga/corpos-christie/core/themes"
+	"github.com/LucasNoga/corpos-christie/lib/utils"
 	"github.com/LucasNoga/corpos-christie/tax"
 	"github.com/LucasNoga/corpos-christie/user"
 	"gopkg.in/yaml.v3"
@@ -30,19 +31,25 @@ import (
 
 // GUIMode represents the program parameters to launch in console mode the application
 type GUIMode struct {
-	config         *config.Config      // Config to use correctly the program
-	user           *user.User          // User param to use program
-	themeName      string              // name of the theme for fyne theme (Dark or Light)
-	theme          themes.Theme        // Fyne theme for the application
-	app            fyne.App            // Fyne application
-	window         fyne.Window         // Fyne window
-	language       Yaml                // Yaml struct with all language data
-	labelIncome    *widget.Label       // Label for income
-	entryIncome    *widget.Entry       // Input Entry to set income
-	labelStatus    *widget.Label       // Label for status
-	radioStatus    *widget.RadioGroup  // Input Radio buttons to get status
-	labelChildren  *widget.Label       // Label for children
-	selectChildren *widget.SelectEntry // Input Select to know how children
+	config              *config.Config      // Config to use correctly the program
+	user                *user.User          // User param to use program
+	themeName           string              // name of the theme for fyne theme (Dark or Light)
+	theme               themes.Theme        // Fyne theme for the application
+	app                 fyne.App            // Fyne application
+	window              fyne.Window         // Fyne window
+	language            Yaml                // Yaml struct with all language data
+	labelIncome         *widget.Label       // Label for income
+	entryIncome         *widget.Entry       // Input Entry to set income
+	labelStatus         *widget.Label       // Label for status
+	radioStatus         *widget.RadioGroup  // Input Radio buttons to get status
+	labelChildren       *widget.Label       // Label for children
+	selectChildren      *widget.SelectEntry // Input Select to know how children
+	labelTax            *widget.Label       // Label for tax
+	labelTaxValue       *widget.Label       // Label for tax value
+	labelRemainder      *widget.Label       // Label for remainder
+	labelRemainderValue *widget.Label       // Label for remainder value
+	labelShares         *widget.Label       // Label for shares
+	labelSharesValue    *widget.Label       // Label for shares value
 }
 
 // LanguageYaml Yaml struct to get language data
@@ -55,6 +62,9 @@ type Yaml struct {
 	Income       string       `yaml:"income"`
 	Status       string       `yaml:"status"`
 	Children     string       `yaml:"children"`
+	Tax          string       `yaml:"tax"`
+	Remainder    string       `yaml:"remainder"`
+	Share        string       `yaml:"share"`
 	SaveTax      string       `yaml:"save_tax"`
 	ThemeCode    string       `yaml:"theme"`
 	LanguageCode string       `yaml:"language"`
@@ -140,16 +150,39 @@ func (gui GUIMode) start() {
 	gui.labelChildren = widget.NewLabel(gui.language.Children)
 	childrenLayout := container.NewHBox(gui.labelChildren, container.New(layout.NewVBoxLayout(), gui.selectChildren))
 
+	// Layout tax results
+	gui.labelTax = widget.NewLabel(gui.language.Tax)
+	gui.labelTaxValue = widget.NewLabel("")
+	gui.labelRemainder = widget.NewLabel(gui.language.Remainder)
+	gui.labelRemainderValue = widget.NewLabel("")
+	gui.labelShares = widget.NewLabel(gui.language.Share)
+	gui.labelSharesValue = widget.NewLabel("")
+	taxResultLayout := container.New(layout.NewGridLayout(3),
+		gui.labelTax,
+		gui.labelTaxValue,
+		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
+
+		gui.labelShares,
+		gui.labelSharesValue,
+		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
+
+		gui.labelRemainder,
+		gui.labelRemainderValue,
+		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
+	)
 	// Layout button
 	button := widget.NewButton(gui.language.SaveTax, func() {
-		result := gui.calculate()
-		log.Printf("Result - %#v ", result)
+		gui.calculate()
+		log.Printf("Save Tax") // TODO debug // TODO language
 	})
 	launcherLayout := container.NewHBox(button)
 
-	form := container.New(layout.NewVBoxLayout(), incomeLayout, statusLayout, childrenLayout, launcherLayout)
+	formLayout := container.New(layout.NewVBoxLayout(), incomeLayout, statusLayout, childrenLayout, launcherLayout)
+	taxLayout := container.New(layout.NewVBoxLayout(), taxResultLayout, taxDetailLayout)
 
-	content := container.New(layout.NewGridLayout(2), form)
+	// separator := widget.NewSeparator()
+
+	content := container.New(layout.NewGridLayout(2), formLayout, taxLayout)
 
 	gui.window.SetContent(content)
 	gui.window.ShowAndRun()
@@ -327,16 +360,23 @@ func (gui *GUIMode) reload() {
 	gui.labelIncome.SetText(gui.language.Income)
 	gui.labelStatus.SetText(gui.language.Status)
 	gui.labelChildren.SetText(gui.language.Children)
+	gui.labelTax.SetText(gui.language.Children)
+	gui.labelRemainder.SetText(gui.language.Children)
+	gui.labelShares.SetText(gui.language.Children)
 	// TODO ajouter tous les elements impacter par le changement
 }
 
 // calculate get values of gui to calculate tax
-func (gui *GUIMode) calculate() tax.Result {
+func (gui *GUIMode) calculate() {
 	gui.user.Income = gui.getIncome()
 	gui.user.IsInCouple = gui.getStatus()
 	gui.user.Children = gui.getChildren()
 	result := tax.CalculateTax(gui.user, gui.config)
-	// log.Printf("Result - %#v ", result)
-	return result
-	// TODO insted of return set a new widget to show values in EAST part of window
+	log.Printf("Result - %#v ", result)
+
+	// Set data in tax layout
+	gui.labelTaxValue.SetText(utils.ConvertFloat64ToString(result.Tax))
+	gui.labelRemainderValue.SetText(utils.ConvertFloat64ToString(result.Remainder))
+	gui.labelSharesValue.SetText(utils.ConvertFloat64ToString(result.Shares))
+
 }
