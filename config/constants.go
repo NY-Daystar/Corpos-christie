@@ -10,3 +10,9 @@ const (
 	APP_AUTHOR  string = "Lucas Noga"                                   // Author of program
 	APP_LINK    string = "https://github.com/LucasNoga/corpos-christie" // Link of repository
 )
+
+const (
+	RESOURCES_PATH string = "resources/"          // Path to resources folder
+	LANGUAGES_PATH string = "resources/languages" // Path to languages folder
+	ASSETS_PATH    string = "resources/assets"    // Path to assets folder
+)

@@ -87,7 +87,7 @@ type LanguageYaml struct {
 	French  string `yaml:"french"`
 }
 
-// getThemes parse ThemeYaml struct to get value of each field
+// getThemes Parse ThemeYaml struct to get value of each field
 func (t ThemeYaml) getThemes() []string {
 	v := reflect.ValueOf(t)
 	themes := make([]string, v.NumField())
@@ -97,7 +97,7 @@ func (t ThemeYaml) getThemes() []string {
 	return themes
 }
 
-// getLanguages parse LanguagesXml struct to get value of each field
+// getLanguages Parse LanguagesXml struct to get value of each field
 func (l LanguageYaml) getLanguages() []string {
 	v := reflect.ValueOf(l)
 	languages := make([]string, v.NumField())
@@ -107,7 +107,7 @@ func (l LanguageYaml) getLanguages() []string {
 	return languages
 }
 
-// start launch core program in GUI Mode
+// start Launch core program in GUI Mode
 func (gui GUIMode) start() {
 	gui.app = app.New()
 	gui.window = gui.app.NewWindow(config.APP_NAME)
@@ -121,9 +121,8 @@ func (gui GUIMode) start() {
 	gui.setLanguage(language)
 
 	// Set Icon
-	var iconPath string = "./assets/logo.ico"
-	r, _ := fyne.LoadResourceFromPath(iconPath)
-	gui.window.SetIcon(r)
+	var icon fyne.Resource = gui.getIcon()
+	gui.window.SetIcon(icon)
 
 	// Size and Position
 	gui.window.Resize(fyne.NewSize(760, 480))
@@ -188,7 +187,7 @@ func (gui GUIMode) start() {
 	gui.window.ShowAndRun()
 }
 
-// SetMenu create mainMenu for window
+// SetMenu Create mainMenu for window
 func (gui *GUIMode) setMenu() *fyne.MainMenu {
 
 	selectTheme := widget.NewSelect(gui.language.Theme.getThemes(), func(val string) {
@@ -258,28 +257,28 @@ func (gui *GUIMode) setMenu() *fyne.MainMenu {
 	return fyne.NewMainMenu(fileMenu, helpMenu)
 }
 
-// setEntryIncome create widget entry for income
+// setEntryIncome Create widget entry for income
 func (gui *GUIMode) setEntryIncome() {
 	gui.entryIncome = widget.NewEntry()
 	gui.entryIncome.SetPlaceHolder("30000")
 	gui.entryIncome.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number") // TODO language
 }
 
-// setRadioStatus create widget radioGroup for marital status
+// setRadioStatus Create widget radioGroup for marital status
 func (gui *GUIMode) setRadioStatus() {
 	gui.radioStatus = widget.NewRadioGroup([]string{"Single", "Couple"}, nil) // TODO language
 	gui.radioStatus.SetSelected("Single")
 	gui.radioStatus.Horizontal = true
 }
 
-// setComboChildren create widget select for children
+// setComboChildren Create widget select for children
 func (gui *GUIMode) setSelectChildren() {
 	gui.selectChildren = widget.NewSelectEntry([]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"})
 	gui.selectChildren.SetText("0")
 	gui.selectChildren.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number") // TODO language
 }
 
-// setEvents set the events/trigger of gui widgets
+// setEvents Set the events/trigger of gui widgets
 func (gui *GUIMode) setEvents() {
 	gui.entryIncome.OnChanged = func(input string) {
 		gui.calculate()
@@ -293,7 +292,7 @@ func (gui *GUIMode) setEvents() {
 
 }
 
-// getIncome get value of widget entry
+// getIncome Get value of widget entry
 func (gui *GUIMode) getIncome() int {
 	intVal, err := strconv.Atoi(gui.entryIncome.Text)
 	if err != nil {
@@ -302,7 +301,7 @@ func (gui *GUIMode) getIncome() int {
 	return intVal
 }
 
-// getStatus get value of widget radioGroup
+// getStatus Get value of widget radioGroup
 func (gui *GUIMode) getStatus() bool {
 	return gui.radioStatus.Selected == "Couple" // TODO language ou mettre un id
 }
@@ -316,14 +315,23 @@ func (gui *GUIMode) getChildren() int {
 	return children
 }
 
-// getTheme get value of last theme selected
+// GetIcon Load icon file to show in window
+func (gui *GUIMode) getIcon() fyne.Resource {
+	var iconName string = "logo.ico"
+	var iconPath string = fmt.Sprintf("%s/%s", config.ASSETS_PATH, iconName)
+	icon, _ := fyne.LoadResourceFromPath(iconPath)
+	// TODO log debug to show icon loaded
+	return icon
+}
+
+// getTheme Get value of last theme selected
 func (gui *GUIMode) getTheme() string {
 	// TODO get value from .setting file
 	// TODO log debug to show change theme
 	return "Dark"
 }
 
-// setTheme change Theme of the application
+// setTheme Change Theme of the application
 func (gui *GUIMode) setTheme(theme string) {
 	// TODO log debug to show change theme
 	gui.themeName = theme
@@ -335,18 +343,19 @@ func (gui *GUIMode) setTheme(theme string) {
 	gui.app.Settings().SetTheme(gui.theme)
 }
 
-// getLanguage get value of last language selected (fr, en)
+// getLanguage Get value of last language selected (fr, en)
 func (gui *GUIMode) getLanguage() string {
 	// TODO get value from .setting file
 	// TODO log debug to show change language
 	return "en"
 }
 
-// setLanguage change language of the application
+// setLanguage Change language of the application
 func (gui *GUIMode) setLanguage(code string) {
 	var language Yaml = Yaml{code: code}
-	var languageFile string = fmt.Sprintf("./core/languages/%s.yaml", language.code)
+	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, language.code)
 	yamlFile, _ := ioutil.ReadFile(languageFile)
+
 	err := yaml.Unmarshal(yamlFile, &gui.language)
 	if err != nil {
 		log.Fatalf("Unmarshal language file %s: %v", languageFile, err)
@@ -360,13 +369,12 @@ func (gui *GUIMode) reload() {
 	gui.labelIncome.SetText(gui.language.Income)
 	gui.labelStatus.SetText(gui.language.Status)
 	gui.labelChildren.SetText(gui.language.Children)
-	gui.labelTax.SetText(gui.language.Children)
-	gui.labelRemainder.SetText(gui.language.Children)
-	gui.labelShares.SetText(gui.language.Children)
-	// TODO ajouter tous les elements impacter par le changement
+	gui.labelTax.SetText(gui.language.Tax)
+	gui.labelRemainder.SetText(gui.language.Remainder)
+	gui.labelShares.SetText(gui.language.Share)
 }
 
-// calculate get values of gui to calculate tax
+// calculate Get values of gui to calculate tax
 func (gui *GUIMode) calculate() {
 	gui.user.Income = gui.getIncome()
 	gui.user.IsInCouple = gui.getStatus()
@@ -374,9 +382,13 @@ func (gui *GUIMode) calculate() {
 	result := tax.CalculateTax(gui.user, gui.config)
 	log.Printf("Result - %#v ", result)
 
+	var taxValue string = utils.ConvertInt64ToString(int64(result.Tax))
+	var remainderValue string = utils.ConvertInt64ToString(int64(result.Remainder))
+	var shareValue string = utils.ConvertInt64ToString(int64(result.Shares))
+
 	// Set data in tax layout
-	gui.labelTaxValue.SetText(utils.ConvertFloat64ToString(result.Tax))
-	gui.labelRemainderValue.SetText(utils.ConvertFloat64ToString(result.Remainder))
-	gui.labelSharesValue.SetText(utils.ConvertFloat64ToString(result.Shares))
+	gui.labelTaxValue.SetText(taxValue)
+	gui.labelRemainderValue.SetText(remainderValue)
+	gui.labelSharesValue.SetText(shareValue)
 
 }
