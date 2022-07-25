@@ -55,11 +55,11 @@ build-mac:
 	@echo "Build for MacOS"
 	@GOOS=darwin GOARCH=amd64 go build -o build/mac-${APP_NAME}
 
-# Run program
+# Run app
 run:
 	go run .
 
-# Run program in console mode
+# Run app in console
 run-console:
 	go run . --console
 

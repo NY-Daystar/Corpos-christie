@@ -7,72 +7,143 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project releases
 
-## [1.1.0] - 2022-07-09 - 2022 update
+## 2.0.0 - 25 July 2022 - GUI
 
-> Add: Tax metrics for 2022  
-> Add: Icon for windows executable  
-> Update: `Makefile` and `build.sh` script  
-> Update: Golang version from `v1.16.4` to `v1.18.3`  
-> Fix: Shares counter for `isolated parent`  
-> Remove: `config.json` file
+### Added
 
-## [1.0.0] - 2021-07-10 - Public version
+-   Add First Widgets of GUI
+-   Add Dark and light theme
+-   Add Languages in GUI for `en` and `fr`
+-   Add `about` options in console
 
-> Update: Split Execution mode `GUI` & `Console`  
-> Update: Change `Parts` field into `User` struct to `Shares`  
-> Fix: Method `GetShares` get shares of the user  
-> Fix: Method to read data from console  
-> Add: Docker features  
-> Add: Go documentation
-> Add: Tax details such as income and year of tax metrics
+### Changed
 
-## [0.0.9] - 2021-07-04 - Calculate tax v3
+-   Rename `build.sh` to `package.sh` with all folowing (Readme, Makefile)
+-   Reorganize `gui` package
 
-> Add: reverse tax calculator  
-> Add: Command `show_tax_year_list`  
-> Add: Command `show_tax_year_used`  
-> Add: Command `select_tax_year`  
-> Add: Tax metrics for 2019 and 2020  
-> Update: Change `Percentage` field to `Rate` in `Tranche` struct  
-> Update: Change type of `Rate` float to string
+## 1.1.0 - 09 July 2022 - 2022 update
 
-## [0.0.8] - 2021-07-03 - Refactoring modules
+### Added
 
-> Add: `Makefile` with bunch commands  
-> Add: index parameter for each commands  
-> Update: Simplify entrypoint `main.go`  
-> Update: `README` documentation  
-> Fix: Modules `core`, `tax`, `user`, `config`, `utils`, `colors`
+-   Add tax metrics for 2022
+-   Add icon for windows executable
 
-## [0.0.7] - 2021-06-29 - Restructure project
+### Changed
 
-> Fix: Rename package `core` to `tax`  
-> Fix: Change config structure and add tag fiels in config struct  
-> Del: Remove struct.go file and add struct into package file
+-   Update `Makefile` and `build.sh` script
+-   Update Golang version from `v1.16.4` to `v1.18.3`
 
-## [0.0.6] - 2021-06-28 - Restructure project
+# Fixed
 
-> Add: LICENSE.md file (GPL-3.0 License)  
-> Update: Change module name  
-> Fix: Restructure folders  
-> Fix: Update Readme
+-   Fix Shares counter for `isolated parent`
 
-## [0.0.5] - 2021-06-26 - table tax tranches
+### Removed
 
-> Add: table to get tax tranches
+-   Remove `config.json` file
 
-## [0.0.4] - 2021-06-25 - Calculate tax v2
+## 1.0.0 - 10 July 2021 - Public version
 
-> Add: new process to integrate couple, children to process part and including them to the tax process
+### Featured
 
-## [0.0.3] - 2021-06-23 - Fix
+-   Create Docker images and features
+-   Create Go documentation
 
-> Add: Testing script for config and tax modules  
-> Fix: Config doesn't exist
+### Added
 
-## [0.0.2] - 2021-06-22 - Calculate tax v1
+-   Add tax details such as income and year of tax metrics
 
-> Add: Configuration management
-> Add: Process to calculate tax from income
+### Changed
 
-## [0.0.1] - 2021-06-21 - Init project
+-   Split Execution mode `GUI` & `Console`
+-   Change `Parts` field into `User` struct to `Shares`
+
+### Fixed
+
+-   Fix method `GetShares` get shares of the user
+-   Fix method to read data from console
+
+## 0.0.9 - 04 July 2021 - Calculate tax v3
+
+### Featured
+
+-   reverse tax calculator
+
+### Added
+
+-   Add command `show_tax_year_list`
+-   Add command `show_tax_year_used`
+-   Add command `select_tax_year`
+-   Add tax metrics for 2019 and 2020
+
+### Changed
+
+-   Change `Percentage` field to `Rate` in `Tranche` struct
+-   Change type of `Rate` float to string
+
+## 0.0.8 - 03 July 2021 - Refactoring modules
+
+### Added
+
+-   Create `Makefile` with bunch of commands
+-   Set an index parameter for each commands
+
+### Changed
+
+-   Simplify entrypoint `main.go`
+-   Update `README` documentation
+
+### Fixed
+
+## 0.0.7 - 29 June 2021 - Restructure project
+
+### Changed
+
+-   Rename package `core` to `tax`
+-   Change config structure and add tag fiels in config struct
+
+### Removed
+
+-   Remove `struct.go` file and add struct into package file
+
+## 0.0.6 - 28 June 2021 - Restructure project
+
+### Added
+
+-   `LICENSE.md` file (GPL-3.0 License)
+
+### Changed
+
+-   Reorganize folders
+-   Change module's name
+-   Update Readme
+
+## 0.0.5 - 26 June 2021 - table tax tranches
+
+### Added
+
+-   Create table structure to get tax tranches
+
+## 0.0.4 - 25 June 2021 - Calculate tax v2
+
+### Added
+
+-   New process to integrate couple, children to process part and including them to the tax process
+
+## 0.0.3 - 23 June 2021 - Fix
+
+### Added
+
+-   Testing scripts for config and tax modules
+
+### Fixed
+
+-   Set handler if config doesn't exist
+
+## 0.0.2 - 22 June 2021 - Calculate tax v1
+
+### Added
+
+-   Configuration management
+-   Process to calculate tax from income
+
+## 0.0.1 - 21 June 2021 - Init project

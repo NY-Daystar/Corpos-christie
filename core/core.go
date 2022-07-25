@@ -1,49 +1,41 @@
 // Copyright 2016 The corpos-christie author
 // Licensed under GPLv3.
 
-// Package core define the mode of the program console or gui
+// Package core defines core functions to run GUI app or Console app
 package core
 
 import (
 	"os"
 
 	"github.com/LucasNoga/corpos-christie/config"
+	"github.com/LucasNoga/corpos-christie/gui"
 	"github.com/LucasNoga/corpos-christie/user"
 )
 
-// Mode define the program mode (Console or GUI)
-type Mode interface {
-	start() // Start program in mode GUI or console
-}
-
-// Enum for mode
+// Enum for launched mode
 const (
-	GUI     string = "GUI"
+	GUI     string = "gui"
 	CONSOLE string = "console"
 )
 
 // Start Core program
 // Get Options passed on program and launch appropriate system
 func Start(cfg *config.Config, user *user.User) {
-	var mode Mode
+	var appSelected string = selectMode(os.Args)
 
-	var modeSelected string = selectMode(os.Args)
-
-	switch m := modeSelected; m {
-	case "GUI":
-		mode = GUIMode{config: cfg, user: user}
-	case "console":
-		mode = ConsoleMode{config: cfg, user: user}
+	// Launch program (Console or GUI)
+	switch m := appSelected; m {
+	case GUI:
+		gui.GUI{Config: cfg, User: user}.Start()
+	case CONSOLE:
+		Console{Config: cfg, User: user}.Start()
 	default:
-		mode = GUIMode{config: cfg, user: user}
-
+		gui.GUI{Config: cfg, User: user}.Start()
 	}
-	// launch program
-	mode.start()
 }
 
 // selectMode Check args passed in launch
-// returns which mode to launch between GUI or console
+// returns which mode app to launch between GUI or console
 func selectMode(args []string) string {
 	// if no args specified launch GUI
 	if len(args) < 2 {

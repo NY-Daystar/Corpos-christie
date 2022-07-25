@@ -12,7 +12,7 @@ type DarkTheme struct{}
 func (DarkTheme) Color(c fyne.ThemeColorName, v fyne.ThemeVariant) color.Color {
 	switch c {
 	case theme.ColorNameBackground:
-		return color.NRGBA{R: 0x30, G: 0x30, B: 0x30, A: 0xff}
+		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
 	case theme.ColorNameButton:
 		return color.Alpha16{A: 0x0}
 	case theme.ColorNameDisabledButton:

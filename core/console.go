@@ -1,7 +1,6 @@
 // Copyright 2016 The corpos-christie author
 // Licensed under GPLv3.
 
-// Package core define the mode of the program console or gui
 package core
 
 import (
@@ -17,21 +16,21 @@ import (
 	"github.com/LucasNoga/corpos-christie/user"
 )
 
-// ConsoleMode represents the program parameters to launch in console mode the application
-type ConsoleMode struct {
-	config *config.Config // Config to use correctly the program
-	user   *user.User     // User param to use program
+// Console represents the console application
+type Console struct {
+	Config *config.Config // Config to use correctly the program
+	User   *user.User     // User param to use program
 }
 
-// Command define a command to use in console mode
+// Command define a command to use in console app
 type Command struct {
-	index       int                                       // number to type to exec command
+	index       int                                       // Number to type to exec command
 	name        string                                    // Name of the command
 	description string                                    // Description of the command
 	exec        func(cfg *config.Config, user *user.User) // Function to execute command
 }
 
-// OPTIONS is the list of options usable in console mode
+// OPTIONS is the list of options usable in console app
 var OPTIONS []Command
 
 // Init OPTIONS variables
@@ -88,10 +87,10 @@ func init() {
 	}
 }
 
-// start launch core program in console mode
-func (mode ConsoleMode) start() {
-	fmt.Printf("Project: %s\n", colors.Yellow(mode.config.Name))
-	fmt.Printf("Version: %s\b", colors.Yellow(mode.config.Version))
+// Start launch application in console
+func (app Console) Start() {
+	fmt.Printf("Project: %s\n", colors.Yellow(app.Config.Name))
+	fmt.Printf("Version: %s\b", colors.Yellow(app.Config.Version))
 
 	// Loop so start program until user wants to exit
 	for {
@@ -109,7 +108,7 @@ func (mode ConsoleMode) start() {
 		}
 
 		// If option is valid we execute the associate command
-		cmd.exec(mode.config, mode.user)
+		cmd.exec(app.Config, app.User)
 		fmt.Println("----------------------------------------")
 
 		time.Sleep(700 * time.Millisecond)
@@ -170,8 +169,8 @@ func verifyOption(optionEntered string) (bool, Command) {
 	return false, Command{}
 }
 
-// chooseOption ask to the user which command he wants to execute in console mode
-// returns string seized in console mode by the user (define the command name)
+// chooseOption ask to the user which command he wants to execute in console
+// returns string seized in console by the user (define the command name)
 func chooseOption() string {
 	fmt.Print(colors.Green("Type an option > "))
 	var input string = utils.ReadValue()

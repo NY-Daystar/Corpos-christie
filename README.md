@@ -91,7 +91,7 @@ Import module for an other project
 go get github.com/LucasNoga/corpos-christie
 ```
 
-Launch console mode
+Launch console application
 
 ```bash
 $ make run-console
