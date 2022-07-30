@@ -31,8 +31,6 @@ func (gui *GUI) setLayouts() {
 	gui.Window.SetContent(content)
 }
 
-// TODO mettre toutes ces methodes dans un fichier layout.go toutes les methodes de layout
-
 // createLayoutForm Setup left side of window
 func (gui *GUI) createLayoutForm() *fyne.Container {
 	return container.New(layout.NewVBoxLayout(),
