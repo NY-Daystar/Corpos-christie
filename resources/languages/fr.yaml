@@ -1,9 +1,9 @@
 themes:
-  dark: Sombre
-  light: Clair
+    dark: Sombre
+    light: Clair
 languages:
-  french: Francais
-  english: Anglais
+    french: Francais
+    english: Anglais
 file: Fichier
 settings: Paramètres
 income: Entrer vos revenus
@@ -15,6 +15,7 @@ share: Parts
 save_tax: Sauvegarder
 language: Langues
 theme: Themes
+currency: Devise
 help: Aide
 about: A propos
 author: Auteur

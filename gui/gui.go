@@ -16,6 +16,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/LucasNoga/corpos-christie/config"
@@ -36,6 +37,8 @@ type GUI struct {
 	App                 fyne.App            // Fyne application
 	Window              fyne.Window         // Fyne window
 	Language            settings.Yaml       // Yaml struct with all language data
+	Currency            binding.String      // Currency to display
+	labelCurrency       *widget.Label       // Label linked to currency
 	labelIncome         *widget.Label       // Label for income
 	entryIncome         *widget.Entry       // Input Entry to set income
 	labelStatus         *widget.Label       // Label for status
@@ -51,13 +54,6 @@ type GUI struct {
 	labelsTrancheTaxes  []*widget.Label     // Liste of tranches tax label
 }
 
-// TODO gerer les selecteurs de langues et de theme en fonction de la langue
-
-// TODO faire un gui_test.go
-// - Tester l'icon voir si on a accès au fichier et si il existe
-// - Tester les languages voir si on a des valeurs ou pas
-// - Tester les themes voir si on a des valeurs ou pas
-
 // Start Launch GUI application
 func (gui GUI) Start() {
 	gui.App = app.New()
@@ -71,11 +67,16 @@ func (gui GUI) Start() {
 
 	// Set Theme
 	var theme string = settings.GetTheme()
-	gui.SetTheme(theme)
+	gui.setTheme(theme)
 
 	// Set Language
 	var language string = settings.GetLanguage()
-	gui.SetLanguage(language)
+	gui.setLanguage(language)
+
+	// Set Currency
+	var currency string = settings.GetCurrency()
+	gui.Currency = binding.NewString()
+	gui.setCurrency(currency)
 
 	// Set Icon
 	var icon fyne.Resource = settings.GetIcon()
@@ -92,8 +93,8 @@ func (gui GUI) Start() {
 	gui.Window.ShowAndRun()
 }
 
-// SetTheme Change Theme of the application
-func (gui *GUI) SetTheme(theme string) {
+// SetTheme change Theme of the application
+func (gui *GUI) setTheme(theme string) {
 	log.Printf("Debug theme: %+v", theme) // TODO log debug to show change theme
 	var t themes.Theme
 	if theme == themes.DARK {
@@ -104,8 +105,9 @@ func (gui *GUI) SetTheme(theme string) {
 	gui.App.Settings().SetTheme(t)
 }
 
-// SetLanguage Change language of the application
-func (gui *GUI) SetLanguage(code string) {
+// SetLanguage change language of the application
+func (gui *GUI) setLanguage(code string) {
+	log.Printf("Debug languages: %+v", code) // TODO log debug to show change language
 	var language settings.Yaml = settings.Yaml{Code: code}
 	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, language.Code)
 	yamlFile, _ := ioutil.ReadFile(languageFile)
@@ -116,6 +118,13 @@ func (gui *GUI) SetLanguage(code string) {
 	}
 
 	log.Printf("Debug languages: %+v", language) // TODO log debug to show change language
+}
+
+// setCurrency change language of the application
+func (gui *GUI) setCurrency(currency string) {
+	log.Printf("Debug currency: %+v", currency) // TODO log debug to show change currency
+	gui.Currency.Set(currency)
+	gui.labelCurrency = widget.NewLabel(currency)
 }
 
 // setEvents Set the events/trigger of gui widgets
@@ -170,6 +179,7 @@ func (gui *GUI) calculate() {
 	gui.User.Income = gui.getIncome()
 	gui.User.IsInCouple = gui.getStatus()
 	gui.User.Children = gui.getChildren()
+
 	result := tax.CalculateTax(gui.User, gui.Config)
 	log.Printf("Result - %#v ", result) // TODO log debug
 
@@ -183,10 +193,11 @@ func (gui *GUI) calculate() {
 	gui.labelSharesValue.SetText(shareValue)
 
 	// Set Tax details
+
 	var trancheNumber int = 5 // TOODO a configurer via une functioin ou en attriibut de la gui
 	for i := 0; i < trancheNumber; i++ {
 		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[i].Tax))
-		gui.labelsTrancheTaxes[i].SetText(taxTranche + " €") // TODO devise
+		gui.labelsTrancheTaxes[i].SetText(taxTranche + " " + "€") // TODO check devise
 	}
 }
 
@@ -214,12 +225,17 @@ func (g *GUI) setMenu() *fyne.MainMenu {
 		}
 
 		language := getLanguage()
+		g.setLanguage(language)
 
-		g.SetLanguage(language)
 		g.Reload()
 		// TODO save data in .settings
 
 	}
+	selectCurrency := widget.NewSelect(settings.GetCurrencies(), func(currency string) {
+		g.setCurrency(currency)
+		g.Reload()
+		// TODO save data in .settings
+	})
 
 	fileMenu := fyne.NewMenu(g.Language.File,
 		fyne.NewMenuItem(g.Language.Settings, func() {
@@ -232,6 +248,11 @@ func (g *GUI) setMenu() *fyne.MainMenu {
 				container.NewHBox(
 					widget.NewLabel(g.Language.LanguageCode),
 					selectLanguage,
+				),
+				widget.NewSeparator(),
+				container.NewHBox(
+					widget.NewLabel(g.Language.Currency),
+					selectCurrency,
 				),
 			), g.Window)
 		}),

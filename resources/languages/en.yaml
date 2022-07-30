@@ -1,9 +1,9 @@
 themes:
-  dark: Dark
-  light: Light
+    dark: Dark
+    light: Light
 languages:
-  french: French
-  english: English
+    french: French
+    english: English
 file: File
 settings: Settings
 income: Enter your income
@@ -15,6 +15,7 @@ share: Shares
 save_tax: Save
 language: Languages
 theme: Themes
+currency: Currencies
 help: Help
 about: About
 author: Author

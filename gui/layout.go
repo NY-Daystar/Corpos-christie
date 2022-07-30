@@ -110,15 +110,15 @@ func (gui *GUI) createLayoutTaxResult() *fyne.Container {
 		layout.NewGridLayout(3),
 		gui.labelTax,
 		gui.labelTaxValue,
-		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
+		widget.NewLabelWithData(gui.Currency),
 
 		gui.labelShares,
 		gui.labelSharesValue,
-		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
+		widget.NewLabelWithData(gui.Currency),
 
 		gui.labelRemainder,
 		gui.labelRemainderValue,
-		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
+		widget.NewLabelWithData(gui.Currency),
 	)
 
 }

@@ -28,6 +28,7 @@ type Yaml struct {
 	SaveTax      string       `yaml:"save_tax"`
 	ThemeCode    string       `yaml:"theme"`
 	LanguageCode string       `yaml:"language"`
+	Currency     string       `yaml:"currency"`
 	Help         string       `yaml:"help"`
 	About        string       `yaml:"about"`
 	Author       string       `yaml:"author"`
