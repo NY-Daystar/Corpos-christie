@@ -45,13 +45,16 @@ type GUI struct {
 	radioStatus         *widget.RadioGroup  // Input Radio buttons to get status
 	labelChildren       *widget.Label       // Label for children
 	selectChildren      *widget.SelectEntry // Input Select to know how children
+	buttonSave          *widget.Button      // Label for save button
 	labelTax            *widget.Label       // Label for tax
 	labelTaxValue       *widget.Label       // Label for tax value
 	labelRemainder      *widget.Label       // Label for remainder
 	labelRemainderValue *widget.Label       // Label for remainder value
 	labelShares         *widget.Label       // Label for shares
 	labelSharesValue    *widget.Label       // Label for shares value
-	labelsTrancheTaxes  []*widget.Label     // Liste of tranches tax label
+	labelsTrancheTaxes  []*widget.Label     // List of tranches tax label
+	labelsAbout         []binding.String    // List of label in about modal
+	labelsTaxHeaders    []binding.String    // List of label for tax details headers
 }
 
 // Start Launch GUI application
@@ -152,7 +155,7 @@ func (gui *GUI) getIncome() int {
 
 // getStatus Get value of widget radioGroup
 func (gui *GUI) getStatus() bool {
-	return gui.radioStatus.Selected == "Couple" // TODO language ou mettre un id
+	return gui.radioStatus.Selected == "Couple"
 }
 
 // getChildren get value of widget select
@@ -166,12 +169,16 @@ func (gui *GUI) getChildren() int {
 
 // reload Refresh widget who needed specially when language changed
 func (gui *GUI) Reload() {
-	gui.labelIncome.SetText(gui.Language.Income)
-	gui.labelStatus.SetText(gui.Language.Status)
-	gui.labelChildren.SetText(gui.Language.Children)
-	gui.labelTax.SetText(gui.Language.Tax)
-	gui.labelRemainder.SetText(gui.Language.Remainder)
-	gui.labelShares.SetText(gui.Language.Share)
+
+	// Reload about content
+	for i, text := range gui.Language.GetAbouts() {
+		gui.labelsAbout[i].Set(text)
+	}
+
+	// Reload header tax details
+	for i, text := range gui.Language.GetTaxHeaders() {
+		gui.labelsTaxHeaders[i].Set(text)
+	}
 }
 
 // calculate Get values of gui to calculate tax
@@ -201,82 +208,123 @@ func (gui *GUI) calculate() {
 	}
 }
 
-// setMenu Create mainMenu for window
-// TODO a split in several functions
-func (g *GUI) setMenu() *fyne.MainMenu {
-	selectTheme := widget.NewSelect(g.Language.Theme.GetThemes(), func(val string) {
-		g.SetTheme(val)
+// createMenu create mainMenu for window
+func (gui *GUI) setMenu() *fyne.MainMenu {
+	return fyne.NewMainMenu(
+		gui.createFileMenu(),
+		gui.createHelpMenu(),
+	)
+}
+
+// createFileMenu create file item in toolbar to handle app settings
+func (gui *GUI) createFileMenu() *fyne.Menu {
+	fileMenu := fyne.NewMenu(gui.Language.File,
+		fyne.NewMenuItem(gui.Language.Settings, func() {
+			dialog.ShowCustom(gui.Language.Settings, gui.Language.Close,
+				container.NewVBox(
+					gui.createSelectTheme(),
+					widget.NewSeparator(),
+					gui.createSelectLanguage(),
+					widget.NewSeparator(),
+					gui.createSelectCurrency(),
+				), gui.Window)
+		}),
+		fyne.NewMenuItem(gui.Language.Quit, func() { gui.App.Quit() }),
+	)
+	return fileMenu
+}
+
+// createSelectTheme create select to change theme
+func (gui *GUI) createSelectTheme() *fyne.Container {
+	selectTheme := widget.NewSelect(gui.Language.GetThemes(), func(val string) {
+		gui.setTheme(val)
 		// TODO save data in .settings
 	})
-	selectTheme.SetSelected(g.ThemeName)
+	selectTheme.SetSelected(gui.ThemeName)
+	return container.NewHBox(
+		widget.NewLabel(gui.Language.ThemeCode),
+		selectTheme,
+	)
+}
 
-	selectLanguage := widget.NewSelect(g.Language.Languages.GetLanguages(), nil)
+// createSelectLanguage create select to change language
+func (gui *GUI) createSelectLanguage() *fyne.Container {
+	selectLanguage := widget.NewSelect(gui.Language.GetLanguages(), nil)
 	selectLanguage.OnChanged = func(s string) {
 		index := selectLanguage.SelectedIndex()
 		var getLanguage = func() string {
 			switch index {
 			case 0:
-				return "en" // TODO enum
+				return settings.ENGLISH
 			case 1:
-				return "fr"
+				return settings.FRENCH
 			}
 			// TODO error log
-			return "fr"
+			return settings.FRENCH
 		}
 
 		language := getLanguage()
-		g.setLanguage(language)
+		gui.setLanguage(language)
 
-		g.Reload()
+		gui.Reload()
 		// TODO save data in .settings
-
 	}
+	return container.NewHBox(
+		widget.NewLabel(gui.Language.LanguageCode),
+		selectLanguage,
+	)
+}
+
+// createSelectCurrency create select to change currency
+func (gui *GUI) createSelectCurrency() *fyne.Container {
 	selectCurrency := widget.NewSelect(settings.GetCurrencies(), func(currency string) {
-		g.setCurrency(currency)
-		g.Reload()
+		gui.setCurrency(currency)
+		gui.Reload()
 		// TODO save data in .settings
 	})
-
-	fileMenu := fyne.NewMenu(g.Language.File,
-		fyne.NewMenuItem(g.Language.Settings, func() {
-			dialog.ShowCustom(g.Language.Settings, g.Language.Close, container.NewVBox(
-				container.NewHBox(
-					widget.NewLabel(g.Language.ThemeCode),
-					selectTheme,
-				),
-				widget.NewSeparator(),
-				container.NewHBox(
-					widget.NewLabel(g.Language.LanguageCode),
-					selectLanguage,
-				),
-				widget.NewSeparator(),
-				container.NewHBox(
-					widget.NewLabel(g.Language.Currency),
-					selectCurrency,
-				),
-			), g.Window)
-		}),
-		fyne.NewMenuItem(g.Language.Quit, func() { g.App.Quit() }),
+	return container.NewHBox(
+		widget.NewLabel(gui.Language.Currency),
+		selectCurrency,
 	)
+}
 
+// createHelpMenu create help item in toolbar to show about app
+func (gui *GUI) createHelpMenu() *fyne.Menu {
 	url, _ := url.Parse(config.APP_LINK)
+	for _, text := range gui.Language.GetAbouts() {
+		var bindString binding.String = binding.NewString()
+		bindString.Set(text)
+		gui.labelsAbout = append(gui.labelsAbout, bindString)
+	}
 
-	helpMenu := fyne.NewMenu(g.Language.Help,
-		fyne.NewMenuItem(g.Language.About, func() {
-			dialog.ShowCustom(g.Language.About, g.Language.Close, container.NewVBox(
-				widget.NewLabel(fmt.Sprintf("Welcome to %s, a Desktop app to calculate your taxes in France.", config.APP_NAME)), // TODO language
-				container.NewHBox(
-					widget.NewLabel("This"),                    // TODO language
-					widget.NewHyperlink("GitHub Project", url), // TODO language
-					widget.NewLabel("is open-source."),         // TODO language
-				),
-				widget.NewLabel("Developped in Go with Fyne."),
-				container.NewHBox(
-					widget.NewLabel("Version:"),
-					canvas.NewText(fmt.Sprintf("v%s", config.APP_VERSION), color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
-				),
-				widget.NewLabel(fmt.Sprintf("%s: %s", g.Language.Author, config.APP_AUTHOR)),
-			), g.Window)
+	// Setup layouts with data
+	firstLine := container.NewHBox(
+		widget.NewLabelWithData(gui.labelsAbout[0]),
+		widget.NewLabel(config.APP_NAME),
+		widget.NewLabelWithData(gui.labelsAbout[1]),
+	)
+	secondLine := container.NewHBox(
+		widget.NewLabelWithData(gui.labelsAbout[2]),
+		widget.NewHyperlink("GitHub Project", url),
+		widget.NewLabelWithData(gui.labelsAbout[3]),
+	)
+	thirdLine := widget.NewLabelWithData(gui.labelsAbout[4])
+	fourthLine := container.NewHBox(
+		widget.NewLabel("Version:"),
+		canvas.NewText(fmt.Sprintf("v%s", config.APP_VERSION), color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
+	)
+	fifthLine := widget.NewLabel(fmt.Sprintf("%s: %s", gui.Language.Author, config.APP_AUTHOR))
+
+	helpMenu := fyne.NewMenu(gui.Language.Help,
+		fyne.NewMenuItem(gui.Language.About, func() {
+			dialog.ShowCustom(gui.Language.About, gui.Language.Close,
+				container.NewVBox(
+					firstLine,
+					secondLine,
+					thirdLine,
+					fourthLine,
+					fifthLine,
+				), gui.Window)
 		}))
-	return fyne.NewMainMenu(fileMenu, helpMenu)
+	return helpMenu
 }

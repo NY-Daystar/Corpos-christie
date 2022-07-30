@@ -4,6 +4,18 @@ themes:
 languages:
     french: Francais
     english: Anglais
+abouts:
+    text_1: "Bienvenue sur"
+    text_2: "une application de bureau pour estimer vos impôts en France"
+    text_3: "Ce"
+    text_4: "est open-source"
+    text_5: "Développé en Go avec le framework Fyne."
+tax_headers:
+    header_1: "TRANCHE"
+    header_2: "MIN"
+    header_3: "MAX"
+    header_4: "RATIO"
+    header_5: "IMPÔT"
 file: Fichier
 settings: Paramètres
 income: Entrer vos revenus
@@ -12,7 +24,7 @@ children: Saisissez le nombre d'enfants
 tax: Impôts
 remainder: Restant
 share: Parts
-save_tax: Sauvegarder
+save: Sauvegarder
 language: Langues
 theme: Themes
 currency: Devise

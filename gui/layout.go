@@ -37,15 +37,7 @@ func (gui *GUI) createLayoutForm() *fyne.Container {
 		gui.createLayoutIncome(),
 		gui.createLayoutStatus(),
 		gui.createLayoutChildren(),
-		container.NewHBox(
-			widget.NewButton(
-				gui.Language.SaveTax,
-				func() {
-					gui.calculate()
-					log.Printf("Save Tax") // TODO debug // TODO language
-				},
-			),
-		),
+		gui.createLayoutSave(),
 	)
 }
 
@@ -75,7 +67,6 @@ func (gui *GUI) createLayoutStatus() *fyne.Container {
 }
 
 // createLayoutChildren Setup layouts and widget for income layout
-// returrns
 func (gui *GUI) createLayoutChildren() *fyne.Container {
 	gui.selectChildren = widgets.CreateChildrenSelect()
 	gui.labelChildren = widget.NewLabel(gui.Language.Children)
@@ -86,6 +77,15 @@ func (gui *GUI) createLayoutChildren() *fyne.Container {
 			gui.selectChildren,
 		),
 	)
+}
+
+// createLayoutSave Setup layouts and widget for save button layout
+func (gui *GUI) createLayoutSave() *fyne.Container {
+	gui.buttonSave = widget.NewButton(gui.Language.Save, func() {
+		gui.calculate()
+		log.Printf("Save Tax") // TODO log debug save
+	})
+	return container.NewHBox(gui.buttonSave)
 }
 
 // createLayoutTax Setup right side of window
@@ -128,7 +128,7 @@ func (gui *GUI) createLayoutTaxDetails() *fyne.Container {
 	var trancheNumber int = 5
 	gui.labelsTrancheTaxes = widgets.CreateTrancheTaxesLabels(trancheNumber)
 
-	var headers []string = []string{"TRANCHE", "MIN", "MAX", "RATE", "TAX"} // TODO language
+	var headers []string = []string{"TRANCHE", "MIN", "MAX", "RATE", "TAX"} // TODO language taxDetails
 	grid := container.New(layout.NewGridLayout(len(headers)))
 
 	// Headers Rows
