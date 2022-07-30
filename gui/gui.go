@@ -6,12 +6,15 @@ package gui
 
 import (
 	"fmt"
+	"image/color"
 	"io/ioutil"
 	"log"
+	"math"
 	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
@@ -46,6 +49,7 @@ type GUI struct {
 	labelRemainderValue *widget.Label       // Label for remainder value
 	labelShares         *widget.Label       // Label for shares
 	labelSharesValue    *widget.Label       // Label for shares value
+	labelsTrancheTaxes  []*widget.Label     // Liste of tranches tax label
 }
 
 // TODO gerer les selecteurs de langues et de theme en fonction de la langue
@@ -60,6 +64,12 @@ func (gui GUI) Start() {
 	gui.App = app.New()
 	gui.Window = gui.App.NewWindow(config.APP_NAME)
 
+	// Size and Position
+	const WIDTH = 1100
+	const HEIGHT = 540
+	gui.Window.Resize(fyne.NewSize(WIDTH, HEIGHT))
+	gui.Window.CenterOnScreen()
+
 	// Set Theme
 	var theme string = settings.GetTheme()
 	gui.SetTheme(theme)
@@ -72,96 +82,20 @@ func (gui GUI) Start() {
 	var icon fyne.Resource = settings.GetIcon()
 	gui.Window.SetIcon(icon)
 
-	// Size and Position
-	gui.Window.Resize(fyne.NewSize(760, 480))
-	gui.Window.CenterOnScreen()
-
 	// Set menu
 	var menu *fyne.MainMenu = gui.SetMenu()
 	gui.Window.SetMainMenu(menu)
 
-	gui.entryIncome = widgets.CreateIncomeEntry()
-	gui.radioStatus = widgets.CreateStatusRadio()
-	gui.selectChildren = widgets.CreateChildrenSelect()
-
-	// Handle Events
+	// Handle Events and widgets
+	gui.setLayouts()
 	gui.setEvents()
 
-	// Layout income
-	gui.labelIncome = widget.NewLabel(gui.Language.Income)
-	incomeLayout := container.New(layout.NewFormLayout(), gui.labelIncome, gui.entryIncome)
-
-	// Layout status
-	gui.labelStatus = widget.NewLabel(gui.Language.Status)
-	statusLayout := container.NewHBox(gui.labelStatus, container.New(layout.NewVBoxLayout(), gui.radioStatus))
-
-	// Layout children
-	gui.labelChildren = widget.NewLabel(gui.Language.Children)
-	childrenLayout := container.NewHBox(gui.labelChildren, container.New(layout.NewVBoxLayout(), gui.selectChildren))
-
-	// Layout tax results
-	gui.labelTax = widget.NewLabel(gui.Language.Tax)
-	gui.labelTaxValue = widget.NewLabel("")
-	gui.labelRemainder = widget.NewLabel(gui.Language.Remainder)
-	gui.labelRemainderValue = widget.NewLabel("")
-	gui.labelShares = widget.NewLabel(gui.Language.Share)
-	gui.labelSharesValue = widget.NewLabel("")
-	taxResultLayout := container.New(layout.NewGridLayout(3),
-		gui.labelTax,
-		gui.labelTaxValue,
-		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
-
-		gui.labelShares,
-		gui.labelSharesValue,
-		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
-
-		gui.labelRemainder,
-		gui.labelRemainderValue,
-		widget.NewLabel("€"), // TODO ajouter les labels €,$,£ sur la partie droite
-	)
-
-	// TODO faire un separator
-
-	// TODO faire un tableau
-	t := widget.NewLabel("TABLE")
-	taxDetailLayout := container.NewHBox(t)
-	// +-----------+-----------+-----------------------+-----------+--------+
-	// |  TRANCHE  |    MIN    |          MAX          |   RATE    |  TAX   |
-	// +-----------+-----------+-----------------------+-----------+--------+
-	// | Tranche 1 | 0 €       | 10225 €               | 0 %       | 0 €    |
-	// | Tranche 2 | 10226 €   | 26070 €               | 11 %      | 635 €  |
-	// | Tranche 3 | 26071 €   | 74545 €               | 30 %      | 0 €    |
-	// | Tranche 4 | 74546 €   | 160336 €              | 41 %      | 0 €    |
-	// | Tranche 5 | 160337 €  | 9223372036854775807 € | 45 %      | 0 €    |
-	// +-----------+-----------+-----------------------+-----------+--------+
-	// |  RESULT   | REMAINDER |        38412 €        | TOTAL TAX | 1588 € |
-	// +-----------+-----------+-----------------------+-----------+--------+
-
-	// Layout buttons
-	button := widget.NewButton(gui.Language.SaveTax, func() {
-		gui.calculate()
-		log.Printf("Save Tax") // TODO debug // TODO language
-	})
-	// TODO faire un boutton reset
-	launcherLayout := container.NewHBox(button)
-
-	formLayout := container.New(layout.NewVBoxLayout(), incomeLayout, statusLayout, childrenLayout, launcherLayout)
-	taxLayout := container.New(layout.NewVBoxLayout(), taxResultLayout, taxDetailLayout)
-
-	// TODO make a line separator
-	// TODO check canvas
-	// separator := widget.NewSeparator()
-
-	// content := container.New(layout.NewGridLayout(3), formLayout, separator, taxLayout)
-	content := container.New(layout.NewGridLayout(2), formLayout, taxLayout)
-
-	gui.Window.SetContent(content)
 	gui.Window.ShowAndRun()
 }
 
 // SetTheme Change Theme of the application
 func (gui *GUI) SetTheme(theme string) {
-	// TODO log debug to show change theme
+	log.Printf("Debug theme: %+v", theme) // TODO log debug to show change theme
 	var t themes.Theme
 	if theme == themes.DARK {
 		t = themes.DarkTheme{}
@@ -172,7 +106,6 @@ func (gui *GUI) SetTheme(theme string) {
 }
 
 // SetLanguage Change language of the application
-// Returns Yaml structure with language label
 func (gui *GUI) SetLanguage(code string) {
 	var language settings.Yaml = settings.Yaml{Code: code}
 	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, language.Code)
@@ -183,8 +116,7 @@ func (gui *GUI) SetLanguage(code string) {
 		log.Fatalf("Unmarshal language file %s: %v", languageFile, err)
 	}
 
-	log.Printf("Debug languages: %+v", language) // TODO log debug to show change theme
-
+	log.Printf("Debug languages: %+v", language) // TODO log debug to show change language
 }
 
 // setEvents Set the events/trigger of gui widgets
@@ -240,7 +172,7 @@ func (gui *GUI) calculate() {
 	gui.User.IsInCouple = gui.getStatus()
 	gui.User.Children = gui.getChildren()
 	result := tax.CalculateTax(gui.User, gui.Config)
-	log.Printf("Result - %#v ", result)
+	log.Printf("Result - %#v ", result) // TODO log debug
 
 	var taxValue string = utils.ConvertInt64ToString(int64(result.Tax))
 	var remainderValue string = utils.ConvertInt64ToString(int64(result.Remainder))
@@ -251,4 +183,10 @@ func (gui *GUI) calculate() {
 	gui.labelRemainderValue.SetText(remainderValue)
 	gui.labelSharesValue.SetText(shareValue)
 
+	// Set Tax details
+	var trancheNumber int = 5 // TOODO a configurer via une functioin ou en attriibut de la gui
+	for i := 0; i < trancheNumber; i++ {
+		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[i].Tax))
+		gui.labelsTrancheTaxes[i].SetText(taxTranche + " €") // TODO devise
+	}
 }

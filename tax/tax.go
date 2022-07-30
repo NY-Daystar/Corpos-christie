@@ -30,7 +30,7 @@ type Result struct {
 
 // TaxTranche represent the tax calculating for each tranch when we calculate tax
 type TaxTranche struct {
-	tax     float64        // Tax in € on a tranche for the user
+	Tax     float64        // Tax in € on a tranche for the user
 	tranche config.Tranche // Param of the tranche calculated (Min, Max, Rate)
 }
 
@@ -176,7 +176,7 @@ func CalculateTax(user *user.User, cfg *config.Config) Result {
 		taxTranches = append(taxTranches, taxTranche)
 
 		// add into final tax the tax tranche
-		tax += taxTranche.tax
+		tax += taxTranche.Tax
 	}
 
 	// Reajust tax by shares
@@ -224,7 +224,7 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 			taxTranches = append(taxTranches, taxTranche)
 
 			// add into final tax the tax tranche
-			tax += taxTranche.tax
+			tax += taxTranche.Tax
 		}
 
 		tax *= shares
@@ -267,11 +267,11 @@ func calculateTranche(taxable float64, tranche config.Tranche) TaxTranche {
 	// if income is superior to maximum of the tranche to pass to tranch superior
 	// Diff between min and max of the tranche applied tax rate
 	if int(taxable) > tranche.Max {
-		taxTranche.tax = float64(tranche.Max-tranche.Min) * (rate / 100)
+		taxTranche.Tax = float64(tranche.Max-tranche.Min) * (rate / 100)
 	} else if int(taxable) > tranche.Min && int(taxable) < tranche.Max {
 		// else if your income taxable is between min and max tranch is the last operation
 		// Diff between min of the tranche and the income of the user applied tax rate
-		taxTranche.tax = float64(int(taxable)-tranche.Min) * (rate / 100)
+		taxTranche.Tax = float64(int(taxable)-tranche.Min) * (rate / 100)
 	}
 	return taxTranche
 }
@@ -327,7 +327,7 @@ func showTaxTranche(result Result, year int) {
 		var max string = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Max))
 		rate, _ := utils.ConvertPercentageToFloat64(val.tranche.Rate)
 		var rateStr string = fmt.Sprintf("%s %%", strconv.Itoa(int(rate)))
-		var tax string = fmt.Sprintf("%s €", strconv.Itoa(int(val.tax)))
+		var tax string = fmt.Sprintf("%s €", strconv.Itoa(int(val.Tax)))
 
 		var line []string = make([]string, 5)
 		line[0] = trancheNumber
