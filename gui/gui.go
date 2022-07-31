@@ -9,6 +9,7 @@ import (
 	"image/color"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/url"
 	"strconv"
 
@@ -30,31 +31,39 @@ import (
 
 // GUI represents the program parameters to launch in gui the application
 type GUI struct {
-	Config              *config.Config      // Config to use correctly the program
-	User                *user.User          // User param to use program
-	ThemeName           string              // name of the theme for fyne theme (Dark or Light)
-	Theme               themes.Theme        // Fyne theme for the application
-	App                 fyne.App            // Fyne application
-	Window              fyne.Window         // Fyne window
-	Language            settings.Yaml       // Yaml struct with all language data
-	Currency            binding.String      // Currency to display
-	labelCurrency       *widget.Label       // Label linked to currency
-	labelIncome         *widget.Label       // Label for income
-	entryIncome         *widget.Entry       // Input Entry to set income
-	labelStatus         *widget.Label       // Label for status
-	radioStatus         *widget.RadioGroup  // Input Radio buttons to get status
-	labelChildren       *widget.Label       // Label for children
-	selectChildren      *widget.SelectEntry // Input Select to know how children
-	buttonSave          *widget.Button      // Label for save button
-	labelTax            *widget.Label       // Label for tax
-	labelTaxValue       *widget.Label       // Label for tax value
-	labelRemainder      *widget.Label       // Label for remainder
-	labelRemainderValue *widget.Label       // Label for remainder value
-	labelShares         *widget.Label       // Label for shares
-	labelSharesValue    *widget.Label       // Label for shares value
-	labelsTrancheTaxes  []*widget.Label     // List of tranches tax label
-	labelsAbout         []binding.String    // List of label in about modal
-	labelsTaxHeaders    []binding.String    // List of label for tax details headers
+	Config *config.Config // Config to use correctly the program
+	User   *user.User     // User param to use program
+	App    fyne.App       // Fyne application
+	Window fyne.Window    // Fyne window
+
+	// Settings
+	ThemeName string         // name of the theme for fyne theme (Dark or Light)
+	Theme     themes.Theme   // Fyne theme for the application
+	Language  settings.Yaml  // Yaml struct with all language data
+	Currency  binding.String // Currency to display
+
+	// Widgets
+	entryIncome    *widget.Entry       // Input Entry to set income
+	radioStatus    *widget.RadioGroup  // Input Radio buttons to get status
+	selectChildren *widget.SelectEntry // Input Select to know how children
+
+	buttonSave *widget.Button // Label for save button
+
+	// Bindings
+	Tax                binding.String     // Bind for tax value
+	Remainder          binding.String     // Bind for remainder value
+	Shares             binding.String     // Bind for shares value
+	labelShares        binding.String     // Bind for shares label
+	labelIncome        binding.String     // Bind for income label
+	labelStatus        binding.String     // Bind for status label
+	labelChildren      binding.String     // Bind for children label
+	labelTax           binding.String     // Bind for tax label
+	labelRemainder     binding.String     // Bind for remainder label
+	labelsAbout        binding.StringList // List of label in about modal
+	labelsTaxHeaders   binding.StringList // List of label for tax details headers
+	labelsMinTranche   binding.StringList // List of labels for min tranche in grid
+	labelsMaxTranche   binding.StringList // List of labels for max tranche in grid
+	labelsTrancheTaxes binding.StringList // List of tranches tax label
 }
 
 // Start Launch GUI application
@@ -127,7 +136,6 @@ func (gui *GUI) setLanguage(code string) {
 func (gui *GUI) setCurrency(currency string) {
 	log.Printf("Debug currency: %+v", currency) // TODO log debug to show change currency
 	gui.Currency.Set(currency)
-	gui.labelCurrency = widget.NewLabel(currency)
 }
 
 // setEvents Set the events/trigger of gui widgets
@@ -169,16 +177,45 @@ func (gui *GUI) getChildren() int {
 
 // reload Refresh widget who needed specially when language changed
 func (gui *GUI) Reload() {
+	// Simple data bind
+	gui.labelIncome.Set(gui.Language.Income)
+	gui.labelStatus.Set(gui.Language.Status)
+	gui.labelChildren.Set(gui.Language.Children)
+	gui.labelTax.Set(gui.Language.Tax)
+	gui.labelRemainder.Set(gui.Language.Remainder)
+	gui.labelShares.Set(gui.Language.Share)
+
+	// Handle widget
+	gui.buttonSave.SetText(gui.Language.Save)
 
 	// Reload about content
-	for i, text := range gui.Language.GetAbouts() {
-		gui.labelsAbout[i].Set(text)
-	}
+	gui.labelsAbout.Set(gui.Language.GetAbouts())
 
 	// Reload header tax details
-	for i, text := range gui.Language.GetTaxHeaders() {
-		gui.labelsTaxHeaders[i].Set(text)
+	gui.labelsTaxHeaders.Set(gui.Language.GetTaxHeaders())
+
+	// Reload grid header
+	currency, _ := gui.Currency.Get()
+	gui.labelsTrancheTaxes.Set(*createTrancheTaxesLabels(gui.labelsTrancheTaxes.Length(), currency))
+
+	// Reload grid min tranches
+	var minList []string
+	for index := 0; index < gui.labelsMinTranche.Length(); index++ {
+		var min string = utils.ConvertIntToString(gui.Config.Tax.Tranches[index].Min) + " " + currency
+		minList = append(minList, min)
 	}
+	gui.labelsMinTranche.Set(minList)
+
+	// Reload grid max tranches
+	var maxList []string
+	for index := 0; index < gui.labelsMaxTranche.Length(); index++ {
+		var max string = utils.ConvertIntToString(gui.Config.Tax.Tranches[index].Max) + " " + currency
+		if gui.Config.Tax.Tranches[index].Max == math.MaxInt64 {
+			max = "-"
+		}
+		maxList = append(maxList, max)
+	}
+	gui.labelsMaxTranche.Set(maxList)
 }
 
 // calculate Get values of gui to calculate tax
@@ -190,21 +227,20 @@ func (gui *GUI) calculate() {
 	result := tax.CalculateTax(gui.User, gui.Config)
 	log.Printf("Result - %#v ", result) // TODO log debug
 
-	var taxValue string = utils.ConvertInt64ToString(int64(result.Tax))
-	var remainderValue string = utils.ConvertInt64ToString(int64(result.Remainder))
-	var shareValue string = utils.ConvertInt64ToString(int64(result.Shares))
+	var tax string = utils.ConvertInt64ToString(int64(result.Tax))
+	var remainder string = utils.ConvertInt64ToString(int64(result.Remainder))
+	var shares string = utils.ConvertInt64ToString(int64(result.Shares))
 
 	// Set data in tax layout
-	gui.labelTaxValue.SetText(taxValue)
-	gui.labelRemainderValue.SetText(remainderValue)
-	gui.labelSharesValue.SetText(shareValue)
+	gui.Tax.Set(tax)
+	gui.Remainder.Set(remainder)
+	gui.Shares.Set(shares)
 
 	// Set Tax details
-
-	var trancheNumber int = 5 // TOODO a configurer via une functioin ou en attriibut de la gui
-	for i := 0; i < trancheNumber; i++ {
-		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[i].Tax))
-		gui.labelsTrancheTaxes[i].SetText(taxTranche + " " + "€") // TODO check devise
+	currency, _ := gui.Currency.Get()
+	for index := 0; index < gui.labelsTrancheTaxes.Length(); index++ {
+		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[index].Tax))
+		gui.labelsTrancheTaxes.SetValue(index, taxTranche+" "+currency)
 	}
 }
 
@@ -291,24 +327,27 @@ func (gui *GUI) createSelectCurrency() *fyne.Container {
 // createHelpMenu create help item in toolbar to show about app
 func (gui *GUI) createHelpMenu() *fyne.Menu {
 	url, _ := url.Parse(config.APP_LINK)
-	for _, text := range gui.Language.GetAbouts() {
-		var bindString binding.String = binding.NewString()
-		bindString.Set(text)
-		gui.labelsAbout = append(gui.labelsAbout, bindString)
+
+	gui.labelsAbout = binding.NewStringList()
+	gui.labelsAbout.Set(gui.Language.GetAbouts())
+	var labels []binding.DataItem
+	for index := range gui.Language.GetAbouts() {
+		about, _ := gui.labelsAbout.GetItem(index)
+		labels = append(labels, about)
 	}
 
 	// Setup layouts with data
 	firstLine := container.NewHBox(
-		widget.NewLabelWithData(gui.labelsAbout[0]),
+		widget.NewLabelWithData(labels[0].(binding.String)),
 		widget.NewLabel(config.APP_NAME),
-		widget.NewLabelWithData(gui.labelsAbout[1]),
+		widget.NewLabelWithData(labels[1].(binding.String)),
 	)
 	secondLine := container.NewHBox(
-		widget.NewLabelWithData(gui.labelsAbout[2]),
+		widget.NewLabelWithData(labels[2].(binding.String)),
 		widget.NewHyperlink("GitHub Project", url),
-		widget.NewLabelWithData(gui.labelsAbout[3]),
+		widget.NewLabelWithData(labels[3].(binding.String)),
 	)
-	thirdLine := widget.NewLabelWithData(gui.labelsAbout[4])
+	thirdLine := widget.NewLabelWithData(labels[4].(binding.String))
 	fourthLine := container.NewHBox(
 		widget.NewLabel("Version:"),
 		canvas.NewText(fmt.Sprintf("v%s", config.APP_VERSION), color.NRGBA{R: 218, G: 20, B: 51, A: 255}),

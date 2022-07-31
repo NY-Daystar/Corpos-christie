@@ -15,20 +15,17 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"github.com/LucasNoga/corpos-christie/config"
 	"github.com/LucasNoga/corpos-christie/gui/widgets"
 	"github.com/LucasNoga/corpos-christie/utils"
 )
 
 // setLayouts Setup components/widget in the window
 func (gui *GUI) setLayouts() {
-
-	// TODO make a line separator between setLayoutForm and setLayoutTax
-
-	content := container.New(
-		layout.NewGridLayout(2),
+	content := container.New(layout.NewGridLayout(2),
 		gui.createLayoutForm(),
-		gui.createLayoutTax())
-
+		gui.createLayoutTax(),
+	)
 	gui.Window.SetContent(content)
 }
 
@@ -45,10 +42,10 @@ func (gui *GUI) createLayoutForm() *fyne.Container {
 // createLayoutIncome Setup layouts and widget for income layout
 func (gui *GUI) createLayoutIncome() *fyne.Container {
 	gui.entryIncome = widgets.CreateIncomeEntry()
-	gui.labelIncome = widget.NewLabel(gui.Language.Income)
+	gui.labelIncome = binding.BindString(&gui.Language.Income)
 	return container.New(
 		layout.NewFormLayout(),
-		gui.labelIncome,
+		widget.NewLabelWithData(gui.labelIncome),
 		gui.entryIncome,
 	)
 }
@@ -56,9 +53,10 @@ func (gui *GUI) createLayoutIncome() *fyne.Container {
 // createLayoutStatus Setup layouts and widget for income layout
 func (gui *GUI) createLayoutStatus() *fyne.Container {
 	gui.radioStatus = widgets.CreateStatusRadio()
-	gui.labelStatus = widget.NewLabel(gui.Language.Status)
+	gui.labelStatus = binding.BindString(&gui.Language.Status)
+	// gui.labelStatus = widget.NewLabel(gui.Language.Status)
 	return container.NewHBox(
-		gui.labelStatus,
+		widget.NewLabelWithData(gui.labelStatus),
 		container.New(
 			layout.NewVBoxLayout(),
 			gui.radioStatus,
@@ -70,9 +68,9 @@ func (gui *GUI) createLayoutStatus() *fyne.Container {
 // createLayoutChildren Setup layouts and widget for income layout
 func (gui *GUI) createLayoutChildren() *fyne.Container {
 	gui.selectChildren = widgets.CreateChildrenSelect()
-	gui.labelChildren = widget.NewLabel(gui.Language.Children)
+	gui.labelChildren = binding.BindString(&gui.Language.Children)
 	return container.NewHBox(
-		gui.labelChildren,
+		widget.NewLabelWithData(gui.labelChildren),
 		container.New(
 			layout.NewVBoxLayout(),
 			gui.selectChildren,
@@ -91,34 +89,36 @@ func (gui *GUI) createLayoutSave() *fyne.Container {
 
 // createLayoutTax Setup right side of window
 func (gui *GUI) createLayoutTax() *fyne.Container {
-	// TODO make a line separator between createLayoutTaxResult and createLayoutTaxDetails
 	return container.New(
 		layout.NewVBoxLayout(),
 		gui.createLayoutTaxResult(),
+		container.NewVBox(widget.NewLabel(""), widget.NewSeparator(), widget.NewLabel("")),
 		gui.createLayoutTaxDetails(),
 	)
 }
 
 // createLayoutTaxResult Setup right top side of window
 func (gui *GUI) createLayoutTaxResult() *fyne.Container {
-	gui.labelTax = widget.NewLabel(gui.Language.Tax)
-	gui.labelTaxValue = widget.NewLabel("")
-	gui.labelRemainder = widget.NewLabel(gui.Language.Remainder)
-	gui.labelRemainderValue = widget.NewLabel("")
-	gui.labelShares = widget.NewLabel(gui.Language.Share)
-	gui.labelSharesValue = widget.NewLabel("")
-	return container.New(
-		layout.NewGridLayout(3),
-		gui.labelTax,
-		gui.labelTaxValue,
+	gui.labelTax = binding.BindString(&gui.Language.Tax)
+	gui.Tax = binding.NewString()
+
+	gui.labelShares = binding.BindString(&gui.Language.Share)
+	gui.Shares = binding.NewString()
+
+	gui.labelRemainder = binding.BindString(&gui.Language.Remainder)
+	gui.Remainder = binding.NewString()
+
+	return container.New(layout.NewGridLayout(3),
+		widget.NewLabelWithData(gui.labelTax),
+		widget.NewLabelWithData(gui.Tax),
 		widget.NewLabelWithData(gui.Currency),
 
-		gui.labelShares,
-		gui.labelSharesValue,
+		widget.NewLabelWithData(gui.labelShares),
+		widget.NewLabelWithData(gui.Shares),
 		widget.NewLabelWithData(gui.Currency),
 
-		gui.labelRemainder,
-		gui.labelRemainderValue,
+		widget.NewLabelWithData(gui.labelRemainder),
+		widget.NewLabelWithData(gui.Remainder),
 		widget.NewLabelWithData(gui.Currency),
 	)
 
@@ -127,32 +127,35 @@ func (gui *GUI) createLayoutTaxResult() *fyne.Container {
 // createLayoutTax Setup right bottom side of window
 func (gui *GUI) createLayoutTaxDetails() *fyne.Container {
 	var trancheNumber int = 5
-	gui.labelsTrancheTaxes = widgets.CreateTrancheTaxesLabels(trancheNumber)
+	currency, _ := gui.Currency.Get()
 
-	var headers []string = []string{"TRANCHE", "MIN", "MAX", "RATE", "TAX"} // TODO language taxDetails
-	grid := container.New(layout.NewGridLayout(len(headers)))
+	// Add header columns in grid
+	grid := container.New(layout.NewGridLayout(trancheNumber))
 
-	// Headers Rows
-	for _, label := range headers {
-		grid.Add(widget.NewLabel(label))
+	gui.labelsTaxHeaders = binding.NewStringList()
+	for index, header := range gui.Language.GetTaxHeaders() {
+		gui.labelsTaxHeaders.Append(header)
+		h, _ := gui.labelsTaxHeaders.GetItem(index)
+		grid.Add(widget.NewLabelWithData(h.(binding.String)))
 	}
 
-	// Tranche rows
-	for index := range gui.labelsTrancheTaxes {
-		grid.Add(widget.NewLabel("Tranche " + utils.ConvertIntToString(index+1)))
-		var min string = utils.ConvertIntToString(gui.Config.Tax.Tranches[index].Min) + " €"
-		grid.Add(widget.NewLabel(min))
+	// Setup binding for min, max and taxes columns
+	gui.labelsMinTranche = binding.BindStringList(createMinTrancheLabels(currency, gui.Config.Tax.Tranches))
+	gui.labelsMaxTranche = binding.BindStringList(createMaxTrancheLabels(currency, gui.Config.Tax.Tranches))
+	gui.labelsTrancheTaxes = binding.BindStringList(createTrancheTaxesLabels(trancheNumber, currency))
 
-		var max string = utils.ConvertIntToString(gui.Config.Tax.Tranches[index].Max) + " €"
-		if gui.Config.Tax.Tranches[index].Max == math.MaxInt64 {
-			max = "-"
-		}
-		grid.Add(widget.NewLabel(max))
-
+	// Add Tranche rows in grid
+	for index := 0; index < gui.labelsTrancheTaxes.Length(); index++ {
+		minItem, _ := gui.labelsMinTranche.GetItem(index)
+		maxItem, _ := gui.labelsMaxTranche.GetItem(index)
+		taxItem, _ := gui.labelsTrancheTaxes.GetItem(index)
 		var rate string = gui.Config.Tax.Tranches[index].Rate
-		grid.Add(widget.NewLabel(rate))
 
-		grid.Add(gui.labelsTrancheTaxes[index])
+		grid.Add(widget.NewLabel("Tranche " + utils.ConvertIntToString(index+1)))
+		grid.Add(widget.NewLabelWithData(minItem.(binding.String)))
+		grid.Add(widget.NewLabelWithData(maxItem.(binding.String)))
+		grid.Add(widget.NewLabel(rate))
+		grid.Add(widget.NewLabelWithData(taxItem.(binding.String)))
 	}
 
 	//  TODO create border border := container.NewBorder()
@@ -162,4 +165,44 @@ func (gui *GUI) createLayoutTaxDetails() *fyne.Container {
 		btn_color,
 		grid,
 	)
+}
+
+// CreateTrancheLabels create widgets labels for tranche taxes value into an array
+// Create number of tranche with currency value
+// Returns Array of label widget in fyne object
+func createTrancheTaxesLabels(number int, currency string) *[]string {
+	var labels []string = make([]string, 0, number)
+
+	for i := 1; i <= number; i++ {
+		labels = append(labels, "0"+" "+currency)
+	}
+	return &labels
+}
+
+// createMinTrancheLabels create string from config.Tranche to create binding
+// Returns Array string with min tranches value
+func createMinTrancheLabels(currency string, tranches []config.Tranche) *[]string {
+	var labels []string = make([]string, 0, len(tranches))
+
+	for _, tranche := range tranches {
+		var min string = utils.ConvertIntToString(tranche.Min) + " " + currency
+		labels = append(labels, min)
+	}
+
+	return &labels
+}
+
+// createMaxTrancheLabels create string from config.Tranche to create binding
+// Returns Array string with max tranches value
+func createMaxTrancheLabels(currency string, tranches []config.Tranche) *[]string {
+	var labels []string = make([]string, 0, len(tranches))
+
+	for _, tranche := range tranches {
+		var max = utils.ConvertIntToString(tranche.Max) + " " + currency
+		if tranche.Max == math.MaxInt64 {
+			max = "-"
+		}
+		labels = append(labels, max)
+	}
+	return &labels
 }
