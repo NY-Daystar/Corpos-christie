@@ -78,15 +78,15 @@ func (gui GUI) Start() {
 	gui.Window.CenterOnScreen()
 
 	// Set Theme
-	var theme string = settings.GetTheme()
+	var theme string = settings.GetDefaultTheme()
 	gui.setTheme(theme)
 
 	// Set Language
-	var language string = settings.GetLanguage()
+	var language string = settings.GetDefaultLanguage()
 	gui.setLanguage(language)
 
 	// Set Currency
-	var currency string = settings.GetCurrency()
+	var currency string = settings.GetDefaultCurrency()
 	gui.Currency = binding.NewString()
 	gui.setCurrency(currency)
 
@@ -109,22 +109,26 @@ func (gui GUI) Start() {
 func (gui *GUI) setTheme(theme string) {
 	log.Printf("Debug theme: %+v", theme) // TODO log debug to show change theme
 	var t themes.Theme
-	if theme == themes.DARK {
+	if theme == settings.DARK {
 		t = themes.DarkTheme{}
 	} else {
 		t = themes.LightTheme{}
 	}
+	gui.ThemeName = theme
 	gui.App.Settings().SetTheme(t)
 }
 
 // SetLanguage change language of the application
 func (gui *GUI) setLanguage(code string) {
-	log.Printf("Debug languages: %+v", code) // TODO log debug to show change language
-	var language settings.Yaml = settings.Yaml{Code: code}
-	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, language.Code)
+	log.Printf("Debug code language: %+v", code) // TODO log debug to show change language
+
+	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)
 	yamlFile, _ := ioutil.ReadFile(languageFile)
 
+	var language settings.Yaml = settings.Yaml{Code: code}
 	err := yaml.Unmarshal(yamlFile, &gui.Language)
+	gui.Language.Code = code
+
 	if err != nil {
 		log.Fatalf("Unmarshal language file %s: %v", languageFile, err)
 	}
@@ -276,7 +280,7 @@ func (gui *GUI) createSelectTheme() *fyne.Container {
 		gui.setTheme(val)
 		// TODO save data in .settings
 	})
-	selectTheme.SetSelected(gui.ThemeName)
+	selectTheme.SetSelectedIndex(getThemeIndex(gui.Language.Code, gui.ThemeName))
 	return container.NewHBox(
 		widget.NewLabel(gui.Language.ThemeCode),
 		selectTheme,
@@ -286,6 +290,7 @@ func (gui *GUI) createSelectTheme() *fyne.Container {
 // createSelectLanguage create select to change language
 func (gui *GUI) createSelectLanguage() *fyne.Container {
 	selectLanguage := widget.NewSelect(gui.Language.GetLanguages(), nil)
+	selectLanguage.SetSelectedIndex(getLanguageIndex(gui.Language.Code))
 	selectLanguage.OnChanged = func(s string) {
 		index := selectLanguage.SelectedIndex()
 		var getLanguage = func() string {
@@ -301,10 +306,10 @@ func (gui *GUI) createSelectLanguage() *fyne.Container {
 
 		language := getLanguage()
 		gui.setLanguage(language)
-
 		gui.Reload()
 		// TODO save data in .settings
 	}
+
 	return container.NewHBox(
 		widget.NewLabel(gui.Language.LanguageCode),
 		selectLanguage,
@@ -318,6 +323,8 @@ func (gui *GUI) createSelectCurrency() *fyne.Container {
 		gui.Reload()
 		// TODO save data in .settings
 	})
+	currency, _ := gui.Currency.Get()
+	selectCurrency.SetSelected(currency)
 	return container.NewHBox(
 		widget.NewLabel(gui.Language.Currency),
 		selectCurrency,
@@ -366,4 +373,32 @@ func (gui *GUI) createHelpMenu() *fyne.Menu {
 				), gui.Window)
 		}))
 	return helpMenu
+}
+
+// getThemeIndex get index to selectTheme in settings from language of the app
+func getThemeIndex(langue, theme string) int {
+	var themes map[string][]string = map[string][]string{
+		"en": {"Dark", "Light"},
+		"fr": {"Sombre", "Clair"},
+	}
+
+	var l []string = themes[langue]
+	for index, v := range l {
+		if v == theme {
+			return index
+		}
+	}
+	return -1
+}
+
+// getLanguageIndex get index to selectLanguage in settings from language of the app
+func getLanguageIndex(langue string) int {
+	switch langue {
+	case settings.ENGLISH:
+		return 0
+	case settings.FRENCH:
+		return 1
+	default:
+		return 0
+	}
 }

@@ -6,11 +6,6 @@ import (
 	"fyne.io/fyne/v2"
 )
 
-const (
-	DARK  string = "Dark"
-	LIGHT string = "Light"
-)
-
 // To create a theme
 // $ go get github.com/lusingander/fyne-theme-generator
 // $ go run github.com/lusingander/fyne-theme-generator

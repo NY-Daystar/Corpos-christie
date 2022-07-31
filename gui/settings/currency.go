@@ -10,7 +10,7 @@ const (
 )
 
 // GetCurrency Get value of last currency
-func GetCurrency() string {
+func GetDefaultCurrency() string {
 	// TODO get value from .setting file
 	// TODO log debug to show change theme
 	return EURO

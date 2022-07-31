@@ -1,6 +1,9 @@
 package settings
 
-// Handle the themes in GUI settings
+const (
+	DARK  string = "Dark"
+	LIGHT string = "Light"
+)
 
 // ThemeYml Yaml struct for theme's app
 type ThemeYaml struct {
@@ -9,8 +12,8 @@ type ThemeYaml struct {
 }
 
 // GetTheme Get value of last theme selected
-func GetTheme() string {
+func GetDefaultTheme() string {
 	// TODO get value from .setting file
 	// TODO log debug to show change theme
-	return "Dark"
+	return DARK
 }

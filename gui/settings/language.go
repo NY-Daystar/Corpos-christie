@@ -63,10 +63,10 @@ type Yaml struct {
 }
 
 // GetLanguage get value of last language selected (fr, en)
-func GetLanguage() string {
+func GetDefaultLanguage() string {
 	// TODO get value from .setting file
 	// TODO log debug to show change language
-	return "en"
+	return ENGLISH
 }
 
 // GetThemes parse ThemeYaml struct to get value of each field
