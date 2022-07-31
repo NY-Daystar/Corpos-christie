@@ -36,4 +36,5 @@ go.work
 # build src
 corpos-christie*
 build/
-fyne-cross
+logs/
+fyne-cross/

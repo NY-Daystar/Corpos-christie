@@ -55,6 +55,7 @@ type Yaml struct {
 	ThemeCode    string         `yaml:"theme"`
 	LanguageCode string         `yaml:"language"`
 	Currency     string         `yaml:"currency"`
+	Logs         string         `yaml:"logs"`
 	Help         string         `yaml:"help"`
 	About        string         `yaml:"about"`
 	Author       string         `yaml:"author"`
@@ -64,8 +65,6 @@ type Yaml struct {
 
 // GetLanguage get value of last language selected (fr, en)
 func GetDefaultLanguage() string {
-	// TODO get value from .setting file
-	// TODO log debug to show change language
 	return ENGLISH
 }
 

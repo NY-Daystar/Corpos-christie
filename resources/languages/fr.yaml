@@ -28,6 +28,7 @@ save: Sauvegarder
 language: Langues
 theme: Themes
 currency: Devise
+logs: Chemin de logs
 help: Aide
 about: A propos
 author: Auteur

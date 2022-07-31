@@ -5,12 +5,14 @@
 package gui
 
 import (
+	"errors"
 	"fmt"
 	"image/color"
 	"io/ioutil"
 	"log"
 	"math"
 	"net/url"
+	"os"
 	"strconv"
 
 	"fyne.io/fyne/v2"
@@ -26,6 +28,9 @@ import (
 	"github.com/LucasNoga/corpos-christie/tax"
 	"github.com/LucasNoga/corpos-christie/user"
 	"github.com/LucasNoga/corpos-christie/utils"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v3"
 )
 
@@ -35,6 +40,7 @@ type GUI struct {
 	User   *user.User     // User param to use program
 	App    fyne.App       // Fyne application
 	Window fyne.Window    // Fyne window
+	Logger *zap.Logger    // Logger of GUI
 
 	// Settings
 	ThemeName string         // name of the theme for fyne theme (Dark or Light)
@@ -71,43 +77,58 @@ func (gui GUI) Start() {
 	gui.App = app.New()
 	gui.Window = gui.App.NewWindow(config.APP_NAME)
 
+	// Set Logger
+	gui.setLogger()
+	gui.Logger.Info("Launch application")
+
 	// Size and Position
 	const WIDTH = 1100
 	const HEIGHT = 540
 	gui.Window.Resize(fyne.NewSize(WIDTH, HEIGHT))
 	gui.Window.CenterOnScreen()
+	gui.Logger.Info("Load window", zap.Int("height", HEIGHT), zap.Int("width", WIDTH))
 
 	// Set Theme
 	var theme string = settings.GetDefaultTheme()
+	gui.Logger.Info("Get default theme", zap.String("theme", theme))
 	gui.setTheme(theme)
 
 	// Set Language
 	var language string = settings.GetDefaultLanguage()
+	gui.Logger.Info("Get default langugage", zap.String("language", language))
 	gui.setLanguage(language)
 
 	// Set Currency
 	var currency string = settings.GetDefaultCurrency()
+	gui.Logger.Info("Get default currency", zap.String("currency", currency))
 	gui.Currency = binding.NewString()
 	gui.setCurrency(currency)
 
 	// Set Icon
-	var icon fyne.Resource = settings.GetIcon()
+	var iconName string = "logo.ico"
+	var iconPath string = fmt.Sprintf("%s/%s", config.ASSETS_PATH, iconName)
+	var icon fyne.Resource = settings.GetIcon(iconPath)
+	gui.Logger.Info("Load icon", zap.String("name", iconName), zap.String("path", iconPath))
 	gui.Window.SetIcon(icon)
 
 	// Set menu
 	var menu *fyne.MainMenu = gui.setMenu()
 	gui.Window.SetMainMenu(menu)
 
-	// Handle Events and widgets
+	// Create layouts and widgets
 	gui.setLayouts()
+	gui.Logger.Info("Layout and widgets loaded")
+
+	// Create layouts and widgets
 	gui.setEvents()
+	gui.Logger.Info("Event loaded")
 
 	gui.Window.ShowAndRun()
 }
 
 // SetTheme change Theme of the application
 func (gui *GUI) setTheme(theme string) {
-	log.Printf("Debug theme: %+v", theme) // TODO log debug to show change theme
+	gui.Logger.Info("Set theme", zap.String("theme", theme))
 	var t themes.Theme
 	if theme == settings.DARK {
 		t = themes.DarkTheme{}
@@ -120,25 +141,26 @@ func (gui *GUI) setTheme(theme string) {
 
 // SetLanguage change language of the application
 func (gui *GUI) setLanguage(code string) {
-	log.Printf("Debug code language: %+v", code) // TODO log debug to show change language
+	gui.Logger.Info("Set language", zap.String("code", code))
 
 	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)
-	yamlFile, _ := ioutil.ReadFile(languageFile)
+	gui.Logger.Debug("Load file for language", zap.String("file", languageFile))
 
-	var language settings.Yaml = settings.Yaml{Code: code}
+	yamlFile, _ := ioutil.ReadFile(languageFile)
 	err := yaml.Unmarshal(yamlFile, &gui.Language)
+
 	gui.Language.Code = code
 
 	if err != nil {
-		log.Fatalf("Unmarshal language file %s: %v", languageFile, err)
+		gui.Logger.Sugar().Fatalf("Unmarshal language file %s: %v", languageFile, err)
 	}
 
-	log.Printf("Debug languages: %+v", language) // TODO log debug to show change language
+	gui.Logger.Sugar().Debugf("Language Yaml %v", gui.Language)
 }
 
 // setCurrency change language of the application
 func (gui *GUI) setCurrency(currency string) {
-	log.Printf("Debug currency: %+v", currency) // TODO log debug to show change currency
+	gui.Logger.Info("Set currency", zap.String("currency", currency))
 	gui.Currency.Set(currency)
 }
 
@@ -229,7 +251,7 @@ func (gui *GUI) calculate() {
 	gui.User.Children = gui.getChildren()
 
 	result := tax.CalculateTax(gui.User, gui.Config)
-	log.Printf("Result - %#v ", result) // TODO log debug
+	gui.Logger.Sugar().Debugf("Result taxes %#v", result)
 
 	var tax string = utils.ConvertInt64ToString(int64(result.Tax))
 	var remainder string = utils.ConvertInt64ToString(int64(result.Remainder))
@@ -267,6 +289,8 @@ func (gui *GUI) createFileMenu() *fyne.Menu {
 					gui.createSelectLanguage(),
 					widget.NewSeparator(),
 					gui.createSelectCurrency(),
+					widget.NewSeparator(),
+					gui.createLabelLogs(),
 				), gui.Window)
 		}),
 		fyne.NewMenuItem(gui.Language.Quit, func() { gui.App.Quit() }),
@@ -299,9 +323,9 @@ func (gui *GUI) createSelectLanguage() *fyne.Container {
 				return settings.ENGLISH
 			case 1:
 				return settings.FRENCH
+			default:
+				return settings.ENGLISH
 			}
-			// TODO error log
-			return settings.FRENCH
 		}
 
 		language := getLanguage()
@@ -328,6 +352,14 @@ func (gui *GUI) createSelectCurrency() *fyne.Container {
 	return container.NewHBox(
 		widget.NewLabel(gui.Language.Currency),
 		selectCurrency,
+	)
+}
+
+// createLabelLogs create label to show logs
+func (gui *GUI) createLabelLogs() *fyne.Container {
+	return container.NewHBox(
+		widget.NewLabel(gui.Language.Logs), // TODO language
+		widget.NewLabel(config.LOGS_PATH),
 	)
 }
 
@@ -401,4 +433,41 @@ func getLanguageIndex(langue string) int {
 	default:
 		return 0
 	}
+}
+
+// setLogger create logger with zap librairy
+func (gui *GUI) setLogger() {
+	configZap := zap.NewProductionEncoderConfig()
+	configZap.EncodeTime = zapcore.ISO8601TimeEncoder
+	fileEncoder := zapcore.NewJSONEncoder(configZap)
+
+	// Create logs folder if not exists
+	path := "logs"
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(path, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	logger := lumberjack.Logger{
+		Filename:   config.LOGS_PATH, // File path
+		MaxSize:    500,              // 500 megabytes per files
+		MaxBackups: 3,                // 3 files before rotate
+		MaxAge:     15,               // 15 days
+	}
+
+	writer := zapcore.AddSync(&logger)
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(fileEncoder, writer, zapcore.DebugLevel),
+	)
+
+	gui.Logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
+	gui.Logger.Info("Zap logger set",
+		zap.String("path", logger.Filename),
+		zap.Int("filesize", logger.MaxSize),
+		zap.Int("backupfile", logger.MaxBackups),
+		zap.Int("fileage", logger.MaxAge),
+	)
 }

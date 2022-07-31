@@ -28,6 +28,7 @@ save: Save
 language: Languages
 theme: Themes
 currency: Currencies
+logs: Logs path
 help: Help
 about: About
 author: Author

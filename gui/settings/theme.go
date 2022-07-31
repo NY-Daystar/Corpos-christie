@@ -13,7 +13,5 @@ type ThemeYaml struct {
 
 // GetTheme Get value of last theme selected
 func GetDefaultTheme() string {
-	// TODO get value from .setting file
-	// TODO log debug to show change theme
 	return DARK
 }

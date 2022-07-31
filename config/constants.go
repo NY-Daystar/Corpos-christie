@@ -4,6 +4,7 @@
 // Package config define the loading of configuration of the program
 package config
 
+// App data
 const (
 	APP_NAME    string = "corpos-christie"                              // Name of program
 	APP_VERSION string = "1.1.0"                                        // Version of program
@@ -11,8 +12,10 @@ const (
 	APP_LINK    string = "https://github.com/LucasNoga/corpos-christie" // Link of repository
 )
 
+// Path
 const (
 	RESOURCES_PATH string = "resources/"          // Path to resources folder
 	LANGUAGES_PATH string = "resources/languages" // Path to languages folder
 	ASSETS_PATH    string = "resources/assets"    // Path to assets folder
+	LOGS_PATH      string = "logs/log.json"       // Path of the logs
 )

@@ -5,12 +5,9 @@
 package gui
 
 import (
-	"image/color"
-	"log"
 	"math"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/layout"
@@ -82,7 +79,8 @@ func (gui *GUI) createLayoutChildren() *fyne.Container {
 func (gui *GUI) createLayoutSave() *fyne.Container {
 	gui.buttonSave = widget.NewButton(gui.Language.Save, func() {
 		gui.calculate()
-		log.Printf("Save Tax") // TODO log debug save
+		gui.Logger.Info("Save Taxes")
+		// TODO Export taxes data in csv and/or pdf
 	})
 	return container.NewHBox(gui.buttonSave)
 }
@@ -158,11 +156,8 @@ func (gui *GUI) createLayoutTaxDetails() *fyne.Container {
 		grid.Add(widget.NewLabelWithData(taxItem.(binding.String)))
 	}
 
-	//  TODO create border border := container.NewBorder()
-	btn_color := canvas.NewRectangle(color.NRGBA{R: 25, G: 25, B: 25, A: 255})
 	return container.New(
 		layout.NewMaxLayout(),
-		btn_color,
 		grid,
 	)
 }
