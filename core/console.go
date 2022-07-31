@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/lib/colors"
-	"github.com/LucasNoga/corpos-christie/lib/utils"
 	"github.com/LucasNoga/corpos-christie/tax"
 	"github.com/LucasNoga/corpos-christie/user"
+	"github.com/LucasNoga/corpos-christie/utils"
+	"github.com/LucasNoga/corpos-christie/utils/colors"
 )
 
 // Console represents the console application

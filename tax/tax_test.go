@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/lib/colors"
 	"github.com/LucasNoga/corpos-christie/user"
+	"github.com/LucasNoga/corpos-christie/utils/colors"
 )
 
 // For testing

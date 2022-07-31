@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/LucasNoga/corpos-christie/lib/colors"
-	"github.com/LucasNoga/corpos-christie/lib/utils"
+	"github.com/LucasNoga/corpos-christie/utils"
+	"github.com/LucasNoga/corpos-christie/utils/colors"
 )
 
 // User defines a the user of the program

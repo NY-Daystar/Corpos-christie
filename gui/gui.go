@@ -22,9 +22,9 @@ import (
 	"github.com/LucasNoga/corpos-christie/config"
 	"github.com/LucasNoga/corpos-christie/gui/settings"
 	"github.com/LucasNoga/corpos-christie/gui/themes"
-	"github.com/LucasNoga/corpos-christie/lib/utils"
 	"github.com/LucasNoga/corpos-christie/tax"
 	"github.com/LucasNoga/corpos-christie/user"
+	"github.com/LucasNoga/corpos-christie/utils"
 	"gopkg.in/yaml.v3"
 )
 

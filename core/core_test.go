@@ -6,7 +6,7 @@ package core
 import (
 	"testing"
 
-	"github.com/LucasNoga/corpos-christie/lib/colors"
+	"github.com/LucasNoga/corpos-christie/utils/colors"
 )
 
 // For testing

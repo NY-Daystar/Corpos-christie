@@ -12,9 +12,9 @@ import (
 	"strconv"
 
 	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/lib/colors"
-	"github.com/LucasNoga/corpos-christie/lib/utils"
 	"github.com/LucasNoga/corpos-christie/user"
+	"github.com/LucasNoga/corpos-christie/utils"
+	"github.com/LucasNoga/corpos-christie/utils/colors"
 
 	"github.com/olekukonko/tablewriter"
 )
