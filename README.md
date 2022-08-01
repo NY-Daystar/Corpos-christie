@@ -20,7 +20,6 @@ This project is a GUI developed in fyne
 -   [How to launch program](#how-to-launch-program)
 -   [For Developpers](#for-developpers)
 -   [Packaging App](#packaging-app)
--   [Docker](#docker)
 -   [Installing and Setup Golang](#installing-and-setup-golang)
 -   [Suggestions](#suggestions)
 -   [Credits](#credits)
@@ -28,7 +27,6 @@ This project is a GUI developed in fyne
 ## Requirements
 
 -   [Golang](https://golang.org/dl/) >= 1.18.3
--   [Docker](https://www.docker.com/) >= 20.10.17
 
 ## How to launch program
 
@@ -154,29 +152,6 @@ To test packaging
 
 ```bash
 $ make package-test
-```
-
-## Docker
-
-The official image of this projet: https://hub.docker.com/r/lucasnoga/corpos-christie
-
-To use this image
-
-```bash
-$ docker pull lucasnoga/corpos-christie
-$ docker run -it --rm --name corpos-christie lucasnoga/corpos-christie
-```
-
-To build a new docker image
-
-```bash
-$ make docker-build
-```
-
-To run this image
-
-```bash
-$ make docker-run
 ```
 
 ## Installing and Setup Golang

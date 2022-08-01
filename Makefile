@@ -71,15 +71,6 @@ test:
 doc:
 	go doc
 
-# Docker build
-docker-build: 
-	go build -o ${APP_NAME}
-	docker build -t ${APP_NAME}:${APP_VERSION} . && rm ${APP_NAME}
-
-# Docker run
-docker-run:
-	docker run -it --rm --name ${APP_NAME} ${APP_NAME}:${APP_VERSION}
-
 # list all target in makefile
 list:
 	@grep '^[^#[:space:]].*:' Makefile | grep -v '\.PHONY'
