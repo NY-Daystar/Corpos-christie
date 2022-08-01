@@ -36,24 +36,24 @@ import (
 
 // GUI represents the program parameters to launch in gui the application
 type GUI struct {
-	Config *config.Config // Config to use correctly the program
-	User   *user.User     // User param to use program
-	App    fyne.App       // Fyne application
-	Window fyne.Window    // Fyne window
-	Logger *zap.Logger    // Logger of GUI
+	Config   *config.Config    // Config to use correctly the program
+	User     *user.User        // User param to use program
+	App      fyne.App          // Fyne application
+	Window   fyne.Window       // Fyne window
+	Settings settings.Settings // Settings of the app
+	Logger   *zap.Logger       // Logger of GUI
 
 	// Settings
-	ThemeName string         // name of the theme for fyne theme (Dark or Light)
-	Theme     themes.Theme   // Fyne theme for the application
-	Language  settings.Yaml  // Yaml struct with all language data
-	Currency  binding.String // Currency to display
+	Theme    themes.Theme   // Fyne theme for the application
+	Language settings.Yaml  // Yaml struct with all language data
+	Currency binding.String // Currency to display
 
 	// Widgets
 	entryIncome    *widget.Entry       // Input Entry to set income
 	radioStatus    *widget.RadioGroup  // Input Radio buttons to get status
 	selectChildren *widget.SelectEntry // Input Select to know how children
 
-	buttonSave *widget.Button // Label for save button
+	// buttonSave *widget.Button // Label for save button
 
 	// Bindings
 	Tax                binding.String     // Bind for tax value
@@ -81,35 +81,15 @@ func (gui GUI) Start() {
 	gui.setLogger()
 	gui.Logger.Info("Launch application")
 
+	// Load settings
+	gui.setAppSettings()
+
 	// Size and Position
 	const WIDTH = 1100
 	const HEIGHT = 540
 	gui.Window.Resize(fyne.NewSize(WIDTH, HEIGHT))
 	gui.Window.CenterOnScreen()
 	gui.Logger.Info("Load window", zap.Int("height", HEIGHT), zap.Int("width", WIDTH))
-
-	// Set Theme
-	var theme string = settings.GetDefaultTheme()
-	gui.Logger.Info("Get default theme", zap.String("theme", theme))
-	gui.setTheme(theme)
-
-	// Set Language
-	var language string = settings.GetDefaultLanguage()
-	gui.Logger.Info("Get default langugage", zap.String("language", language))
-	gui.setLanguage(language)
-
-	// Set Currency
-	var currency string = settings.GetDefaultCurrency()
-	gui.Logger.Info("Get default currency", zap.String("currency", currency))
-	gui.Currency = binding.NewString()
-	gui.setCurrency(currency)
-
-	// Set Icon
-	var iconName string = "logo.ico"
-	var iconPath string = fmt.Sprintf("%s/%s", config.ASSETS_PATH, iconName)
-	var icon fyne.Resource = settings.GetIcon(iconPath)
-	gui.Logger.Info("Load icon", zap.String("name", iconName), zap.String("path", iconPath))
-	gui.Window.SetIcon(icon)
 
 	// Set menu
 	var menu *fyne.MainMenu = gui.setMenu()
@@ -123,19 +103,42 @@ func (gui GUI) Start() {
 	gui.setEvents()
 	gui.Logger.Info("Event loaded")
 
+	// Set Icon
+	var iconName string = "logo.ico"
+	var iconPath string = fmt.Sprintf("%s/%s", config.ASSETS_PATH, iconName)
+	var icon fyne.Resource = settings.GetIcon(iconPath)
+	gui.Logger.Info("Load icon", zap.String("name", iconName), zap.String("path", iconPath))
+	gui.Window.SetIcon(icon)
+
 	gui.Window.ShowAndRun()
 }
 
-// SetTheme change Theme of the application
-func (gui *GUI) setTheme(theme string) {
-	gui.Logger.Info("Set theme", zap.String("theme", theme))
+// setSettings get and configure app settings
+func (gui *GUI) setAppSettings() {
+	gui.Settings = settings.Load(gui.Logger)
+
+	gui.Logger.Info("Settings loaded",
+		zap.Int("theme", gui.Settings.Theme),
+		zap.String("language", gui.Settings.Language),
+		zap.String("theme", gui.Settings.Currency),
+	)
+
+	gui.setTheme(gui.Settings.Theme)
+	gui.setLanguage(gui.Settings.Language)
+	gui.Currency = binding.BindString(&gui.Settings.Currency)
+
+}
+
+// SetTheme change theme of the application
+// (if param = 0 then dark if 1 then light)
+func (gui *GUI) setTheme(theme int) {
 	var t themes.Theme
 	if theme == settings.DARK {
 		t = themes.DarkTheme{}
 	} else {
 		t = themes.LightTheme{}
 	}
-	gui.ThemeName = theme
+	gui.Logger.Info("Set theme", zap.Int("theme", theme))
 	gui.App.Settings().SetTheme(t)
 }
 
@@ -212,7 +215,7 @@ func (gui *GUI) Reload() {
 	gui.labelShares.Set(gui.Language.Share)
 
 	// Handle widget
-	gui.buttonSave.SetText(gui.Language.Save)
+	// gui.buttonSave.SetText(gui.Language.Save) // TODO
 
 	// Reload about content
 	gui.labelsAbout.Set(gui.Language.GetAbouts())
@@ -300,11 +303,14 @@ func (gui *GUI) createFileMenu() *fyne.Menu {
 
 // createSelectTheme create select to change theme
 func (gui *GUI) createSelectTheme() *fyne.Container {
-	selectTheme := widget.NewSelect(gui.Language.GetThemes(), func(val string) {
-		gui.setTheme(val)
-		// TODO save data in .settings
-	})
-	selectTheme.SetSelectedIndex(getThemeIndex(gui.Language.Code, gui.ThemeName))
+	selectTheme := widget.NewSelect(gui.Language.GetThemes(), nil)
+
+	selectTheme.OnChanged = func(s string) {
+		index := selectTheme.SelectedIndex()
+		gui.setTheme(index)
+		gui.Settings.Set("theme", index)
+	}
+	selectTheme.SetSelectedIndex(gui.Settings.Theme)
 	return container.NewHBox(
 		widget.NewLabel(gui.Language.ThemeCode),
 		selectTheme,
@@ -330,8 +336,8 @@ func (gui *GUI) createSelectLanguage() *fyne.Container {
 
 		language := getLanguage()
 		gui.setLanguage(language)
+		gui.Settings.Set("language", language)
 		gui.Reload()
-		// TODO save data in .settings
 	}
 
 	return container.NewHBox(
@@ -344,8 +350,8 @@ func (gui *GUI) createSelectLanguage() *fyne.Container {
 func (gui *GUI) createSelectCurrency() *fyne.Container {
 	selectCurrency := widget.NewSelect(settings.GetCurrencies(), func(currency string) {
 		gui.setCurrency(currency)
+		gui.Settings.Set("currency", currency)
 		gui.Reload()
-		// TODO save data in .settings
 	})
 	currency, _ := gui.Currency.Get()
 	selectCurrency.SetSelected(currency)
@@ -358,7 +364,7 @@ func (gui *GUI) createSelectCurrency() *fyne.Container {
 // createLabelLogs create label to show logs
 func (gui *GUI) createLabelLogs() *fyne.Container {
 	return container.NewHBox(
-		widget.NewLabel(gui.Language.Logs), // TODO language
+		widget.NewLabel(gui.Language.Logs),
 		widget.NewLabel(config.LOGS_PATH),
 	)
 }
@@ -405,22 +411,6 @@ func (gui *GUI) createHelpMenu() *fyne.Menu {
 				), gui.Window)
 		}))
 	return helpMenu
-}
-
-// getThemeIndex get index to selectTheme in settings from language of the app
-func getThemeIndex(langue, theme string) int {
-	var themes map[string][]string = map[string][]string{
-		"en": {"Dark", "Light"},
-		"fr": {"Sombre", "Clair"},
-	}
-
-	var l []string = themes[langue]
-	for index, v := range l {
-		if v == theme {
-			return index
-		}
-	}
-	return -1
 }
 
 // getLanguageIndex get index to selectLanguage in settings from language of the app

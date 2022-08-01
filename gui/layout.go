@@ -32,7 +32,7 @@ func (gui *GUI) createLayoutForm() *fyne.Container {
 		gui.createLayoutIncome(),
 		gui.createLayoutStatus(),
 		gui.createLayoutChildren(),
-		gui.createLayoutSave(),
+		// gui.createLayoutSave(), // TODO
 	)
 }
 
@@ -76,14 +76,14 @@ func (gui *GUI) createLayoutChildren() *fyne.Container {
 }
 
 // createLayoutSave Setup layouts and widget for save button layout
-func (gui *GUI) createLayoutSave() *fyne.Container {
-	gui.buttonSave = widget.NewButton(gui.Language.Save, func() {
-		gui.calculate()
-		gui.Logger.Info("Save Taxes")
-		// TODO Export taxes data in csv and/or pdf
-	})
-	return container.NewHBox(gui.buttonSave)
-}
+// func (gui *GUI) createLayoutSave() *fyne.Container {
+// 	gui.buttonSave = widget.NewButton(gui.Language.Save, func() {
+// 		gui.calculate()
+// 		gui.Logger.Info("Save Taxes")
+// 		// TODO Export taxes data in csv and/or pdf
+// 	})
+// 	return container.NewHBox(gui.buttonSave)
+// }
 
 // createLayoutTax Setup right side of window
 func (gui *GUI) createLayoutTax() *fyne.Container {

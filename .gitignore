@@ -30,11 +30,9 @@ go.work
 
 # End of https://www.toptal.com/developers/gitignore/api/go
 
+.settings.json
 
 .vscode/
-
-# build src
-corpos-christie*
 build/
 logs/
 fyne-cross/

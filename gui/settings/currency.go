@@ -1,7 +1,5 @@
 package settings
 
-// Handle the themes in GUI settings
-
 // Enum for currency
 const (
 	EURO   string = "€"

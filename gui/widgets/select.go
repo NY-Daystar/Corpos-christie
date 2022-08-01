@@ -10,6 +10,6 @@ import (
 func CreateChildrenSelect() *widget.SelectEntry {
 	var sel *widget.SelectEntry = widget.NewSelectEntry([]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"})
 	sel.SetText("0")
-	sel.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number") // TODO language through params
+	sel.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number")
 	return sel
 }
