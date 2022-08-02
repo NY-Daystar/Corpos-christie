@@ -1,0 +1,36 @@
+themes:
+    dark: Dark
+    light: Light
+languages:
+    french: French
+    english: English
+abouts:
+    text_1: "Welcome to"
+    text_2: "a Desktop app to calculate your taxes in France."
+    text_3: "This"
+    text_4: "is open-source"
+    text_5: "Developped in Go with Fyne framework."
+tax_headers:
+    header_1: "TRANCHE"
+    header_2: "MIN"
+    header_3: "MAX"
+    header_4: "RATE"
+    header_5: "TAX"
+file: File
+settings: Settings
+income: Enter your income
+status: Marital status
+children: Select children number
+tax: Taxes
+remainder: Remainder
+share: Shares
+save: Save
+language: Languages
+theme: Themes
+currency: Currencies
+logs: Logs path
+help: Help
+about: About
+author: Author
+close: Close
+quit: Quit

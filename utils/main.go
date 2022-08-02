@@ -6,6 +6,7 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -32,6 +33,22 @@ func ConvertStringToInt(str string) (int, error) {
 		return 0, err
 	}
 	return i, nil
+}
+
+// ConvertFloat64ToString convert float64 to a string and returns it
+func ConvertFloat64ToString(v float64) string {
+	return fmt.Sprintf("%f", v)
+}
+
+// ConvertInt64ToString convert int64 to a string and returns it
+func ConvertInt64ToString(v int64) string {
+	// return fmt.Sprintf("%f", v)
+	return strconv.FormatInt(v, 10)
+}
+
+// ConvertIntToString convert int to a string and returns it
+func ConvertIntToString(v int) string {
+	return fmt.Sprintf("%d", v)
 }
 
 // ConvertPercentageToFloat64 convert str which is string percentage like 5% into 5

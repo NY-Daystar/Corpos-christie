@@ -1,59 +1,67 @@
 
-EXE="corpos-christie"
-VERSION="1.1.0"
+APP_NAME="corpos-christie"
+APP_ID="lucasnoga.corpos-christie"
+APP_VERSION="2.0.0"
+APP_BUILD=2
 
-.PHONY: build buildLinux buildWindows buildMac
-.PHONY: run runconsole rungui
+.PHONY: package build-setup build-linux build-windows build-mac
+.PHONY: run run-console
 
-all: clean build
+all: clean package
 
 clean: 
 	@echo "Cleaning build/ folder"
 	@rm -rf build/*
 
-# Building executable for all OS
-build: build-linux build-windows build-mac
-	@echo Building executable ${EXE}...
-	@./build.sh ${VERSION}
-	@echo "${EXE} built"
+# Package executables for all OS after built-in
+package: build-setup build-linux build-windows
+	@echo Building executable ${APP_NAME}...
+	@./package.sh ${APP_VERSION}
+	@echo "${APP_NAME} built"
 
-# build executable for Linux
-build-linux:
-	@echo "Build for Linux"
-	@GOOS=linux GOARCH=amd64 go build -o build/linux-${EXE}
+# Test package app
+package-test: package
+	@echo Unzip build ${APP_NAME}...
+	@unzip build/linux/linux-${APP_NAME}-${APP_VERSION}.zip -d build/test
+	@pwd
+	@./build/test/${APP_NAME}
 
-# build executable for Windows
-build-windows:
-	@echo "Build for Windows"
-	@echo "Creating icon file"
-	@rsrc -ico assets/logo.ico -o ${EXE}.syso
-	@GOOS=windows GOARCH=amd64 go build -o windows-${EXE}.exe
-	@mv ${EXE}.syso build/${EXE}.syso
-	@mv windows-${EXE}.exe build/windows-${EXE}.exe
+# Setup 
+build-setup:
+	@echo "Creating build directory"
+	@rm -rf fyne-cross
+	@mkdir -p build/
+	cp -r resources build/resources
 	
 
-# build executable for MacOS
+# Build executable for Linux
+build-linux: build-setup
+	@echo "Build for Linux"
+	@fyne-cross linux -arch=amd64 --app-id=${APP_ID} --app-build=${APP_BUILD} --app-version=${APP_VERSION}
+	@echo "Move executable into build folder"
+	cp fyne-cross/bin/linux-amd64/Corpos-Christie build/linux-${APP_NAME}
+	@chmod +x build/linux-${APP_NAME}
+
+# Build executable for Windows
+build-windows: build-setup
+	@echo "Build for Windows"
+	@fyne-cross windows -arch=amd64 --app-id=${APP_ID} --app-build=${APP_BUILD} --app-version=${APP_VERSION}
+	@echo "Move executable into build folder"
+	cp fyne-cross/bin/windows-amd64/Corpos-Christie.exe build/windows-${APP_NAME}.exe
+	
+	
+# Build executable for MacOS
 build-mac:
 	@echo "Build for MacOS"
-	@GOOS=darwin GOARCH=amd64 go build -o build/mac-${EXE}
+	@GOOS=darwin GOARCH=amd64 go build -o build/mac-${APP_NAME}
 
-# Test building
-testbuild:
-	@echo Unzip build ${EXE}...
-	@unzip build/linux/${EXE}-${VERSION}.zip -d build/test
-	@pwd
-	@./build/test/${EXE}
-
-# Run program
+# Run app
 run:
-	go run main.go
+	go run .
 
-# Run program in console mode
-runconsole:
-	go run main.go --console
-
-rungui:
-	go run main.go --gui
+# Run app in console
+run-console:
+	go run . --console
 
 # Run test all
 test:
@@ -62,15 +70,6 @@ test:
 # See doc
 doc:
 	go doc
-
-# Docker build
-docker-build: 
-	go build -o ${EXE}
-	docker build -t ${EXE}:${VERSION} . && rm ${EXE}
-
-# Docker run
-docker-run:
-	docker run -it --rm --name ${EXE} ${EXE}:${VERSION}
 
 # list all target in makefile
 list:

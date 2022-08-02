@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/LucasNoga/corpos-christie/lib/colors"
-	"github.com/LucasNoga/corpos-christie/lib/utils"
+	"github.com/LucasNoga/corpos-christie/utils"
+	"github.com/LucasNoga/corpos-christie/utils/colors"
 )
 
 // User defines a the user of the program
@@ -118,6 +118,7 @@ func (user *User) Show() {
 	if user.IsInCouple {
 		isInCouple = "Yes"
 	}
+	fmt.Println(colors.Yellow("\tTax Results"))
 	fmt.Printf("Income:\t\t%s €\n", colors.Red(user.Income))
 	fmt.Printf("In couple:\t%s\n", colors.Red(isInCouple))
 	fmt.Printf("Children:\t%s\n", colors.Red(user.Children))

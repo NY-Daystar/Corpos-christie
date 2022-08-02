@@ -1,4 +1,4 @@
-# Income tax calculator
+# Corpos-Christie
 
 [![ci](https://github.com/LucasNoga/corpos-christie/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/LucasNoga/corpos-christie/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
@@ -6,45 +6,48 @@
 [![Total views](https://img.shields.io/sourcegraph/rrc/github.com/LucasNoga/corpos-christie.svg)](https://sourcegraph.com/github.com/LucasNoga/corpos-christie)
 [![Godoc](https://godoc.org/github.com/LucasNoga/corpos-christie?status.svg)](https://godoc.org/github.com/LucasNoga/corpos-christie)
 
-This project has been developped in Golang allows to calculate your taxes in the current year.
+This project is an income taxes calculator
+which has been developped in Golang and fyne for GUI which allows to calculate your taxes in the current year.
 
 The government has created an explanatory sheet to understand the calculation of the tax rate but this calculation is relatively complex and we want to create a simpler interface to calculate things.  
 Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir
 
+This project is a GUI developed in fyne
+
 ## Table of contents
 
-- [Requirements](#requirements)
-- [How to launch program](#how-to-launch-program)
-- [For Developpers](#for-developpers)
-- [Docker](#docker)
-- [Installing and Setup Golang](#installing-and-setup-golang)
-- [Suggestions](#suggestions)
-- [Credits](#credits)
+-   [Requirements](#requirements)
+-   [How to launch program](#how-to-launch-program)
+-   [For Developpers](#for-developpers)
+-   [Packaging App](#packaging-app)
+-   [Installing and Setup Golang](#installing-and-setup-golang)
+-   [Suggestions](#suggestions)
+-   [Credits](#credits)
 
 ## Requirements
 
-- [Golang](https://golang.org/dl/) >= 1.18.3
+-   [Golang](https://golang.org/dl/) >= 1.18.3
 
 ## How to launch program
 
 1. Get program  
-    1.1 Linux
+   1.1 Linux
 
-   ```bash
-   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/linux-corpos-christie-1.1.0.zip -O corpos-christie.zip
-   ```
+    ```bash
+    $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/linux-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    ```
 
-   1.2 Windows
+    1.2 Windows
 
-   ```bash
-   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/windows-corpos-christie-1.1.0.zip -O corpos-christie.zip
-   ```
+    ```bash
+    $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/windows-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    ```
 
-   1.3 Mac
+    1.3 Mac
 
-   ```bash
-   $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/mac-corpos-christie-1.1.0.zip -O corpos-christie.zip
-   ```
+    ```bash
+    $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/mac-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    ```
 
 2. Unzip it
 
@@ -70,7 +73,7 @@ $ git clone https://github.com/lucasnoga/corpos-christie.git
 Launch program basically
 
 ```bash
-$ go run main.go
+$ go run .
 ```
 
 or
@@ -86,10 +89,10 @@ Import module for an other project
 go get github.com/LucasNoga/corpos-christie
 ```
 
-Launch console mode
+Launch console application
 
 ```bash
-$ make runconsole
+$ make run-console
 ```
 
 To build program
@@ -119,27 +122,36 @@ $ go doc github.com/LucasNoga/corpos-christie/tax
 
 See [Project dependencies](https://deps.dev/go/github.com/lucasnoga/corpos-christie) To watch go project used in this program
 
-## Docker
+## Packaging App
 
-The official image of this projet: https://hub.docker.com/r/lucasnoga/corpos-christie
+This app is developed with [fyne library](https://fyne.io/)
 
-To use this image
+To build app we use [fyne-cross](https://github.com/fyne-io/fyne-cross)
+To use fyne-cross you need docker (linux) or docker destkop launched (windows/mac)
+
+To build on windows
 
 ```bash
-$ docker pull lucasnoga/corpos-christie
-$ docker run -it --rm --name corpos-christie lucasnoga/corpos-christie
+$ make build-windows
 ```
 
-To build a new docker image
+To build on linux
 
 ```bash
-$ make docker-build
+$ make build-linux
 ```
 
-To run this image
+To build on Mac **Not available on gui for now**
+You need to pull docker image for fyne mac
 
 ```bash
-$ make docker-run
+$ make build-mac
+```
+
+To test packaging
+
+```bash
+$ make package-test
 ```
 
 ## Installing and Setup Golang
@@ -155,9 +167,9 @@ $ go version
 
 ## Suggestions
 
-- To make a pull request: https://github.com/LucasNoga/corpos-christie/pulls
-- To summon an issue: https://github.com/LucasNoga/corpos-christie/issues
-- For any specific demand by mail: luc4snoga@gmail.com
+-   To make a pull request: https://github.com/LucasNoga/corpos-christie/pulls
+-   To summon an issue: https://github.com/LucasNoga/corpos-christie/issues
+-   For any specific demand by mail: luc4snoga@gmail.com
 
 ## Credits
 

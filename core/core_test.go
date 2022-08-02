@@ -1,13 +1,12 @@
 // Copyright 2016 The corpos-christie author
 // Licensed under GPLv3.
 
-// Package core define the mode of the program console or gui
 package core
 
 import (
 	"testing"
 
-	"github.com/LucasNoga/corpos-christie/lib/colors"
+	"github.com/LucasNoga/corpos-christie/utils/colors"
 )
 
 // For testing
@@ -16,7 +15,7 @@ import (
 
 // Test select mode when gui params
 func TestSelectModeWithGUIParams(t *testing.T) {
-	var expectedValue = "GUI"
+	var expectedValue = GUI
 	var args []string = []string{"main.go", "--gui"}
 
 	var mode string = selectMode(args)
@@ -29,7 +28,7 @@ func TestSelectModeWithGUIParams(t *testing.T) {
 
 // Test select mode when console params
 func TestSelectModeWithConsoleParams(t *testing.T) {
-	var expectedValue = "console"
+	var expectedValue = CONSOLE
 	var args []string = []string{"main.go", "--console"}
 
 	var mode string = selectMode(args)
@@ -42,7 +41,7 @@ func TestSelectModeWithConsoleParams(t *testing.T) {
 
 // Test select mode when no params default GUI
 func TestSelectModeWithNoParams(t *testing.T) {
-	var expectedValue = "GUI"
+	var expectedValue = GUI
 	var args []string = []string{}
 
 	var mode string = selectMode(args)
