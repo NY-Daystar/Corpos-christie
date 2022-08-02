@@ -1,8 +1,8 @@
 
 APP_NAME="corpos-christie"
 APP_ID="lucasnoga.corpos-christie"
-APP_VERSION="1.1.0"
-APP_BUILD=1
+APP_VERSION="2.0.0"
+APP_BUILD=2
 
 .PHONY: package build-setup build-linux build-windows build-mac
 .PHONY: run run-console

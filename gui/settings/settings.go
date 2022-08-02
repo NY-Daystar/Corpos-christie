@@ -53,7 +53,6 @@ func createDefaultSettings() Settings {
 
 // Set change value of data and write file with settings data
 func (s *Settings) Set(key string, value interface{}) {
-	s.logger.Debug("Set settings", zap.String("key", key), zap.Any("value", value))
 	switch key {
 	case "theme":
 		s.Theme = value.(int)
@@ -67,12 +66,13 @@ func (s *Settings) Set(key string, value interface{}) {
 
 // Save write file with settings data
 func (s *Settings) save() {
-	settingsPath, _ := filepath.Abs(config.SETTINGS_PATH)
-	s.logger.Debug("Save settings", zap.String("path", settingsPath))
+	settingsPath, err := filepath.Abs(config.SETTINGS_PATH)
+	if err != nil {
+		s.logger.Error("Can't get absolute path of settings", zap.String("error", err.Error()))
+	}
 	file, _ := json.MarshalIndent(s, "", " ")
-	err := ioutil.WriteFile(config.SETTINGS_PATH, file, 0644)
+	err = ioutil.WriteFile(settingsPath, file, 0644)
 	if err != nil {
 		s.logger.Error("Save settings", zap.String("error", err.Error()))
 	}
-	s.logger.Debug("Settings saved", zap.String("path", settingsPath))
 }
