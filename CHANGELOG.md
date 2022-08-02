@@ -7,19 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project releases
 
-## 2.0.0 - 25 July 2022 - GUI
+## 2.0.0 - 02 August 2022 - GUI
 
 ### Added
 
--   Add First Widgets of GUI
+-   First version of GUI app
 -   Add Dark and light theme
 -   Add Languages in GUI for `en` and `fr`
 -   Add `about` options in console
+-   Add `settings` into setting file for `theme`, `language` and `currency`
+-   Add [zap librairy](https://github.com/uber-go/zap) to handle logs with log rotation
 
 ### Changed
 
 -   Rename `build.sh` to `package.sh` with all folowing (Readme, Makefile)
 -   Reorganize `gui` package
+
+### Removed
+
+-   Remove Docker setup
+    -   Files: `Dockerfile` `.dockerignore`
+    -   Command in the `Makefile`
 
 ## 1.1.0 - 09 July 2022 - 2022 update
 
