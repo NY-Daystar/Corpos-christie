@@ -115,7 +115,7 @@ func (gui GUI) Start() {
 
 // setSettings get and configure app settings
 func (gui *GUI) setAppSettings() {
-	gui.Settings = settings.Load(gui.Logger)
+	gui.Settings, _ = settings.Load(gui.Logger)
 
 	gui.Logger.Info("Settings loaded",
 		zap.Int("theme", gui.Settings.Theme),
