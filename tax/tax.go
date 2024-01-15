@@ -386,7 +386,7 @@ func ShowTaxListUsed(cfg config.Config) {
 // SelectTaxYear ask in console if you want
 // Ask to the user if he wants to change the year of the tax metrics
 // to calculate taxes from another year
-func SelectTaxYear(cfg *config.Config, user *user.User) {
+func SelectTaxYear(cfg *config.Config) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
 
 	// Asking year
