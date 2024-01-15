@@ -80,7 +80,7 @@ func init() {
 
 // Calculate tax for a single person with 30000 of income
 func TestCalculateTaxForSinglePerson(t *testing.T) {
-	var user user.User = user.User{}
+	var user = user.User{}
 	user.Income = 30000
 
 	result := CalculateTax(&user, CONFIG)
@@ -242,14 +242,14 @@ func TestCalculateReverseTaxForCoupleWith3Children(t *testing.T) {
 
 // Create user single with no children and check shares
 func TestUserSingleOnlyIncome(t *testing.T) {
-	var sharesRef float64 = 1.
+	var sharesRef = 1.
 
-	var user user.User = user.User{
+	var user = user.User{
 		IsInCouple: false,
 		Children:   0,
 	}
 
-	var shares float64 = getShares(user)
+	var shares = getShares(user)
 	t.Logf("User reference %+v", user)
 
 	// Testing shares
@@ -260,14 +260,14 @@ func TestUserSingleOnlyIncome(t *testing.T) {
 
 // Create user in couple with no children and check shares
 func TestUserInCoupleNoChildren(t *testing.T) {
-	var sharesRef float64 = 2.
+	var sharesRef = 2.
 
-	var user user.User = user.User{
+	var user = user.User{
 		IsInCouple: true,
 		Children:   0,
 	}
 
-	var shares float64 = getShares(user)
+	var shares = getShares(user)
 	t.Logf("User reference %+v", user)
 
 	// Testing shares
@@ -278,14 +278,14 @@ func TestUserInCoupleNoChildren(t *testing.T) {
 
 // Create user in couple with 3 children and check shares
 func TestUserInCoupleWith3Children(t *testing.T) {
-	var sharesRef float64 = 4
+	var sharesRef = 4.
 
-	var user user.User = user.User{
+	var user = user.User{
 		IsInCouple: true,
 		Children:   3,
 	}
 
-	var shares float64 = getShares(user)
+	var shares = getShares(user)
 	t.Logf("User reference %+v", user)
 
 	// Testing shares
@@ -296,14 +296,14 @@ func TestUserInCoupleWith3Children(t *testing.T) {
 
 // Create user single with 4 children and check shares
 func TestUserInSingleWith4Children(t *testing.T) {
-	var sharesExpected float64 = 4.5
+	var sharesExpected = 4.5
 
-	var user user.User = user.User{
+	var user = user.User{
 		IsInCouple: false,
 		Children:   4,
 	}
 
-	var shares float64 = getShares(user)
+	var shares = getShares(user)
 	t.Logf("User reference %+v", user)
 
 	// Testing shares
@@ -314,14 +314,14 @@ func TestUserInSingleWith4Children(t *testing.T) {
 
 // Create user in couple with 4 children and check shares
 func TestUserInCoupleWith4Children(t *testing.T) {
-	var sharesRef float64 = 5
+	var sharesRef = 5.
 
-	var user user.User = user.User{
+	var user = user.User{
 		IsInCouple: true,
 		Children:   4,
 	}
 
-	var shares float64 = getShares(user)
+	var shares = getShares(user)
 	t.Logf("User reference %+v", user)
 
 	// Testing shares

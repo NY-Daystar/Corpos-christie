@@ -8,7 +8,7 @@ import (
 // CreateIncomeEntry Create widget entry for income
 // Returns entry in fyne object
 func CreateIncomeEntry() *widget.Entry {
-	var entry *widget.Entry = widget.NewEntry()
+	var entry = widget.NewEntry()
 	entry.SetPlaceHolder("30000")
 	entry.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number")
 	return entry

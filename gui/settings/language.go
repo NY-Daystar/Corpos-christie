@@ -69,7 +69,7 @@ func GetDefaultLanguage() string {
 }
 
 // GetThemes parse ThemeYaml struct to get value of each field
-func (yaml Yaml) GetThemes() []string {
+func (yaml *Yaml) GetThemes() []string {
 	v := reflect.ValueOf(yaml.Theme)
 	themes := make([]string, v.NumField())
 	for i := 0; i < v.NumField(); i++ {
@@ -79,7 +79,7 @@ func (yaml Yaml) GetThemes() []string {
 }
 
 // GetLanguages parse LanguageYaml struct to get value of each field
-func (yaml Yaml) GetLanguages() []string {
+func (yaml *Yaml) GetLanguages() []string {
 	v := reflect.ValueOf(yaml.Languages)
 	languages := make([]string, v.NumField())
 	for i := 0; i < v.NumField(); i++ {
@@ -89,7 +89,7 @@ func (yaml Yaml) GetLanguages() []string {
 }
 
 // GetAbouts parse AboutYaml struct to get value of each field
-func (yaml Yaml) GetAbouts() []string {
+func (yaml *Yaml) GetAbouts() []string {
 	v := reflect.ValueOf(yaml.Abouts)
 	abouts := make([]string, v.NumField())
 	for i := 0; i < v.NumField(); i++ {
@@ -99,7 +99,7 @@ func (yaml Yaml) GetAbouts() []string {
 }
 
 // GetTaxHeaders parse TaxHeadersYaml struct to get value of each field
-func (yaml Yaml) GetTaxHeaders() []string {
+func (yaml *Yaml) GetTaxHeaders() []string {
 	v := reflect.ValueOf(yaml.TaxHeaders)
 	taxHeaders := make([]string, v.NumField())
 	for i := 0; i < v.NumField(); i++ {

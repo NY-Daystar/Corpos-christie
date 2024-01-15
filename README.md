@@ -6,13 +6,28 @@
 [![Total views](https://img.shields.io/sourcegraph/rrc/github.com/LucasNoga/corpos-christie.svg)](https://sourcegraph.com/github.com/LucasNoga/corpos-christie)
 [![Godoc](https://godoc.org/github.com/LucasNoga/corpos-christie?status.svg)](https://godoc.org/github.com/LucasNoga/corpos-christie)
 
+![GitHub watchers](https://img.shields.io/github/watchers/ny-daystar/corpos-christie)
+![GitHub forks](https://img.shields.io/github/forks/ny-daystar/corpos-christie)
+![GitHub Repo stars](https://img.shields.io/github/stars/ny-daystar/corpos-christie)
+![GitHub repo size](https://img.shields.io/github/repo-size/ny-daystar/corpos-christie)
+![GitHub language count](https://img.shields.io/github/languages/count/ny-daystar/corpos-christie)
+![GitHub top language](https://img.shields.io/github/languages/top/ny-daystar/corpos-christie) <a href="https://codeclimate.com/github/ny-daystar/corpos-christie/maintainability"><img src="https://api.codeclimate.com/v1/badges/715c6f3ffb08de5ca621/maintainability" /></a>  
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/ny-daystar/corpos-christie/main)
+![GitHub issues](https://img.shields.io/github/issues/ny-daystar/corpos-christie)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/ny-daystar/corpos-christie)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-blue.svg?style=circular)](#contributors)
+
+![Golang](https://img.shields.io/badge/logo-javascript-blue?logo=javascript&color=a5a5a5&logoColor=e5e5e5)
+
 This project is an income taxes calculator
 which has been developped in Golang and fyne for GUI which allows to calculate your taxes in the current year.
 
 The government has created an explanatory sheet to understand the calculation of the tax rate but this calculation is relatively complex and we want to create a simpler interface to calculate things.  
 Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir
 
-This project is a GUI developed in fyne
+This project is a GUI developed with `fyne`
+
+Source code analysed with [DeepSource](https://deepsource.com/)
 
 ## Table of contents
 
@@ -26,7 +41,7 @@ This project is a GUI developed in fyne
 
 ## Requirements
 
--   [Golang](https://golang.org/dl/) >= 1.18.3
+-   [Golang](https://golang.org/dl/) >= 1.19.5
 
 ## How to launch program
 

@@ -36,10 +36,32 @@ type Tranche struct {
 
 // New create new configuration
 func New() *Config {
-	var config Config = Config{
+	var config = Config{
 		Name:    APP_NAME,
 		Version: APP_VERSION,
 		TaxList: []Tax{
+			{
+				Year: 2024,
+				Tranches: []Tranche{
+
+					{Min: 0, Max: 11294, Rate: "0%"},
+					{Min: 11295, Max: 28797, Rate: "11%"},
+					{Min: 28798, Max: 82341, Rate: "30%"},
+					{Min: 82342, Max: 177106, Rate: "41%"},
+					{Min: 177107, Max: math.MaxInt64, Rate: "45%"},
+				},
+			},
+			{
+				Year: 2023,
+				Tranches: []Tranche{
+
+					{Min: 0, Max: 10777, Rate: "0%"},
+					{Min: 10778, Max: 27478, Rate: "11%"},
+					{Min: 27479, Max: 78570, Rate: "30%"},
+					{Min: 78571, Max: 168994, Rate: "41%"},
+					{Min: 168995, Max: math.MaxInt64, Rate: "45%"},
+				},
+			},
 			{
 				Year: 2022,
 				Tranches: []Tranche{

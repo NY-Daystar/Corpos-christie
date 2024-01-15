@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project releases
 
-## 2.0.0 - 02 August 2022 - GUI
+## 2.1.0 - January, 15th 2024 - Small fixes
+
+### Added
+
+-   Deepsource analyzed and fix issues
+-   Add new command `show_tax_tranche`
+-   Add taxes scales for `2023` & `2024`
+
+### Changed
+
+-   Update documentation (Readme)
+
+## 2.0.0 - August, 2nd 2022 - GUI
 
 ### Added
 
@@ -29,7 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     -   Files: `Dockerfile` `.dockerignore`
     -   Command in the `Makefile`
 
-## 1.1.0 - 09 July 2022 - 2022 update
+## 1.1.0 - July, 9th 2022 - 2022 update
 
 ### Added
 
@@ -49,7 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Remove `config.json` file
 
-## 1.0.0 - 10 July 2021 - Public version
+## 1.0.0 - July, 10th 2021 - Public version
 
 ### Featured
 
@@ -70,7 +82,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Fix method `GetShares` get shares of the user
 -   Fix method to read data from console
 
-## 0.0.9 - 04 July 2021 - Calculate tax v3
+## 0.0.9 - July, 4th 2021 - Calculate tax v3
 
 ### Featured
 
@@ -88,7 +100,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Change `Percentage` field to `Rate` in `Tranche` struct
 -   Change type of `Rate` float to string
 
-## 0.0.8 - 03 July 2021 - Refactoring modules
+## 0.0.8 - July, 3rd 2021 - Refactoring modules
 
 ### Added
 
@@ -102,7 +114,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-## 0.0.7 - 29 June 2021 - Restructure project
+## 0.0.7 - June 29th 2021 - Restructure project
 
 ### Changed
 
@@ -113,7 +125,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Remove `struct.go` file and add struct into package file
 
-## 0.0.6 - 28 June 2021 - Restructure project
+## 0.0.6 - June, 28th 2021 - Restructure project
 
 ### Added
 
@@ -125,19 +137,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Change module's name
 -   Update Readme
 
-## 0.0.5 - 26 June 2021 - table tax tranches
+## 0.0.5 - June, 26th 2021 - table tax tranches
 
 ### Added
 
 -   Create table structure to get tax tranches
 
-## 0.0.4 - 25 June 2021 - Calculate tax v2
+## 0.0.4 - June, 25th 2021 - Calculate tax v2
 
 ### Added
 
 -   New process to integrate couple, children to process part and including them to the tax process
 
-## 0.0.3 - 23 June 2021 - Fix
+## 0.0.3 - June, 23rd 2021 - Fix
 
 ### Added
 
@@ -147,11 +159,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 -   Set handler if config doesn't exist
 
-## 0.0.2 - 22 June 2021 - Calculate tax v1
+## 0.0.2 - June, 22nd 2021 - Calculate tax v1
 
 ### Added
 
 -   Configuration management
 -   Process to calculate tax from income
 
-## 0.0.1 - 21 June 2021 - Init project
+## 0.0.1 - June, 21st 2021 - Init project
