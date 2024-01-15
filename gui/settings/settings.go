@@ -39,7 +39,7 @@ func Load(logger *zap.Logger) (Settings, error) {
 
 // createDefaultSettings create settings file with default value
 func createDefaultSettings() Settings {
-	var settingsDefault Settings = Settings{
+	var settingsDefault = Settings{
 		Theme:    GetDefaultTheme(),
 		Language: GetDefaultLanguage(),
 		Currency: GetDefaultCurrency(),

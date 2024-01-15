@@ -77,7 +77,7 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 		if err != nil {
 			log.Printf("Error: asking tax details, details: %v", err)
 		}
-		showTaxTranche(result, cfg.Tax.Year)
+		showTaxTrancheResult(result, cfg.Tax.Year)
 	}
 
 	if status {
@@ -100,7 +100,8 @@ func StartTaxCalculator(cfg *config.Config, user *user.User) {
 // StartReverseTaxCalculator calculate income needed from remainder seized by user
 func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
-	var status bool = true
+	status := true
+
 	// Ask income's user
 	fmt.Print("1. Enter your income wished\n    (en) Income after taxes income\n    (fr) Revenus après impot\n> ")
 	_, err := user.AskRemainder()
@@ -137,7 +138,7 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 		if err != nil {
 			log.Printf("Error: asking tax details, details: %v", err)
 		}
-		showTaxTranche(result, cfg.Tax.Year)
+		showTaxTrancheResult(result, cfg.Tax.Year)
 	}
 
 	if status {
@@ -161,14 +162,14 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 // returns the result of the processing
 func CalculateTax(user *user.User, cfg *config.Config) Result {
 	var tax float64
-	var taxable float64 = float64(user.Income)
-	var shares float64 = getShares(*user)
+	var taxable = float64(user.Income)
+	var shares = getShares(*user)
 
 	// Divide taxable by shares
 	taxable /= shares
 
 	// Store each tranche taxes
-	var taxTranches []TaxTranche = make([]TaxTranche, 0)
+	var taxTranches = make([]TaxTranche, 0)
 
 	// for each tranche
 	for _, tranche := range cfg.GetTax().Tranches {
@@ -206,8 +207,8 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 	var taxTranches []TaxTranche
 	var shares = getShares(*user)
 
-	var incomeAfterTaxes float64 = user.Remainder
-	var target float64 = incomeAfterTaxes // income to find
+	var incomeAfterTaxes = user.Remainder
+	var target = incomeAfterTaxes // income to find
 
 	// Divide taxable by shares
 	target /= shares
@@ -306,7 +307,7 @@ func getShares(user user.User) float64 {
 }
 
 // showTaxTranche show details of calculation showing every tax at each tranche
-func showTaxTranche(result Result, year int) {
+func showTaxTrancheResult(result Result, year int) {
 
 	// Install this: $ go get https://github.com/olekukonko/tablewriter
 	// Create table
@@ -314,20 +315,20 @@ func showTaxTranche(result Result, year int) {
 	table.SetBorder(true) // Set Border to false
 
 	// Setting header
-	var header []string = []string{"Tranche", "Min", "Max", "Rate", "Tax"}
+	var header = []string{"Tranche", "Min", "Max", "Rate", "Tax"}
 	table.SetHeader(header)
 
 	// Create data to append on the table
 	var data [][]string
 	for i, val := range result.TaxTranches {
-		var index int = i + 1
+		index := i + 1
 
-		var trancheNumber string = fmt.Sprintf("Tranche %d", index)
-		var min string = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Min))
-		var max string = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Max))
+		var trancheNumber = fmt.Sprintf("Tranche %d", index)
+		var min = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Min))
+		var max = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Max))
 		rate, _ := utils.ConvertPercentageToFloat64(val.tranche.Rate)
-		var rateStr string = fmt.Sprintf("%s %%", strconv.Itoa(int(rate)))
-		var tax string = fmt.Sprintf("%s €", strconv.Itoa(int(val.Tax)))
+		var rateStr = fmt.Sprintf("%s %%", strconv.Itoa(int(rate)))
+		var tax = fmt.Sprintf("%s €", strconv.Itoa(int(val.Tax)))
 
 		var line []string = make([]string, 5)
 		line[0] = trancheNumber
@@ -342,7 +343,7 @@ func showTaxTranche(result Result, year int) {
 	table.AppendBulk(data)
 
 	// Add footer
-	var footer []string = []string{
+	var footer = []string{
 		"Result",
 		"Remainder",
 		fmt.Sprintf("%s €", strconv.Itoa(int(result.Remainder))),
@@ -361,7 +362,7 @@ func ShowTaxList(cfg config.Config) {
 	fmt.Println(colors.Yellow("Tax list year"))
 	fmt.Println("-------------")
 	for _, v := range cfg.TaxList {
-		var year string = strconv.Itoa(v.Year)
+		var year = strconv.Itoa(v.Year)
 		if cfg.GetTax().Year == v.Year {
 			year = "* " + colors.Green(v.Year)
 		}
@@ -392,7 +393,7 @@ func SelectTaxYear(cfg *config.Config) {
 	// Asking year
 	fmt.Print("List of years: ")
 	for _, v := range cfg.TaxList {
-		var year string = strconv.Itoa(v.Year)
+		var year = strconv.Itoa(v.Year)
 		if cfg.GetTax().Year == v.Year {
 			year = colors.Green(v.Year)
 		}
@@ -400,7 +401,7 @@ func SelectTaxYear(cfg *config.Config) {
 	}
 	fmt.Print("\nWhich year do you want ? ")
 
-	var input string = utils.ReadValue()
+	var input = utils.ReadValue()
 
 	year, err := utils.ConvertStringToInt(input)
 	if err != nil {

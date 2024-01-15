@@ -7,7 +7,7 @@ import (
 // CreateStatusRadio Create widget radioGroup for marital status
 // Returns radioGroup in fyne object
 func CreateStatusRadio() *widget.RadioGroup {
-	var radio *widget.RadioGroup = widget.NewRadioGroup([]string{"Single", "Couple"}, nil) // TODO language through params
+	var radio = widget.NewRadioGroup([]string{"Single", "Couple"}, nil) // TODO language through params
 	radio.SetSelected("Single")
 	radio.Horizontal = true
 	return radio

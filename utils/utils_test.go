@@ -14,8 +14,8 @@ import (
 
 // Test string conversion to int
 func TestStringConvertToInt(t *testing.T) {
-	var stringRef string = "32000"
-	var expected int = 32000
+	var stringRef = "32000"
+	var expected = 32000
 
 	val, err := ConvertStringToInt(stringRef)
 	t.Logf("Value converted %d", val)
@@ -29,8 +29,8 @@ func TestStringConvertToInt(t *testing.T) {
 
 // Test string percentage conversion to float64
 func TestConvertPercentageToFloat64(t *testing.T) {
-	var stringRef string = "15%"
-	var expected float64 = 15
+	var stringRef = "15%"
+	var expected = 15.
 
 	val, err := ConvertPercentageToFloat64(stringRef)
 	t.Logf("Value converted %f", val)
@@ -44,12 +44,12 @@ func TestConvertPercentageToFloat64(t *testing.T) {
 
 // Test if function return the maxLength among this item
 func TestMaxLength(t *testing.T) {
-	var longItem string = "test max length"
+	var longItem = "test max length"
 	var items = []string{"tax", "options", longItem, "db clean"} // 'long item' has to be the long string in array
-	var refMaxLength int = len(longItem)
+	var refMaxLength = len(longItem)
 	t.Logf("Length of %s : %d", longItem, refMaxLength)
 
-	var maxLength int = GetMaxLength(items)
+	var maxLength = GetMaxLength(items)
 	t.Logf("Length find by function: %d", maxLength)
 
 	if refMaxLength != maxLength {
@@ -59,12 +59,12 @@ func TestMaxLength(t *testing.T) {
 
 // Test if function return the right padding
 func TestGetPadding(t *testing.T) {
-	var longItem string = "test get padding function"
+	var longItem = "test get padding function"
 	var items = []string{"tax", "options", longItem, "db clean"} // 'long item' has to be the long string in array
-	var refGetPadding int = len(longItem)
+	var refGetPadding = len(longItem)
 	t.Logf("Length of %s : %d", longItem, refGetPadding)
 
-	var padding int = getPadding(items)
+	var padding = getPadding(items)
 	t.Logf("Length find by function: %d", padding)
 
 	if refGetPadding != padding {
@@ -83,7 +83,7 @@ func TestSetPadding(t *testing.T) {
 	}
 
 	// check if all value are the same
-	var samePaddings bool = func(a []int) bool {
+	var samePaddings = func(a []int) bool {
 		for i := 1; i < len(a); i++ {
 			if a[i] != a[0] {
 				return false

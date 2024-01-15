@@ -53,7 +53,7 @@ func ConvertIntToString(v int) string {
 
 // ConvertPercentageToFloat64 convert str which is string percentage like 5% into 5
 func ConvertPercentageToFloat64(str string) (float64, error) {
-	var s string = strings.TrimSuffix(str, "%")
+	var s = strings.TrimSuffix(str, "%")
 	i, err := strconv.Atoi(s)
 	f := float64(i)
 	if err != nil {
@@ -87,8 +87,8 @@ func getPadding(tab []string) int {
 // SetPadding get the padding of the tab slice and add the padding into the element v
 // returns v string including the padding
 func SetPadding(tab []string, v string) string {
-	var padding int = getPadding(tab)
-	var gap int = padding - len(v) + DEFAULT_PADDING
-	var space string = strings.Repeat(" ", gap)
+	var padding = getPadding(tab)
+	var gap = padding - len(v) + DEFAULT_PADDING
+	var space = strings.Repeat(" ", gap)
 	return space
 }

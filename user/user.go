@@ -26,7 +26,7 @@ type User struct {
 // AskIncome asks the income of the user to calculate tax and set it into user struct
 // if value is set returns true, otherwise false
 func (user *User) AskIncome() (bool, error) {
-	var input string = utils.ReadValue()
+	var input = utils.ReadValue()
 	income, err := utils.ConvertStringToInt(input)
 	if err != nil {
 		log.Printf("Error: Tax income is not convertible in int, details: %v", err)
@@ -39,7 +39,7 @@ func (user *User) AskIncome() (bool, error) {
 // AskRemainder asks the remainder of the user to calculate reverse tax and set it into user struct
 // if value is set returns true, otherwise false
 func (user *User) AskRemainder() (bool, error) {
-	var input string = utils.ReadValue()
+	var input = utils.ReadValue()
 	remainder, err := utils.ConvertStringToInt(input)
 	if err != nil {
 		log.Printf("Error: Tax remainder is not convertible in int, details: %v", err)
@@ -67,7 +67,7 @@ func (user *User) AskIsInCouple() (bool, error) {
 // AskHasChildren asks the number of children of the user and set it into user struct
 // if value is set returns true, otherwise false
 func (user *User) AskHasChildren() (bool, error) {
-	var input string = utils.ReadValue()
+	var input = utils.ReadValue()
 
 	// user can skip the question
 	if input == "" {
@@ -86,7 +86,7 @@ func (user *User) AskHasChildren() (bool, error) {
 
 // AskTaxDetails asks to the user if he wants to see details of his taxes
 // returns true if wants otherwise false
-func (user *User) AskTaxDetails() (bool, error) {
+func (*User) AskTaxDetails() (bool, error) {
 	fmt.Print("Do you want to see tax details (Y/n) ? ")
 	response, err := askYesNo()
 	if err != nil {
@@ -97,7 +97,7 @@ func (user *User) AskTaxDetails() (bool, error) {
 
 // AskRestart asks the user if he wants to retry a calculation of tax
 // returns true if wants otherwise false
-func (user *User) AskRestart() bool {
+func (*User) AskRestart() bool {
 	response, _ := askYesNo()
 	return response
 }
@@ -108,7 +108,7 @@ func (user *User) GetShares() float64 {
 }
 
 // IsIsolated return bool if parent has children to raise alone
-func (user User) IsIsolated() bool {
+func (user *User) IsIsolated() bool {
 	return !user.IsInCouple && user.Children > 0
 }
 
@@ -131,7 +131,7 @@ func (user *User) Show() {
 // returns true if the user say 'yes', false if he answered 'no'
 // returns an error if the seize is not interpretable
 func askYesNo() (bool, error) {
-	var input string = utils.ReadValue()
+	var input = utils.ReadValue()
 	if input == "Y" || input == "y" || input == "Yes" || input == "yes" {
 		return true, nil
 	} else if input == "" || input == "N" || input == "n" || input == "No" || input == "no" {
