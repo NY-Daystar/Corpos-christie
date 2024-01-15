@@ -47,6 +47,11 @@ func init() {
 			description: "Estimate your incomes from a tax amount (tax > income)",
 		},
 		{
+			name:        "show_tax_tranche",
+			exec:        func(cfg *config.Config, user *user.User) { tax.ShowTaxTranche(*cfg) },
+			description: "Show the scale of taxes from the year selected",
+		},
+		{
 			name:        "show_tax_year_list",
 			exec:        func(cfg *config.Config, user *user.User) { tax.ShowTaxList(*cfg) },
 			description: "Show the list of years to calculate your taxes",
