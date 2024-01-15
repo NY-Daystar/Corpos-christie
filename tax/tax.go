@@ -37,7 +37,7 @@ type TaxTranche struct {
 // StartTaxCalculator calculate taxes from income seized by user
 func StartTaxCalculator(cfg *config.Config, user *user.User) {
 	fmt.Printf("The calculator is based on %s\n", colors.Teal(cfg.GetTax().Year))
-	var status bool = true
+	status := true
 	// Ask income's user
 	fmt.Print("1. Enter your income\n    (en) Taxable income\n    (fr) Revenus net imposable\n> ")
 	_, err := user.AskIncome()
@@ -258,7 +258,7 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 // calculateTranche calculate the tax for the tranche base on your taxable income
 // returns TaxTranche which amount to pay for the specific tranche
 func calculateTranche(taxable float64, tranche config.Tranche) TaxTranche {
-	var taxTranche TaxTranche = TaxTranche{
+	var taxTranche = TaxTranche{
 		tranche: tranche,
 	}
 
@@ -330,7 +330,7 @@ func showTaxTrancheResult(result Result, year int) {
 		var rateStr = fmt.Sprintf("%s %%", strconv.Itoa(int(rate)))
 		var tax = fmt.Sprintf("%s €", strconv.Itoa(int(val.Tax)))
 
-		var line []string = make([]string, 5)
+		var line = make([]string, 5)
 		line[0] = trancheNumber
 		line[1] = min
 		line[2] = max

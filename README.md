@@ -25,7 +25,7 @@ which has been developped in Golang and fyne for GUI which allows to calculate y
 The government has created an explanatory sheet to understand the calculation of the tax rate but this calculation is relatively complex and we want to create a simpler interface to calculate things.  
 Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir
 
-This project is a GUI developed with fyne
+This project is a GUI developed with `fyne`
 
 Source code analysed with [DeepSource](https://deepsource.com/)
 
@@ -41,7 +41,7 @@ Source code analysed with [DeepSource](https://deepsource.com/)
 
 ## Requirements
 
--   [Golang](https://golang.org/dl/) >= 1.18.3
+-   [Golang](https://golang.org/dl/) >= 1.19.5
 
 ## How to launch program
 
