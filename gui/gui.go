@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"image/color"
-	"io/ioutil"
 	"log"
 	"math"
 	"net/url"
@@ -149,7 +148,7 @@ func (gui *GUI) setLanguage(code string) {
 	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)
 	gui.Logger.Debug("Load file for language", zap.String("file", languageFile))
 
-	yamlFile, _ := ioutil.ReadFile(languageFile)
+	yamlFile, _ := os.ReadFile(languageFile)
 	err := yaml.Unmarshal(yamlFile, &gui.Language)
 
 	gui.Language.Code = code

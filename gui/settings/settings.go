@@ -2,7 +2,6 @@ package settings
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -46,7 +45,7 @@ func createDefaultSettings() Settings {
 		Currency: GetDefaultCurrency(),
 	}
 	file, _ := json.MarshalIndent(settingsDefault, "", " ")
-	_ = ioutil.WriteFile(config.SETTINGS_PATH, file, 0644)
+	_ = os.WriteFile(config.SETTINGS_PATH, file, 0644)
 	return settingsDefault
 }
 
@@ -70,7 +69,7 @@ func (s *Settings) save() {
 		s.logger.Error("Can't get absolute path of settings", zap.String("error", err.Error()))
 	}
 	file, _ := json.MarshalIndent(s, "", " ")
-	err = ioutil.WriteFile(settingsPath, file, 0644)
+	err = os.WriteFile(settingsPath, file, 0644)
 	if err != nil {
 		s.logger.Error("Save settings", zap.String("error", err.Error()))
 	}
