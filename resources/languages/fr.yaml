@@ -4,6 +4,9 @@ themes:
 languages:
     french: Francais
     english: Anglais
+    spanish: Espagnol
+    german: Allemand
+    italian: Italien
 abouts:
     text_1: "Bienvenue sur"
     text_2: "une application de bureau pour estimer vos impôts en France"
@@ -28,6 +31,7 @@ save: Sauvegarder
 language: Langues
 theme: Themes
 currency: Devise
+year: Année
 logs: Chemin de logs
 help: Aide
 about: A propos

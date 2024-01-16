@@ -1,0 +1,40 @@
+themes:
+    dark: Dunkel
+    light: Licht
+languages:
+    french: Französisch
+    english: Englisch
+    spanish: Spanisch
+    german: Deutsch
+    italian: Italienisch
+abouts:
+    text_1: Willkommen bei
+    text_2: Eine Desktop-App zur Berechnung Ihrer Steuern in Frankreich.
+    text_3: Dies
+    text_4: ist Open-Source
+    text_5: Entwickelt im Go mit Fyne-Framework.
+tax_headers:
+    header_1: TRANCHE
+    header_2: MIN
+    header_3: MAX
+    header_4: RATE
+    header_5: STEUER
+file: Datei
+settings: Einstellungen
+income: Geben Sie Ihr Einkommen ein
+status: Familienstand
+children: Kindernummer auswählen
+tax: Steuern
+remainder: Rest
+share: Aktien
+save: Speichern
+language: Sprachen
+theme: Themen
+currency: Währungen
+year: Jahr
+logs: Protokollpfad
+help: Hilfe
+about: über
+author: Autor
+close: Schließen
+quit: Beenden

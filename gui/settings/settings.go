@@ -42,7 +42,7 @@ func createDefaultSettings() Settings {
 	var settingsDefault = Settings{
 		Theme:    GetDefaultTheme(),
 		Language: GetDefaultLanguage(),
-		Currency: GetDefaultCurrency(),
+		Currency: EURO,
 	}
 	file, _ := json.MarshalIndent(settingsDefault, "", " ")
 	_ = os.WriteFile(config.SETTINGS_PATH, file, 0644)

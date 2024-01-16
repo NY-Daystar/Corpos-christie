@@ -10,12 +10,18 @@ import (
 const (
 	FRENCH  string = "fr"
 	ENGLISH string = "en"
+	SPANISH string = "es"
+	GERMAN  string = "ge"
+	ITALIAN string = "it"
 )
 
 // Languages yaml struct for theme's app
 type LanguageYaml struct {
 	English string `yaml:"english"`
 	French  string `yaml:"french"`
+	Spanish string `yaml:"spanish"`
+	German  string `yaml:"german"`
+	Italian string `yaml:"italian"`
 }
 
 // About text yaml struct for theme's app

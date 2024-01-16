@@ -1,0 +1,40 @@
+themes:
+    dark: Scuro
+    light: Luce
+languages:
+    french: Francese
+    english: Inglese
+    spanish: Spagnolo
+    german: Tedesco
+    italian: Italiano
+abouts:
+    text_1: "Benvenuto a"
+    text_2: "Un'app desktop per calcolare le tasse in Francia."
+    text_3: "Questo"
+    text_4: "è open source"
+    text_5: "Sviluppato nel framework Go with Fyne."
+tax_headers:
+    header_1: "TRANCHE"
+    header_2: "MIN"
+    header_3: "MAX"
+    header_4: "TARIFFA"
+    header_5: "IMPOSTA"
+file: Dossier
+settings: Impostazioni
+income: Inserisci il tuo reddito
+status: Stato civile
+children: Selezionare il numero dei bambini
+tax: Tasse
+remainder: Resto
+share: azioni
+save: Salvare
+language: Lingue
+theme: Temi
+currency: Valute
+year: Anno
+logs: Percorso dei log
+help: Aiuto
+about: Circa
+author: Autore
+close: Chiudere
+quit: Smettere
