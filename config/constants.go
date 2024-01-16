@@ -6,10 +6,10 @@ package config
 
 // App data
 const (
-	APP_NAME    string = "corpos-christie"                              // Name of program
-	APP_VERSION string = "2.0.0"                                        // Version of program
-	APP_AUTHOR  string = "Lucas Noga"                                   // Author of program
-	APP_LINK    string = "https://github.com/LucasNoga/corpos-christie" // Link of repository
+	APP_NAME    string = "corpos-christie"                               // Name of program
+	APP_VERSION string = "2.1.0"                                         // Version of program
+	APP_AUTHOR  string = "Lucas Noga"                                    // Author of program
+	APP_LINK    string = "https://github.com/NY-Daystar/corpos-christie" // Link of repository
 )
 
 // Path

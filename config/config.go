@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/LucasNoga/corpos-christie/utils"
-	"github.com/LucasNoga/corpos-christie/utils/colors"
+	"github.com/NY-Daystar/corpos-christie/utils"
+	"github.com/NY-Daystar/corpos-christie/utils/colors"
 )
 
 // Config represents the configuration of the program with the tax metrics
