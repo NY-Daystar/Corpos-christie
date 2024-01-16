@@ -328,6 +328,12 @@ func (gui *GUI) createSelectLanguage() *fyne.Container {
 				return settings.ENGLISH
 			case 1:
 				return settings.FRENCH
+			case 2:
+				return settings.SPANISH
+			case 3:
+				return settings.GERMAN
+			case 4:
+				return settings.ITALIAN
 			default:
 				return settings.ENGLISH
 			}

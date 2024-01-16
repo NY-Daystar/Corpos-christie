@@ -1,0 +1,40 @@
+themes:
+    dark: Oscuro
+    light: Ligero
+languages:
+    french: Francés
+    english: Inglés
+    spanish: Español
+    german: Alemán
+    italian: Italiano
+abouts:
+    text_1: Bienvenido a
+    text_2: una aplicación de escritorio para calcular tus impuestos en Francia.
+    text_3: Esto
+    text_4: es de código abierto
+    text_5: "Desarrollado en Go con el marco Fyne"
+tax_headers:
+    header_1: TRAMO
+    header_2: MIN
+    header_3: MAXIMO
+    header_4: TASA
+    header_5: IMPUESTO
+file: Archivo
+settings: Configuración
+income: Ingrese sus ingresos
+status: estado civil
+children: Seleccione el número de niños
+tax: Impuestos
+remainder: Resto
+share: acciones
+save: Guardar
+language: Idiomas
+theme: Temas
+currency: Monedas
+year: año
+logs: Ruta de registro
+help: Ayuda
+about: Acerca de
+author: Autor
+close: Cerca
+quit: Salir

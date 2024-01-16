@@ -119,7 +119,6 @@ func (gui *GUI) createLayoutTaxResult() *fyne.Container {
 		widget.NewLabelWithData(gui.Remainder),
 		widget.NewLabelWithData(gui.Currency),
 	)
-
 }
 
 // createLayoutTax Setup right bottom side of window

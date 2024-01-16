@@ -4,6 +4,9 @@ themes:
 languages:
     french: French
     english: English
+    spanish: Spanish
+    german: German
+    italian: Italian
 abouts:
     text_1: "Welcome to"
     text_2: "a Desktop app to calculate your taxes in France."
@@ -28,6 +31,7 @@ save: Save
 language: Languages
 theme: Themes
 currency: Currencies
+year: Year
 logs: Logs path
 help: Help
 about: About
