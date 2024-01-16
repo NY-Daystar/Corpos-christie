@@ -1,10 +1,10 @@
 # Corpos-Christie
 
-[![ci](https://github.com/LucasNoga/corpos-christie/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/LucasNoga/corpos-christie/actions)
+[![ci](https://github.com/NY-Daystar/corpos-christie/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/NY-Daystar/corpos-christie/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/github/tag/LucasNoga/corpos-christie.svg)](https://github.com/LucasNoga/corpos-christie/releases)
-[![Total views](https://img.shields.io/sourcegraph/rrc/github.com/LucasNoga/corpos-christie.svg)](https://sourcegraph.com/github.com/LucasNoga/corpos-christie)
-[![Godoc](https://godoc.org/github.com/LucasNoga/corpos-christie?status.svg)](https://godoc.org/github.com/LucasNoga/corpos-christie)
+[![Version](https://img.shields.io/github/tag/LucasNoga/corpos-christie.svg)](https://github.com/NY-Daystar/corpos-christie/releases)
+[![Total views](https://img.shields.io/sourcegraph/rrc/github.com/NY-Daystar/corpos-christie.svg)](https://sourcegraph.com/github.com/NY-Daystar/corpos-christie)
+[![Godoc](https://godoc.org/github.com/NY-Daystar/corpos-christie?status.svg)](https://godoc.org/github.com/NY-Daystar/corpos-christie)
 
 ![GitHub watchers](https://img.shields.io/github/watchers/ny-daystar/corpos-christie)
 ![GitHub forks](https://img.shields.io/github/forks/ny-daystar/corpos-christie)
@@ -49,19 +49,19 @@ Source code analysed with [DeepSource](https://deepsource.com/)
    1.1 Linux
 
     ```bash
-    $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/linux-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v1.1.0/linux-corpos-christie-1.1.0.zip -O corpos-christie.zip
     ```
 
     1.2 Windows
 
     ```bash
-    $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/windows-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v1.1.0/windows-corpos-christie-1.1.0.zip -O corpos-christie.zip
     ```
 
     1.3 Mac
 
     ```bash
-    $ wget https://github.com/LucasNoga/corpos-christie/releases/download/v1.1.0/mac-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v1.1.0/mac-corpos-christie-1.1.0.zip -O corpos-christie.zip
     ```
 
 2. Unzip it
@@ -82,7 +82,7 @@ $ ./corpos-christie
 Clone th repository
 
 ```bash
-$ git clone https://github.com/lucasnoga/corpos-christie.git
+$ git clone https://github.com/NY-Daystar/corpos-christie.git
 ```
 
 Launch program basically
@@ -101,7 +101,7 @@ $ ./corpos-christie
 Import module for an other project
 
 ```bash
-go get github.com/LucasNoga/corpos-christie
+go get github.com/NY-Daystar/corpos-christie
 ```
 
 Launch console application
@@ -132,10 +132,10 @@ $ go mod download
 To see go doc (ex: tax package)
 
 ```bash
-$ go doc github.com/LucasNoga/corpos-christie/tax
+$ go doc github.com/NY-Daystar/corpos-christie/tax
 ```
 
-See [Project dependencies](https://deps.dev/go/github.com/lucasnoga/corpos-christie) To watch go project used in this program
+See [Project dependencies](https://deps.dev/go/github.com/NY-Daystar/corpos-christie) To watch go project used in this program
 
 ## Packaging App
 
@@ -182,8 +182,8 @@ $ go version
 
 ## Suggestions
 
--   To make a pull request: https://github.com/LucasNoga/corpos-christie/pulls
--   To summon an issue: https://github.com/LucasNoga/corpos-christie/issues
+-   To make a pull request: https://github.com/NY-Daystar/corpos-christie/pulls
+-   To summon an issue: https://github.com/NY-Daystar/corpos-christie/issues
 -   For any specific demand by mail: luc4snoga@gmail.com
 
 ## Credits

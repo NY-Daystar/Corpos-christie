@@ -8,9 +8,9 @@ import (
 	"math"
 	"testing"
 
-	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/user"
-	"github.com/LucasNoga/corpos-christie/utils/colors"
+	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/user"
+	"github.com/NY-Daystar/corpos-christie/utils/colors"
 )
 
 // For testing

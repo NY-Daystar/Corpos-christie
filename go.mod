@@ -1,4 +1,4 @@
-module github.com/LucasNoga/corpos-christie
+module github.com/NY-Daystar/corpos-christie
 
 go 1.16
 

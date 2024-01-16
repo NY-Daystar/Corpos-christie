@@ -7,9 +7,9 @@ package core
 import (
 	"os"
 
-	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/gui"
-	"github.com/LucasNoga/corpos-christie/user"
+	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/gui"
+	"github.com/NY-Daystar/corpos-christie/user"
 )
 
 // Enum for launched mode

@@ -5,6 +5,7 @@
 package gui
 
 import (
+	"fmt"
 	"math"
 
 	"fyne.io/fyne/v2"
@@ -12,9 +13,9 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
-	"github.com/LucasNoga/corpos-christie/config"
-	"github.com/LucasNoga/corpos-christie/gui/widgets"
-	"github.com/LucasNoga/corpos-christie/utils"
+	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/gui/widgets"
+	"github.com/NY-Daystar/corpos-christie/utils"
 )
 
 // setLayouts Setup components/widget in the window
