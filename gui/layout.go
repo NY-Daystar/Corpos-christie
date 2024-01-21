@@ -5,7 +5,6 @@
 package gui
 
 import (
-	"fmt"
 	"math"
 
 	"fyne.io/fyne/v2"
