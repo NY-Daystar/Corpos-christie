@@ -26,11 +26,11 @@ func Start(cfg *config.Config, user *user.User) {
 	// Launch program (Console or GUI)
 	switch m := appSelected; m {
 	case GUI:
-		gui.GUI{Config: cfg, User: user}.Start()
+		gui.Start(cfg, user)
 	case CONSOLE:
 		Console{Config: cfg, User: user}.Start()
 	default:
-		gui.GUI{Config: cfg, User: user}.Start()
+		gui.Start(cfg, user)
 	}
 }
 
