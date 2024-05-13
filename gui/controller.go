@@ -40,6 +40,8 @@ func NewController(model *GUIModel, view *GUIView, logger *zap.Logger) *GUIContr
 // prepare Set the events/trigger of gui widgets
 // set menu for application
 func (controller *GUIController) prepare() {
+	controller.setAppSettings()
+
 	controller.View.EntryIncome.OnChanged = func(input string) {
 		controller.calculate()
 	}
@@ -52,24 +54,23 @@ func (controller *GUIController) prepare() {
 	controller.Logger.Info("Events loaded")
 
 	// Create menu
-	controller.SetAppSettings()
 	controller.Menu = NewMenu(controller)
 	controller.Logger.Info("Menu is set")
 	var appMenu *fyne.MainMenu = controller.Menu.Start()
 	controller.View.Window.SetMainMenu(appMenu)
 }
 
-// SetAppSettings get and configure app settings and synchronizing model and view
-func (controller *GUIController) SetAppSettings() {
+// setAppSettings get and configure app settings and synchronizing model and view
+func (controller *GUIController) setAppSettings() {
 	controller.View.Logger.Info("Settings loaded",
 		zap.Int("theme", controller.Model.Settings.Theme),
 		zap.String("language", controller.Model.Settings.Language),
 		zap.String("theme", controller.Model.Settings.Currency),
 	)
 
-	controller.SetTheme(controller.Model.Settings.Theme)       // TODO a voir si on conserve ou pas
-	controller.SetLanguage(controller.Model.Settings.Language) // TODO a voir si on conserve ou pas
-	controller.SetCurrency(controller.Model.Settings.Currency) // TODO a voir si on conserve ou pas
+	controller.SetTheme(controller.Model.Settings.Theme)
+	controller.SetLanguage(controller.Model.Settings.Language)
+	controller.SetCurrency(controller.Model.Settings.Currency)
 }
 
 // calculate Get values of gui to calculate tax

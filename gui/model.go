@@ -61,6 +61,15 @@ func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIMo
 func (model *GUIModel) prepare() {
 	model.Settings, _ = settings.Load(model.Logger)
 	model.Currency = binding.BindString(&model.Settings.Currency)
+
+	model.LabelsAbout = binding.NewStringList()
+	model.LabelsTaxHeaders = binding.NewStringList()
+
+	// Setup binding for min, max and taxes columns
+	model.LabelsMinTranche = binding.BindStringList(model.createMinTrancheLabels())
+	model.LabelsMaxTranche = binding.BindStringList(model.createMaxTrancheLabels())
+	var trancheNumber int = 5 // TODO put in constants
+	model.LabelsTrancheTaxes = binding.BindStringList(model.createTrancheTaxesLabels(trancheNumber))
 }
 
 // TODO UTILS
@@ -76,11 +85,12 @@ func (model *GUIModel) GetLanguageIndex(langue string) int {
 	}
 }
 
-// TODO remove parameters
 // CreateTrancheLabels create widgets labels for tranche taxes value into an array
 // Create number of tranche with currency value
 // Returns Array of label widget in fyne object
-func (model *GUIModel) CreateTrancheTaxesLabels(number int, currency string) *[]string {
+func (model *GUIModel) createTrancheTaxesLabels(number int) *[]string {
+	currency, _ := model.Currency.Get()
+
 	var labels []string = make([]string, 0, number)
 
 	for i := 1; i <= number; i++ {
@@ -89,10 +99,12 @@ func (model *GUIModel) CreateTrancheTaxesLabels(number int, currency string) *[]
 	return &labels
 }
 
-// TODO remove parameters
+// TODO merge with createMaxTrancheLabels
 // createMinTrancheLabels create string from config.Tranche to create binding
 // Returns Array string with min tranches value
-func (model *GUIModel) CreateMinTrancheLabels(currency string, tranches []config.Tranche) *[]string {
+func (model *GUIModel) createMinTrancheLabels() *[]string {
+	var tranches []config.Tranche = model.Config.Tax.Tranches
+	currency, _ := model.Currency.Get()
 	var labels []string = make([]string, 0, len(tranches))
 
 	for _, tranche := range tranches {
@@ -103,10 +115,12 @@ func (model *GUIModel) CreateMinTrancheLabels(currency string, tranches []config
 	return &labels
 }
 
-// TODO remove parameters
+// TODO merge with createMinTrancheLabels
 // createMaxTrancheLabels create string from config.Tranche to create binding
 // Returns Array string with max tranches value
-func (model *GUIModel) CreateMaxTrancheLabels(currency string, tranches []config.Tranche) *[]string {
+func (model *GUIModel) createMaxTrancheLabels() *[]string {
+	var tranches []config.Tranche = model.Config.Tax.Tranches
+	currency, _ := model.Currency.Get()
 	var labels []string = make([]string, 0, len(tranches))
 
 	for _, tranche := range tranches {
@@ -133,18 +147,17 @@ func (model *GUIModel) Reload() {
 	// gui.buttonSave.SetText(gui.Language.Save) // TODO saveExcel
 
 	// Reload about content
-	//model.LabelsAbout.Set(model.Language.GetAbouts()) // TODO A VOIR POURQUOI JE LE DECOMMENTE
+	model.LabelsAbout.Set(model.Language.GetAbouts())
 
 	// Reload header tax details
 	model.LabelsTaxHeaders.Set(model.Language.GetTaxHeaders())
 
 	// Reload grid header
-	// TODO a simplifier en ne mettant aucun paramètre à createTrancheTaxesLabels
-	currency, _ := model.Currency.Get()
-	model.LabelsTrancheTaxes.Set(*model.CreateTrancheTaxesLabels(model.LabelsTrancheTaxes.Length(), currency))
+	model.LabelsTrancheTaxes.Set(*model.createTrancheTaxesLabels(model.LabelsTrancheTaxes.Length()))
 
 	// Reload grid min tranches
 	var minList []string
+	currency, _ := model.Currency.Get()
 	for index := 0; index < model.LabelsMinTranche.Length(); index++ {
 		var min string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Min) + " " + currency
 		minList = append(minList, min)

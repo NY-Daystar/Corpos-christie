@@ -32,7 +32,6 @@ func NewMenu(controller *GUIController) *GUIMenu {
 }
 
 func (menu *GUIMenu) Start() *fyne.MainMenu {
-	fmt.Printf("START\n")
 	return fyne.NewMainMenu(
 		menu.createFileMenu(),
 		menu.createHelpMenu(),
@@ -41,10 +40,8 @@ func (menu *GUIMenu) Start() *fyne.MainMenu {
 
 // createFileMenu create file item in toolbar to handle app settings
 func (menu *GUIMenu) createFileMenu() *fyne.Menu {
-	fmt.Printf("createFileMenu\n")
 	fileMenu := fyne.NewMenu(menu.Controller.Model.Language.File,
 		fyne.NewMenuItem(menu.Controller.Model.Language.Settings, func() {
-			fmt.Printf("createFileMenu\n")
 			dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
 				container.NewVBox(
 					menu.createSelectTheme(),
@@ -65,7 +62,6 @@ func (menu *GUIMenu) createFileMenu() *fyne.Menu {
 func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 	url, _ := url.Parse(config.APP_LINK)
 
-	menu.Controller.Model.LabelsAbout = binding.NewStringList()
 	menu.Controller.Model.LabelsAbout.Set(menu.Controller.Model.Language.GetAbouts())
 	var labels []binding.DataItem
 	for index := range menu.Controller.Model.Language.GetAbouts() {

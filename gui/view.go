@@ -186,24 +186,16 @@ func (view *GUIView) createLayoutTaxResult() *fyne.Container {
 
 // createLayoutTax Setup right bottom side of window
 func (view *GUIView) createLayoutTaxDetails() *fyne.Container {
-	var trancheNumber int = 5
-	currency, _ := view.Model.Currency.Get()
+	var trancheNumber int = 5 // TODO put in constants
 
 	// Add header columns in grid
 	grid := container.New(layout.NewGridLayout(trancheNumber))
 
-	view.Model.LabelsTaxHeaders = binding.NewStringList()
 	for index, header := range view.Model.Language.GetTaxHeaders() {
 		view.Model.LabelsTaxHeaders.Append(header)
 		h, _ := view.Model.LabelsTaxHeaders.GetItem(index)
 		grid.Add(widget.NewLabelWithData(h.(binding.String)))
 	}
-
-	// Setup binding for min, max and taxes columns
-	// TODO appeler ces methodes depuis le model en laissant ces methode private
-	view.Model.LabelsMinTranche = binding.BindStringList(view.Model.CreateMinTrancheLabels(currency, view.Model.Config.Tax.Tranches))
-	view.Model.LabelsMaxTranche = binding.BindStringList(view.Model.CreateMaxTrancheLabels(currency, view.Model.Config.Tax.Tranches))
-	view.Model.LabelsTrancheTaxes = binding.BindStringList(view.Model.CreateTrancheTaxesLabels(trancheNumber, currency))
 
 	// Add Tranche rows in grid
 	for index := 0; index < view.Model.LabelsTrancheTaxes.Length(); index++ {
