@@ -1,4 +1,4 @@
-package model
+package gui
 
 import (
 	"math"
@@ -50,8 +50,17 @@ func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIMo
 		User:   user,
 		Logger: logger,
 	}
+
+	model.prepare()
+
 	model.Logger.Info("Launch model")
 	return &model
+}
+
+// prepare init data and binding
+func (model *GUIModel) prepare() {
+	model.Settings, _ = settings.Load(model.Logger)
+	model.Currency = binding.BindString(&model.Settings.Currency)
 }
 
 // TODO UTILS
@@ -67,7 +76,7 @@ func (model *GUIModel) GetLanguageIndex(langue string) int {
 	}
 }
 
-// TODO retirer les parametres
+// TODO remove parameters
 // CreateTrancheLabels create widgets labels for tranche taxes value into an array
 // Create number of tranche with currency value
 // Returns Array of label widget in fyne object
@@ -80,7 +89,7 @@ func (model *GUIModel) CreateTrancheTaxesLabels(number int, currency string) *[]
 	return &labels
 }
 
-// TODO retirer les parametres
+// TODO remove parameters
 // createMinTrancheLabels create string from config.Tranche to create binding
 // Returns Array string with min tranches value
 func (model *GUIModel) CreateMinTrancheLabels(currency string, tranches []config.Tranche) *[]string {
@@ -94,7 +103,7 @@ func (model *GUIModel) CreateMinTrancheLabels(currency string, tranches []config
 	return &labels
 }
 
-// TODO retirer les parametres
+// TODO remove parameters
 // createMaxTrancheLabels create string from config.Tranche to create binding
 // Returns Array string with max tranches value
 func (model *GUIModel) CreateMaxTrancheLabels(currency string, tranches []config.Tranche) *[]string {
@@ -121,10 +130,10 @@ func (model *GUIModel) Reload() {
 	model.LabelShares.Set(model.Language.Share)
 
 	// Handle widget
-	// gui.buttonSave.SetText(gui.Language.Save) // TODO
+	// gui.buttonSave.SetText(gui.Language.Save) // TODO saveExcel
 
 	// Reload about content
-	model.LabelsAbout.Set(model.Language.GetAbouts())
+	//model.LabelsAbout.Set(model.Language.GetAbouts()) // TODO A VOIR POURQUOI JE LE DECOMMENTE
 
 	// Reload header tax details
 	model.LabelsTaxHeaders.Set(model.Language.GetTaxHeaders())
