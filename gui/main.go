@@ -6,22 +6,17 @@ import (
 	"os"
 
 	"github.com/NY-Daystar/corpos-christie/config"
-	"github.com/NY-Daystar/corpos-christie/gui/controller"
-	"github.com/NY-Daystar/corpos-christie/gui/model"
-	"github.com/NY-Daystar/corpos-christie/gui/view"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-// TODO voir si tout peut etre dans le package gui (model, view et controller)
-
 // MVC for appliaction
 type GUI struct {
-	Model      *model.GUIModel
-	View       *view.GUIView
-	Controller *controller.GUIController
+	Model      *GUIModel
+	View       *GUIView
+	Controller *GUIController
 	Logger     *zap.Logger
 }
 
@@ -30,9 +25,9 @@ func Start(config *config.Config, user *user.User) {
 	var logger = initLogger()
 	logger.Info("Launch application")
 
-	var model = model.NewModel(config, user, logger)
-	var view = view.NewView(model, logger)
-	var controller = controller.NewController(model, view, logger)
+	var model = NewModel(config, user, logger)
+	var view = NewView(model, logger)
+	var controller = NewController(model, view, logger)
 
 	var gui *GUI = &GUI{
 		Model:      model,
@@ -40,7 +35,8 @@ func Start(config *config.Config, user *user.User) {
 		Controller: controller,
 	}
 
-	gui.View.Start()
+	gui.View.Start(controller)
+
 }
 
 // initLogger create logger with zap librairy
