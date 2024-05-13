@@ -17,7 +17,13 @@
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/ny-daystar/corpos-christie)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-blue.svg?style=circular)](#contributors)
 
-![Golang](https://img.shields.io/badge/logo-javascript-blue?logo=javascript&color=a5a5a5&logoColor=e5e5e5)
+![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
+
+![Graphic user interface](./assets/graphicmode.png)  
+![Settings](./assets/settings.png)
+
+Console mode
+![CLI](./assets/consolemode.png)
 
 This project is an income taxes calculator
 which has been developped in Golang and fyne for GUI which allows to calculate your taxes in the current year.
