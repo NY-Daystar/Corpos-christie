@@ -36,7 +36,6 @@ func Start(config *config.Config, user *user.User) {
 	}
 
 	gui.View.Start(controller)
-
 }
 
 // initLogger create logger with zap librairy
