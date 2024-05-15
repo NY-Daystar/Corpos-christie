@@ -42,22 +42,26 @@ func (menu *GUIMenu) Start() {
 
 // createFileMenu create file item in toolbar to handle app settings
 func (menu *GUIMenu) createFileMenu() *fyne.Menu {
-	fileMenu := fyne.NewMenu(menu.Controller.Model.Language.File,
-		fyne.NewMenuItem(menu.Controller.Model.Language.Settings, func() {
-			dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
-				container.NewVBox(
-					menu.createSelectTheme(),
-					widget.NewSeparator(),
-					menu.createSelectLanguage(),
-					widget.NewSeparator(),
-					menu.createSelectCurrency(),
-					widget.NewSeparator(),
-					menu.createLabelLogs(),
-				), menu.Window)
-		}),
-		fyne.NewMenuItem(menu.Controller.Model.Language.Quit, func() { menu.App.Quit() }),
+	settingsMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Settings, func() {
+		dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
+			container.NewVBox(
+				menu.createSelectTheme(),
+				widget.NewSeparator(),
+				menu.createSelectLanguage(),
+				widget.NewSeparator(),
+				menu.createSelectCurrency(),
+				widget.NewSeparator(),
+				menu.createLabelLogs(),
+			), menu.Window)
+	})
+
+	quitMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Quit, func() { menu.App.Quit() })
+	quitMenuItem.IsQuit = true
+
+	return fyne.NewMenu(menu.Controller.Model.Language.File,
+		settingsMenuItem,
+		quitMenuItem,
 	)
-	return fileMenu
 }
 
 // createHelpMenu create help item in toolbar to show about app
