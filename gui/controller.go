@@ -5,7 +5,6 @@ import (
 	"os"
 	"strconv"
 
-	"fyne.io/fyne/v2"
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
@@ -40,6 +39,7 @@ func NewController(model *GUIModel, view *GUIView, logger *zap.Logger) *GUIContr
 // prepare Set the events/trigger of gui widgets
 // set menu for application
 func (controller *GUIController) prepare() {
+	controller.Menu = NewMenu(controller)
 	controller.setAppSettings()
 
 	controller.View.EntryIncome.OnChanged = func(input string) {
@@ -53,11 +53,9 @@ func (controller *GUIController) prepare() {
 	}
 	controller.Logger.Info("Events loaded")
 
-	// Create menu
-	controller.Menu = NewMenu(controller)
 	controller.Logger.Info("Menu is set")
-	var appMenu *fyne.MainMenu = controller.Menu.Start()
-	controller.View.Window.SetMainMenu(appMenu)
+	controller.Menu.Start()
+
 }
 
 // setAppSettings get and configure app settings and synchronizing model and view
@@ -153,6 +151,7 @@ func (controller *GUIController) SetLanguage(code string) {
 	controller.Logger.Sugar().Debugf("Language Yaml %v", controller.Model.Language)
 	controller.Model.Language.Code = code
 	controller.Model.Settings.Set("language", code)
+	controller.Menu.MainMenu.Refresh()
 	controller.Model.Reload()
 }
 

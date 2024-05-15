@@ -18,8 +18,9 @@ import (
 // GUIMenu represents menu of window application
 type GUIMenu struct {
 	Controller *GUIController
-	App        fyne.App    // Fyne application
-	Window     fyne.Window // Fyne window
+	App        fyne.App       // Fyne application
+	Window     fyne.Window    // Fyne window
+	MainMenu   *fyne.MainMenu // Fyne menu
 }
 
 // NewMenu create main menu for window application
@@ -31,11 +32,12 @@ func NewMenu(controller *GUIController) *GUIMenu {
 	}
 }
 
-func (menu *GUIMenu) Start() *fyne.MainMenu {
-	return fyne.NewMainMenu(
+func (menu *GUIMenu) Start() {
+	menu.MainMenu = fyne.NewMainMenu(
 		menu.createFileMenu(),
 		menu.createHelpMenu(),
 	)
+	menu.Window.SetMainMenu(menu.MainMenu)
 }
 
 // createFileMenu create file item in toolbar to handle app settings
