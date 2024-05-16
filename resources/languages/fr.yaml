@@ -13,6 +13,7 @@ abouts:
     text_3: "Ce"
     text_4: "est open-source"
     text_5: "Développé en Go avec le framework Fyne."
+    text_6: "Auteur"
 tax_headers:
     header_1: "TRANCHE"
     header_2: "MIN"

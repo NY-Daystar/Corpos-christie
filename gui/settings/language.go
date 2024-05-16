@@ -31,6 +31,7 @@ type AboutYaml struct {
 	Text3 string `yaml:"text_3"`
 	Text4 string `yaml:"text_4"`
 	Text5 string `yaml:"text_5"`
+	Text6 string `yaml:"text_6"`
 }
 
 // Headers yaml for tax detail

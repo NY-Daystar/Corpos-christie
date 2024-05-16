@@ -142,6 +142,7 @@ func (controller *GUIController) SetLanguage(code string) {
 	controller.Logger.Debug("Load file for language", zap.String("file", languageFile))
 
 	yamlFile, _ := os.ReadFile(languageFile)
+	oldModelLanguage := controller.Model.Language
 	err := yaml.Unmarshal(yamlFile, &controller.Model.Language)
 
 	if err != nil {
@@ -151,8 +152,10 @@ func (controller *GUIController) SetLanguage(code string) {
 	controller.Logger.Sugar().Debugf("Language Yaml %v", controller.Model.Language)
 	controller.Model.Language.Code = code
 	controller.Model.Settings.Set("language", code)
-	controller.Menu.MainMenu.Refresh()
 	controller.Model.Reload()
+
+	controller.Logger.Debug("Renommage du menu", zap.String("file", languageFile))
+	controller.Menu.Refresh(oldModelLanguage)
 }
 
 // setCurrency change language of the application

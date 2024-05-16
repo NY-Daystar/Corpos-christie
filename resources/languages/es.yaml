@@ -13,6 +13,7 @@ abouts:
     text_3: Esto
     text_4: es de código abierto
     text_5: "Desarrollado en Go con el marco Fyne"
+    text_6: "Autor"
 tax_headers:
     header_1: TRAMO
     header_2: MIN
