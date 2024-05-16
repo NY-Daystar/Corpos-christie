@@ -19,11 +19,11 @@
 
 ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 
-![Graphic user interface](./assets/graphicmode.png)  
-![Settings](./assets/settings.png)
+![Graphic user interface](./docs/graphicmode.png)  
+![Settings](./docs/settings.png)
 
 Console mode
-![CLI](./assets/consolemode.png)
+![CLI](./docs/consolemode.png)
 
 This project is an income taxes calculator
 which has been developped in Golang and fyne for GUI which allows to calculate your taxes in the current year.
