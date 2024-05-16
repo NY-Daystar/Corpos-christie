@@ -47,7 +47,7 @@ Source code analysed with [DeepSource](https://deepsource.com/)
 
 ## Requirements
 
--   [Golang](https://golang.org/dl/) >= 1.19.5
+-   [Golang](https://golang.org/dl/) >= 1.21.0
 
 ## How to launch program
 
