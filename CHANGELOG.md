@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project releases
 
+## 2.2.0 - May, 16th 2024 - Long fixes
+
+### Added
+
+-   New unit tests for GUI and settings
+-   Optimize setup when launching application
+-   Add screen in documentation (README)
+-   Add new configuration to change year of tax calculation in GUI
+-   Add an autoupdater
+-   Add new command in console and GUI for tax history
+
+### Fixed
+
+-   Refreshing menu when changing languages
+-   Remove definitely duplicate menu item 'Quit'
+
+### Changed
+
+-   Refactoring GUI code structure with MVC
+
 ## 2.1.0 - January, 15th 2024 - Small fixes
 
 ### Added
@@ -17,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
--   Update documentation (Readme)
+-   Update documentation (README)
 
 ## 2.0.0 - August, 2nd 2022 - GUI
 
