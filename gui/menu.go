@@ -91,7 +91,10 @@ func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 		widget.NewLabel("Version:"),
 		canvas.NewText(fmt.Sprintf("v%s", config.APP_VERSION), color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
 	)
-	fifthLine := widget.NewLabel(fmt.Sprintf("%s: %s", menu.Controller.Model.Language.Author, config.APP_AUTHOR))
+	fifthLine := container.NewHBox(
+		widget.NewLabelWithData(labels[5].(binding.String)),
+		widget.NewLabel(config.APP_AUTHOR),
+	)
 
 	helpMenu := fyne.NewMenu(menu.Controller.Model.Language.Help,
 		fyne.NewMenuItem(menu.Controller.Model.Language.About, func() {
@@ -105,6 +108,44 @@ func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 				), menu.Window)
 		}))
 	return helpMenu
+}
+
+// Refresh change for each option in menu old language for new in model
+func (menu *GUIMenu) Refresh(oldModelLanguage settings.Yaml) {
+	if menu.Controller.Menu != nil && menu.Controller.Menu.MainMenu != nil {
+		// for menuItem in level 1
+		for _, item := range menu.Controller.Menu.MainMenu.Items {
+			// For file option
+			if item.Label == oldModelLanguage.File {
+				item.Label = menu.Controller.Model.Language.File
+			}
+			// For help option
+			if item.Label == oldModelLanguage.Help {
+				item.Label = menu.Controller.Model.Language.Help
+			}
+		}
+
+		// for menuItem 0 in level 2
+		for _, item := range menu.Controller.Menu.MainMenu.Items[0].Items {
+			// For settings option
+			if item.Label == oldModelLanguage.Settings {
+				item.Label = menu.Controller.Model.Language.Settings
+			}
+			// For quit option
+			if item.Label == oldModelLanguage.Quit {
+				item.Label = menu.Controller.Model.Language.Quit
+			}
+		}
+
+		// for menuItem 1 in level 2
+		for _, item := range menu.Controller.Menu.MainMenu.Items[1].Items {
+			// For about option
+			if item.Label == oldModelLanguage.About {
+				item.Label = menu.Controller.Model.Language.About
+			}
+		}
+		menu.Controller.Menu.MainMenu.Refresh()
+	}
 }
 
 // createSelectTheme create select to change theme
