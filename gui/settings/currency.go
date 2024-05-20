@@ -14,6 +14,6 @@ func GetCurrencies() []string {
 
 // GetDefaultCurrency get value of default currency
 func GetDefaultCurrency() *string {
-	var currency string = EURO
+	var currency = EURO
 	return &currency
 }

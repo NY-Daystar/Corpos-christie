@@ -24,7 +24,7 @@ func TestIconAccess(t *testing.T) {
 
 // Test if language data in english and fresh can be load
 func TestLoadLanguageData(t *testing.T) {
-	var lang string = "en"
+	var lang = "en"
 	var expected *string = &lang
 
 	var language = settings.GetDefaultLanguage()

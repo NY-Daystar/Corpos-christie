@@ -80,7 +80,7 @@ type Yaml struct {
 
 // GetDefaultLanguage get value of last language selected (fr, en)
 func GetDefaultLanguage() *string {
-	var lang string = ENGLISH
+	var lang = ENGLISH
 	return &lang
 }
 
