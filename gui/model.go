@@ -12,6 +12,14 @@ import (
 	"go.uber.org/zap"
 )
 
+// Enum for type of tranche
+const (
+	MIN   string = "MIN"
+	MAX   string = "MAX"
+	RATE  string = "RATE"
+	VALUE string = "VALUE"
+)
+
 // GUIModel data of the application
 type GUIModel struct {
 	Config *config.Config // Config to use correctly the program
@@ -23,6 +31,7 @@ type GUIModel struct {
 	Theme    themes.Theme      // Fyne theme for the application
 	Language settings.Yaml     // Yaml struct with all language data
 	Currency binding.String    // Currency to display
+	Year     binding.String    // Year of tax calculation based on config
 
 	// buttonSave *widget.Button // Label for save button
 
@@ -31,6 +40,7 @@ type GUIModel struct {
 	Remainder          binding.String     // Bind for remainder value
 	Shares             binding.String     // Bind for shares value
 	LabelShares        binding.String     // Bind for shares label
+	LabelYear          binding.String     // Bind for year label
 	LabelIncome        binding.String     // Bind for income label
 	LabelStatus        binding.String     // Bind for status label
 	LabelChildren      binding.String     // Bind for children label
@@ -40,7 +50,8 @@ type GUIModel struct {
 	LabelsTaxHeaders   binding.StringList // List of label for tax details headers
 	LabelsMinTranche   binding.StringList // List of labels for min tranche in grid
 	LabelsMaxTranche   binding.StringList // List of labels for max tranche in grid
-	LabelsTrancheTaxes binding.StringList // List of tranches tax label
+	LabelsRateTranche  binding.StringList // List of labesl for rate tranche in grid
+	LabelsTrancheTaxes binding.StringList // List of tranches tax label results
 }
 
 // NewModel: instantiate data for the application
@@ -60,75 +71,57 @@ func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIMo
 // prepare init data and binding
 func (model *GUIModel) prepare() {
 	model.Settings, _ = settings.Load(model.Logger)
-	model.Currency = binding.BindString(&model.Settings.Currency)
+	model.Currency = binding.BindString(model.Settings.Currency)
 
 	model.LabelsAbout = binding.NewStringList()
 	model.LabelsTaxHeaders = binding.NewStringList()
 
+	// Set tax year
+	model.Year = binding.BindString(model.Settings.Year)
+	model.Config.Tax.Year = utils.ConvertBindStringToInt(model.Year)
+
 	// Setup binding for min, max and taxes columns
-	model.LabelsMinTranche = binding.BindStringList(model.createMinTrancheLabels())
-	model.LabelsMaxTranche = binding.BindStringList(model.createMaxTrancheLabels())
-	var trancheNumber int = 5 // TODO put in constants
-	model.LabelsTrancheTaxes = binding.BindStringList(model.createTrancheTaxesLabels(trancheNumber))
+	model.LabelsMinTranche = binding.BindStringList(model.createTrancheLabels(MIN))
+	model.LabelsMaxTranche = binding.BindStringList(model.createTrancheLabels(MAX))
+	model.LabelsRateTranche = binding.BindStringList(model.createTrancheLabels(RATE))
+	model.LabelsTrancheTaxes = binding.BindStringList(model.createTrancheLabels(VALUE))
 }
 
-// TODO UTILS
-// getLanguageIndex get index to selectLanguage in settings from language of the app
-func (model *GUIModel) GetLanguageIndex(langue string) int {
-	switch langue {
-	case settings.ENGLISH:
-		return 0
-	case settings.FRENCH:
-		return 1
-	default:
-		return 0
-	}
-}
-
-// CreateTrancheLabels create widgets labels for tranche taxes value into an array
-// Create number of tranche with currency value
+// CreateTrancheLabels create widgets labels for each data of tranche taxes (min, max, rate, taxValue)
+// Convert this value into an array
 // Returns Array of label widget in fyne object
-func (model *GUIModel) createTrancheTaxesLabels(number int) *[]string {
-	currency, _ := model.Currency.Get()
-
-	var labels []string = make([]string, 0, number)
-
-	for i := 1; i <= number; i++ {
-		labels = append(labels, "0"+" "+currency)
-	}
-	return &labels
-}
-
-// TODO merge with createMaxTrancheLabels
-// createMinTrancheLabels create string from config.Tranche to create binding
-// Returns Array string with min tranches value
-func (model *GUIModel) createMinTrancheLabels() *[]string {
+func (model *GUIModel) createTrancheLabels(enumTranche string) *[]string {
 	var tranches []config.Tranche = model.Config.Tax.Tranches
 	currency, _ := model.Currency.Get()
 	var labels []string = make([]string, 0, len(tranches))
 
-	for _, tranche := range tranches {
-		var min string = utils.ConvertIntToString(tranche.Min) + " " + currency
-		labels = append(labels, min)
-	}
-
-	return &labels
-}
-
-// TODO merge with createMinTrancheLabels
-// createMaxTrancheLabels create string from config.Tranche to create binding
-// Returns Array string with max tranches value
-func (model *GUIModel) createMaxTrancheLabels() *[]string {
-	var tranches []config.Tranche = model.Config.Tax.Tranches
-	currency, _ := model.Currency.Get()
-	var labels []string = make([]string, 0, len(tranches))
-
-	for _, tranche := range tranches {
-		var max = utils.ConvertIntToString(tranche.Max) + " " + currency
-		if tranche.Max == math.MaxInt64 {
-			max = "-"
+	// To handle `min` tranche
+	if enumTranche == MIN {
+		for _, tranche := range tranches {
+			var min string = utils.ConvertIntToString(tranche.Min) + " " + currency
+			labels = append(labels, min)
 		}
-		labels = append(labels, max)
+
+		// To handle `max` tranche
+	} else if enumTranche == MAX {
+		for _, tranche := range tranches {
+			var max = utils.ConvertIntToString(tranche.Max) + " " + currency
+			if tranche.Max == math.MaxInt64 {
+				max = "-"
+			}
+			labels = append(labels, max)
+		}
+		// To handle `rate` tranche
+	} else if enumTranche == RATE {
+		for _, tranche := range tranches {
+			var rate = utils.ConvertIntToString(tranche.Max)
+			labels = append(labels, rate)
+		}
+		// To handle `value` of tranche
+	} else if enumTranche == VALUE {
+		for i := 1; i <= len(tranches); i++ {
+			labels = append(labels, "0"+" "+currency)
+		}
 	}
 	return &labels
 }
@@ -140,6 +133,7 @@ func (model *GUIModel) Reload() {
 	model.LabelStatus.Set(model.Language.Status)
 	model.LabelChildren.Set(model.Language.Children)
 	model.LabelTax.Set(model.Language.Tax)
+	model.LabelYear.Set(model.Language.Year)
 	model.LabelRemainder.Set(model.Language.Remainder)
 	model.LabelShares.Set(model.Language.Share)
 
@@ -151,9 +145,6 @@ func (model *GUIModel) Reload() {
 
 	// Reload header tax details
 	model.LabelsTaxHeaders.Set(model.Language.GetTaxHeaders())
-
-	// Reload grid header
-	model.LabelsTrancheTaxes.Set(*model.createTrancheTaxesLabels(model.LabelsTrancheTaxes.Length()))
 
 	// Reload grid min tranches
 	var minList []string
@@ -174,4 +165,12 @@ func (model *GUIModel) Reload() {
 		maxList = append(maxList, max)
 	}
 	model.LabelsMaxTranche.Set(maxList)
+
+	// Reload rate tranches
+	var rateList []string
+	for index := 0; index < model.LabelsRateTranche.Length(); index++ {
+		var rate string = model.Config.Tax.Tranches[index].Rate
+		rateList = append(rateList, rate)
+	}
+	model.LabelsRateTranche.Set(rateList)
 }

@@ -44,63 +44,63 @@ func New() *Config {
 				Year: 2024,
 				Tranches: []Tranche{
 
-					{Min: 0, Max: 11294, Rate: "0%"},
-					{Min: 11295, Max: 28797, Rate: "11%"},
-					{Min: 28798, Max: 82341, Rate: "30%"},
-					{Min: 82342, Max: 177106, Rate: "41%"},
-					{Min: 177107, Max: math.MaxInt64, Rate: "45%"},
+					{Min: 0, Max: 11294, Rate: "0 %"},
+					{Min: 11295, Max: 28797, Rate: "11 %"},
+					{Min: 28798, Max: 82341, Rate: "30 %"},
+					{Min: 82342, Max: 177106, Rate: "41 %"},
+					{Min: 177107, Max: math.MaxInt64, Rate: "45 %"},
 				},
 			},
 			{
 				Year: 2023,
 				Tranches: []Tranche{
 
-					{Min: 0, Max: 10777, Rate: "0%"},
-					{Min: 10778, Max: 27478, Rate: "11%"},
-					{Min: 27479, Max: 78570, Rate: "30%"},
-					{Min: 78571, Max: 168994, Rate: "41%"},
-					{Min: 168995, Max: math.MaxInt64, Rate: "45%"},
+					{Min: 0, Max: 10777, Rate: "0 %"},
+					{Min: 10778, Max: 27478, Rate: "11 %"},
+					{Min: 27479, Max: 78570, Rate: "30  %"},
+					{Min: 78571, Max: 168994, Rate: "41 %"},
+					{Min: 168995, Max: math.MaxInt64, Rate: "45 %"},
 				},
 			},
 			{
 				Year: 2022,
 				Tranches: []Tranche{
 
-					{Min: 0, Max: 10225, Rate: "0%"},
-					{Min: 10226, Max: 26070, Rate: "11%"},
-					{Min: 26071, Max: 74545, Rate: "30%"},
-					{Min: 74546, Max: 160336, Rate: "41%"},
-					{Min: 160337, Max: math.MaxInt64, Rate: "45%"},
+					{Min: 0, Max: 10225, Rate: "0 %"},
+					{Min: 10226, Max: 26070, Rate: "11 %"},
+					{Min: 26071, Max: 74545, Rate: "30 %"},
+					{Min: 74546, Max: 160336, Rate: "41 %"},
+					{Min: 160337, Max: math.MaxInt64, Rate: "45 %"},
 				},
 			},
 			{
 				Year: 2021,
 				Tranches: []Tranche{
-					{Min: 0, Max: 10084, Rate: "0%"},
-					{Min: 10085, Max: 25710, Rate: "11%"},
-					{Min: 25711, Max: 73516, Rate: "30%"},
-					{Min: 73517, Max: 158122, Rate: "41%"},
-					{Min: 158123, Max: math.MaxInt64, Rate: "45%"},
+					{Min: 0, Max: 10084, Rate: "0 %"},
+					{Min: 10085, Max: 25710, Rate: "11 %"},
+					{Min: 25711, Max: 73516, Rate: "30 %"},
+					{Min: 73517, Max: 158122, Rate: "41 %"},
+					{Min: 158123, Max: math.MaxInt64, Rate: "45 %"},
 				},
 			},
 			{
 				Year: 2020,
 				Tranches: []Tranche{
-					{Min: 0, Max: 10064, Rate: "0%"},
-					{Min: 10065, Max: 25659, Rate: "11%"},
-					{Min: 25660, Max: 73369, Rate: "30%"},
-					{Min: 73370, Max: 157806, Rate: "41%"},
-					{Min: 157807, Max: math.MaxInt64, Rate: "45%"},
+					{Min: 0, Max: 10064, Rate: "0 %"},
+					{Min: 10065, Max: 25659, Rate: "11 %"},
+					{Min: 25660, Max: 73369, Rate: "30 %"},
+					{Min: 73370, Max: 157806, Rate: "41 %"},
+					{Min: 157807, Max: math.MaxInt64, Rate: "45 %"},
 				},
 			},
 			{
 				Year: 2019,
 				Tranches: []Tranche{
-					{Min: 0, Max: 10064, Rate: "0%"},
-					{Min: 10065, Max: 27794, Rate: "14%"},
-					{Min: 27795, Max: 74517, Rate: "30%"},
-					{Min: 74518, Max: 157806, Rate: "41%"},
-					{Min: 157807, Max: math.MaxInt64, Rate: "45%"},
+					{Min: 0, Max: 10064, Rate: "0 %"},
+					{Min: 10065, Max: 27794, Rate: "14 %"},
+					{Min: 27795, Max: 74517, Rate: "30 %"},
+					{Min: 74518, Max: 157806, Rate: "41 %"},
+					{Min: 157807, Max: math.MaxInt64, Rate: "45 %"},
 				},
 			},
 		},
@@ -123,7 +123,7 @@ func (cfg *Config) loadTaxYear() {
 		}
 	}
 
-	// If no tax tranches are defined from current year load default tax 2021
+	// If no tax tranches are defined from current year load default tax (2024)
 	if len(cfg.Tax.Tranches) == 0 {
 		cfg.Tax = cfg.TaxList[0]
 	}

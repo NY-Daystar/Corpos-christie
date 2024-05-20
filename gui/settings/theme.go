@@ -11,7 +11,7 @@ type ThemeYaml struct {
 	Light string `yaml:"light"`
 }
 
-// GetTheme Get value of last theme selected
+// GetDefaultTheme Get value of last theme selected
 func GetDefaultTheme() int {
 	return DARK
 }

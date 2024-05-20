@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"fyne.io/fyne/v2/data/binding"
 )
 
 const (
@@ -35,6 +37,20 @@ func ConvertStringToInt(str string) (int, error) {
 	return i, nil
 }
 
+// ConvertBindStringToInt convert bindstring (fyne) to an int and returns it
+// return an error if the string is not convertible into an int
+func ConvertBindStringToInt(str binding.String) int {
+	bstr, err := str.Get()
+	if err != nil {
+		return 0
+	}
+	i, err := strconv.Atoi(bstr)
+	if err != nil {
+		return 0
+	}
+	return i
+}
+
 // ConvertFloat64ToString convert float64 to a string and returns it
 func ConvertFloat64ToString(v float64) string {
 	return fmt.Sprintf("%f", v)
@@ -53,7 +69,7 @@ func ConvertIntToString(v int) string {
 
 // ConvertPercentageToFloat64 convert str which is string percentage like 5% into 5
 func ConvertPercentageToFloat64(str string) (float64, error) {
-	var s = strings.TrimSuffix(str, "%")
+	var s = strings.TrimSuffix(str, " %")
 	i, err := strconv.Atoi(s)
 	f := float64(i)
 	if err != nil {
@@ -62,7 +78,7 @@ func ConvertPercentageToFloat64(str string) (float64, error) {
 	return f, nil
 }
 
-// GetCurrentYear returns current year (ex: 2021)
+// GetCurrentYear returns current year (ex: 2024)
 func GetCurrentYear() int {
 	year, _, _ := time.Now().Date()
 	return year

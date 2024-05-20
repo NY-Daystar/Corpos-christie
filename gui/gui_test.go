@@ -24,13 +24,14 @@ func TestIconAccess(t *testing.T) {
 
 // Test if language data in english and fresh can be load
 func TestLoadLanguageData(t *testing.T) {
-	var expected = "en"
+	var lang string = "en"
+	var expected *string = &lang
 
 	var language = settings.GetDefaultLanguage()
-	t.Logf("Function result:\t%+v", language)
+	t.Logf("Function result:\t%+v", *language)
 
-	if language != expected {
-		t.Errorf("Expected that the Mode '%v' should be equal to %v", colors.Red(expected), colors.Red(language))
+	if *language != *expected {
+		t.Errorf("Expected that the Mode '%v' should be equal to %v", colors.Red(*expected), colors.Red(*language))
 	}
 }
 

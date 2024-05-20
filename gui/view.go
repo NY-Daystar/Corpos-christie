@@ -152,6 +152,7 @@ func (view *GUIView) createLayoutChildren() *fyne.Container {
 func (view *GUIView) createLayoutTax() *fyne.Container {
 	return container.New(
 		layout.NewVBoxLayout(),
+		view.createLayoutTaxYear(),
 		view.createLayoutTaxResult(),
 		container.NewVBox(widget.NewLabel(""), widget.NewSeparator(), widget.NewLabel("")),
 		view.createLayoutTaxDetails(),
@@ -159,14 +160,29 @@ func (view *GUIView) createLayoutTax() *fyne.Container {
 }
 
 // createLayoutTaxResult Setup right top side of window
+func (view *GUIView) createLayoutTaxYear() *fyne.Container {
+	view.Model.LabelYear = binding.NewString()
+	view.Model.Year = binding.NewString()
+
+	return container.New(layout.NewGridLayout(8),
+		widget.NewLabel(""),
+		widget.NewLabel(""),
+		widget.NewLabel(""),
+		widget.NewLabel(""),
+		widget.NewLabel(""),
+		widget.NewLabel(""),
+		widget.NewLabelWithData(view.Model.LabelYear),
+		widget.NewLabelWithData(view.Model.Year),
+	)
+}
+
+// createLayoutTaxResult Setup right top side of window
 func (view *GUIView) createLayoutTaxResult() *fyne.Container {
-	view.Model.LabelTax = binding.BindString(&view.Model.Language.Tax)
+	view.Model.LabelTax = binding.NewString()
 	view.Model.Tax = binding.NewString()
-
-	view.Model.LabelShares = binding.BindString(&view.Model.Language.Share)
+	view.Model.LabelShares = binding.NewString()
 	view.Model.Shares = binding.NewString()
-
-	view.Model.LabelRemainder = binding.BindString(&view.Model.Language.Remainder)
+	view.Model.LabelRemainder = binding.NewString()
 	view.Model.Remainder = binding.NewString()
 
 	return container.New(layout.NewGridLayout(3),
@@ -186,7 +202,7 @@ func (view *GUIView) createLayoutTaxResult() *fyne.Container {
 
 // createLayoutTax Setup right bottom side of window
 func (view *GUIView) createLayoutTaxDetails() *fyne.Container {
-	var trancheNumber int = 5 // TODO put in constants
+	var trancheNumber int = view.Model.LabelsTrancheTaxes.Length()
 
 	// Add header columns in grid
 	grid := container.New(layout.NewGridLayout(trancheNumber))
@@ -201,13 +217,13 @@ func (view *GUIView) createLayoutTaxDetails() *fyne.Container {
 	for index := 0; index < view.Model.LabelsTrancheTaxes.Length(); index++ {
 		minItem, _ := view.Model.LabelsMinTranche.GetItem(index)
 		maxItem, _ := view.Model.LabelsMaxTranche.GetItem(index)
+		rateItem, _ := view.Model.LabelsRateTranche.GetItem(index)
 		taxItem, _ := view.Model.LabelsTrancheTaxes.GetItem(index)
-		var rate string = view.Model.Config.Tax.Tranches[index].Rate
 
 		grid.Add(widget.NewLabel("Tranche " + utils.ConvertIntToString(index+1)))
 		grid.Add(widget.NewLabelWithData(minItem.(binding.String)))
 		grid.Add(widget.NewLabelWithData(maxItem.(binding.String)))
-		grid.Add(widget.NewLabel(rate))
+		grid.Add(widget.NewLabelWithData(rateItem.(binding.String)))
 		grid.Add(widget.NewLabelWithData(taxItem.(binding.String)))
 	}
 
