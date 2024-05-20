@@ -17,8 +17,8 @@ func GetYears(config *config.Config) []string {
 
 // GetDefaultYear get value of default year
 func GetDefaultYear() *string {
-	var config *config.Config = config.New()
+	var config = config.New()
 	years := GetYears(config)
-	var year string = years[len(years)-1]
+	var year = years[len(years)-1]
 	return &year
 }
