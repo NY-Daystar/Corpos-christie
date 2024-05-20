@@ -54,7 +54,6 @@ func (controller *GUIController) prepare() {
 
 	controller.Logger.Info("Menu is set")
 	controller.Menu.Start()
-
 }
 
 // setAppSettings get and configure app settings and synchronizing model and view
@@ -150,10 +149,16 @@ func (controller *GUIController) SetLanguage(code string) {
 		controller.Logger.Sugar().Fatalf("Unmarshal language file %s: %v", languageFile, err)
 	}
 
+	// Refactoring model with language
 	controller.Logger.Sugar().Debugf("Language Yaml %v", controller.Model.Language)
 	controller.Model.Language.Code = code
 	controller.Model.Settings.Set("language", code)
 	controller.Model.Reload()
+
+	// Rename radioStatus
+	controller.View.RadioStatus.Options = controller.Model.Language.GetMaritalStatus()
+	controller.View.RadioStatus.SetSelected(controller.View.RadioStatus.Options[0])
+	controller.View.RadioStatus.Refresh()
 
 	controller.Logger.Debug("Renommage du menu", zap.String("file", languageFile))
 	controller.Menu.Refresh(oldModelLanguage)
