@@ -24,6 +24,9 @@ file: File
 settings: Settings
 income: Enter your income
 status: Marital status
+status_list:
+    single: Single
+    couple: Couple
 children: Select children number
 tax: Taxes
 remainder: Remainder

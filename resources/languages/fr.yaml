@@ -24,6 +24,9 @@ file: Fichier
 settings: Paramètres
 income: Entrer vos revenus
 status: Statut marital
+status_list:
+    single: Célibataire
+    couple: Marié
 children: Saisissez le nombre d'enfants
 tax: Impôts
 remainder: Restants

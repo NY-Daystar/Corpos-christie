@@ -24,6 +24,9 @@ file: Datei
 settings: Einstellungen
 income: Geben Sie Ihr Einkommen ein
 status: Familienstand
+status_list:
+    single: Bachelor
+    couple: Verheiratet
 children: Kindernummer auswählen
 tax: Steuern
 remainder: Rest

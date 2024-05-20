@@ -43,32 +43,39 @@ type TaxHeadersYaml struct {
 	Header5 string `yaml:"header_5"`
 }
 
+// Marital status for radio buttons
+type MaritalStatusYaml struct {
+	Single string `yaml:"single"`
+	Couple string `yaml:"couple"`
+}
+
 // Handle all data about language data
 type Yaml struct {
-	Code         string         // code of the language (fr, en, etc...)
-	Theme        ThemeYaml      `yaml:"themes"`
-	Languages    LanguageYaml   `yaml:"languages"`
-	Abouts       AboutYaml      `yaml:"abouts"`
-	TaxHeaders   TaxHeadersYaml `yaml:"tax_headers"`
-	Year         string         `yaml:"year"`
-	File         string         `yaml:"file"`
-	Settings     string         `yaml:"settings"`
-	Income       string         `yaml:"income"`
-	Status       string         `yaml:"status"`
-	Children     string         `yaml:"children"`
-	Tax          string         `yaml:"tax"`
-	Remainder    string         `yaml:"remainder"`
-	Share        string         `yaml:"share"`
-	Save         string         `yaml:"save"`
-	ThemeCode    string         `yaml:"theme"`
-	LanguageCode string         `yaml:"language"`
-	Currency     string         `yaml:"currency"`
-	Logs         string         `yaml:"logs"`
-	Help         string         `yaml:"help"`
-	About        string         `yaml:"about"`
-	Author       string         `yaml:"author"`
-	Close        string         `yaml:"close"`
-	Quit         string         `yaml:"quit"`
+	Code          string            // code of the language (fr, en, etc...)
+	Theme         ThemeYaml         `yaml:"themes"`
+	Languages     LanguageYaml      `yaml:"languages"`
+	Abouts        AboutYaml         `yaml:"abouts"`
+	TaxHeaders    TaxHeadersYaml    `yaml:"tax_headers"`
+	MaritalStatus MaritalStatusYaml `yaml:"status_list"`
+	Year          string            `yaml:"year"`
+	File          string            `yaml:"file"`
+	Settings      string            `yaml:"settings"`
+	Income        string            `yaml:"income"`
+	Status        string            `yaml:"status"`
+	Children      string            `yaml:"children"`
+	Tax           string            `yaml:"tax"`
+	Remainder     string            `yaml:"remainder"`
+	Share         string            `yaml:"share"`
+	Save          string            `yaml:"save"`
+	ThemeCode     string            `yaml:"theme"`
+	LanguageCode  string            `yaml:"language"`
+	Currency      string            `yaml:"currency"`
+	Logs          string            `yaml:"logs"`
+	Help          string            `yaml:"help"`
+	About         string            `yaml:"about"`
+	Author        string            `yaml:"author"`
+	Close         string            `yaml:"close"`
+	Quit          string            `yaml:"quit"`
 }
 
 // GetDefaultLanguage get value of last language selected (fr, en)
@@ -133,4 +140,14 @@ func (yaml *Yaml) GetTaxHeaders() []string {
 		taxHeaders[i] = v.Field(i).String()
 	}
 	return taxHeaders
+}
+
+// GetMaritalStatus parse MaritalStatusYaml struct to get value of each field
+func (yaml *Yaml) GetMaritalStatus() []string {
+	v := reflect.ValueOf(yaml.MaritalStatus)
+	status := make([]string, v.NumField())
+	for i := 0; i < v.NumField(); i++ {
+		status[i] = v.Field(i).String()
+	}
+	return status
 }

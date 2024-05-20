@@ -24,6 +24,9 @@ file: Dossier
 settings: Impostazioni
 income: Inserisci il tuo reddito
 status: Stato civile
+status_list:
+    single: Laurea breve
+    couple: Sposato
 children: Selezionare il numero dei bambini
 tax: Tasse
 remainder: Resto

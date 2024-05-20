@@ -23,7 +23,10 @@ tax_headers:
 file: Archivo
 settings: Configuración
 income: Ingrese sus ingresos
-status: estado civil
+status: Estado civil
+status_list:
+    single: Soltera
+    couple: Casado
 children: Seleccione el número de niños
 tax: Impuestos
 remainder: Resto
