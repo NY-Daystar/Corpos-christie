@@ -51,6 +51,10 @@ func (menu *GUIMenu) createFileMenu() *fyne.Menu {
 				widget.NewSeparator(),
 				menu.createSelectCurrency(),
 				widget.NewSeparator(),
+				menu.createSelectYear(),
+				widget.NewSeparator(),
+				menu.createLabelLogs(),
+				widget.NewSeparator(),
 				menu.createLabelLogs(),
 			), menu.Window)
 	})
@@ -168,7 +172,7 @@ func (menu *GUIMenu) createSelectTheme() *fyne.Container {
 // createSelectLanguage create select to change language
 func (menu *GUIMenu) createSelectLanguage() *fyne.Container {
 	selectLanguage := widget.NewSelect(menu.Controller.Model.Language.GetLanguages(), nil)
-	selectLanguage.SetSelectedIndex(menu.Controller.Model.GetLanguageIndex(menu.Controller.Model.Language.Code))
+	selectLanguage.SetSelectedIndex(settings.GetLanguageIndex(menu.Controller.Model.Language.Code))
 	selectLanguage.OnChanged = func(s string) {
 		index := selectLanguage.SelectedIndex()
 		var getLanguage = func() string {
@@ -209,6 +213,20 @@ func (menu *GUIMenu) createSelectCurrency() *fyne.Container {
 	return container.NewHBox(
 		widget.NewLabel(menu.Controller.Model.Language.Currency),
 		selectCurrency,
+	)
+}
+
+// createSelectYear create select to change tax year
+func (menu *GUIMenu) createSelectYear() *fyne.Container {
+	selectYear := widget.NewSelect(settings.GetYears(menu.Controller.Model.Config), func(year string) {
+		menu.Controller.SetYear(year) // Update model
+	})
+
+	year, _ := menu.Controller.Model.Year.Get()
+	selectYear.SetSelected(year)
+	return container.NewHBox(
+		widget.NewLabel(menu.Controller.Model.Language.Year),
+		selectYear,
 	)
 }
 

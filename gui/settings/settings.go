@@ -12,9 +12,10 @@ import (
 // Settings data store in settings file
 type Settings struct {
 	logger   *zap.Logger
-	Theme    int    `json:"theme"`
-	Language string `json:"language"`
-	Currency string `json:"currency"`
+	Theme    int     `json:"theme"`
+	Language *string `json:"language"`
+	Currency *string `json:"currency"`
+	Year     *string `json:"year"`
 }
 
 // Load gui settings from settings file
@@ -42,7 +43,8 @@ func createDefaultSettings() Settings {
 	var settingsDefault = Settings{
 		Theme:    GetDefaultTheme(),
 		Language: GetDefaultLanguage(),
-		Currency: EURO,
+		Currency: GetDefaultCurrency(),
+		Year:     GetDefaultYear(),
 	}
 	file, _ := json.MarshalIndent(settingsDefault, "", " ")
 	_ = os.WriteFile(config.SETTINGS_PATH, file, 0644)
@@ -55,15 +57,21 @@ func (s *Settings) Set(key string, value interface{}) {
 	case "theme":
 		s.Theme = value.(int)
 	case "language":
-		s.Language = value.(string)
+		v := value.(string)
+		s.Language = &v
 	case "currency":
-		s.Currency = value.(string)
+		v := value.(string)
+		s.Currency = &v
+	case "year":
+		v := value.(string)
+		s.Year = &v
 	}
 	s.save()
 }
 
 // Save write file with settings data
 func (s *Settings) save() {
+	s.logger.Sugar().Debug("Save settings")
 	settingsPath, err := filepath.Abs(config.SETTINGS_PATH)
 	if err != nil {
 		s.logger.Error("Can't get absolute path of settings", zap.String("error", err.Error()))

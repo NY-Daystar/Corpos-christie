@@ -11,3 +11,9 @@ const (
 func GetCurrencies() []string {
 	return []string{EURO, DOLLAR, LIVRE}
 }
+
+// GetDefaultCurrency get value of default currency
+func GetDefaultCurrency() *string {
+	var currency string = EURO
+	return &currency
+}

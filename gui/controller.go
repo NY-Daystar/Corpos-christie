@@ -3,7 +3,6 @@ package gui
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
@@ -62,13 +61,15 @@ func (controller *GUIController) prepare() {
 func (controller *GUIController) setAppSettings() {
 	controller.View.Logger.Info("Settings loaded",
 		zap.Int("theme", controller.Model.Settings.Theme),
-		zap.String("language", controller.Model.Settings.Language),
-		zap.String("theme", controller.Model.Settings.Currency),
+		zap.String("language", *controller.Model.Settings.Language),
+		zap.String("theme", *controller.Model.Settings.Currency),
+		zap.String("year", *controller.Model.Settings.Year),
 	)
 
 	controller.SetTheme(controller.Model.Settings.Theme)
-	controller.SetLanguage(controller.Model.Settings.Language)
-	controller.SetCurrency(controller.Model.Settings.Currency)
+	controller.SetLanguage(*controller.Model.Settings.Language)
+	controller.SetCurrency(*controller.Model.Settings.Currency)
+	controller.SetYear(*controller.Model.Settings.Year)
 }
 
 // calculate Get values of gui to calculate tax
@@ -99,7 +100,7 @@ func (controller *GUIController) calculate() {
 
 // getIncome Get value of widget entry
 func (controller *GUIController) getIncome() int {
-	intVal, err := strconv.Atoi(controller.View.EntryIncome.Text)
+	intVal, err := utils.ConvertStringToInt(controller.View.EntryIncome.Text)
 	if err != nil {
 		return 0
 	}
@@ -113,7 +114,7 @@ func (controller *GUIController) getStatus() bool {
 
 // getChildren get value of widget select
 func (controller *GUIController) getChildren() int {
-	children, err := strconv.Atoi(controller.View.SelectChildren.Entry.Text)
+	children, err := utils.ConvertStringToInt(controller.View.SelectChildren.Entry.Text)
 	if err != nil {
 		return 0
 	}
@@ -158,10 +159,23 @@ func (controller *GUIController) SetLanguage(code string) {
 	controller.Menu.Refresh(oldModelLanguage)
 }
 
-// setCurrency change language of the application
+// SetCurrency change currency of the application
 func (controller *GUIController) SetCurrency(currency string) {
 	controller.Logger.Info("Set currency", zap.String("currency", currency))
 	controller.Model.Currency.Set(currency)
 	controller.Model.Settings.Set("currency", currency)
 	controller.Model.Reload()
+}
+
+// SetYear change Year to calculate taxes of the application
+func (controller *GUIController) SetYear(year string) {
+	controller.Logger.Info("Set year", zap.String("year", year))
+	if year == "" {
+		year = *settings.GetDefaultYear()
+	}
+	controller.Model.Year.Set(year)
+	controller.Model.Settings.Set("year", year)
+	controller.Model.Config.ChangeTax(utils.ConvertBindStringToInt(controller.Model.Year))
+	controller.Model.Reload()
+	controller.calculate() // Recalculate taxes
 }
