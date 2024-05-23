@@ -55,7 +55,6 @@ func (menu *GUIMenu) createFileMenu() *fyne.Menu {
 				widget.NewSeparator(),
 				menu.createLabelLogs(),
 				widget.NewSeparator(),
-				menu.createLabelLogs(),
 			), menu.Window)
 	})
 
@@ -71,6 +70,8 @@ func (menu *GUIMenu) createFileMenu() *fyne.Menu {
 // createHelpMenu create help item in toolbar to show about app
 func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 	url, _ := url.Parse(config.APP_LINK)
+
+	// TODO mettre le bouton Check updates
 
 	menu.Controller.Model.LabelsAbout.Set(menu.Controller.Model.Language.GetAbouts())
 	var labels []binding.DataItem

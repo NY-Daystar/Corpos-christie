@@ -1,17 +1,17 @@
 package settings
 
 const (
-	DARK  int = 0
-	LIGHT int = 1
+	LIGHT int = 0
+	DARK  int = 1
 )
 
 // ThemeYaml Yaml struct for theme's app
 type ThemeYaml struct {
-	Dark  string `yaml:"dark"`
 	Light string `yaml:"light"`
+	Dark  string `yaml:"dark"`
 }
 
 // GetDefaultTheme Get value of last theme selected
 func GetDefaultTheme() int {
-	return DARK
+	return LIGHT
 }
