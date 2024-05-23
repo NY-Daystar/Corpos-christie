@@ -29,7 +29,7 @@ func TestStringConvertToInt(t *testing.T) {
 
 // Test string percentage conversion to float64
 func TestConvertPercentageToFloat64(t *testing.T) {
-	var stringRef = "15%"
+	var stringRef = "15 %"
 	var expected = 15.
 
 	val, err := ConvertPercentageToFloat64(stringRef)
