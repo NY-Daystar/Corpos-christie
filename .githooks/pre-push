@@ -1,0 +1,142 @@
+#!/bin/bash
+
+APP_NAME="corpos-christie"
+APP_ID="lucasnoga.corpos-christie"
+APP_VERSION="2.2.0"
+APP_BUILD=2
+
+function main() {
+    ## Handle debug mode
+    if [ "$1" = "--debug" ]; then
+        DEBUG=true
+        log_verbose "Debug mode"
+    fi
+
+    ## Handle detailed mode
+    if [ "$1" = "--detailed" ] || [ "$2" = "--detailed" ]; then
+        DETAILED=true
+        DEBUG=true
+        log_verbose "Detailed mode" "yellow"
+
+    fi
+
+    log_verbose "Compiling"
+    compile $DETAILED
+    check 'compile' $?
+    log_verbose "Compiling DONE..."
+
+    log_verbose "Executing unit tests..."
+    unittest
+    check 'unittest' $?
+    log_verbose "Executing tests DONE..."
+
+    # log_verbose "Executing coverage tests"
+    # log_verbose "commande :  .githooks/ei-coverage \"$DLL\" \"$RESULT_DIRECTORY\" \"$THRESHOLD\""
+    # .githooks/ei-coverage "$DLL" "$RESULT_DIRECTORY" "$THRESHOLD"
+    # check 'coverage' 1
+    # log_verbose "Executing coverage tests DONE..."
+
+    echo -e "Tous les contrôles sont vérifiés"
+}
+
+###
+# Check return code of compiling, unit tests and tests coverage
+# $1: action to verify
+# $2: return code of the action (0 = action well executed, otherwise bad execution)
+###
+function check() {
+    action=$1
+    result_code=$2
+    log_verbose "action ${action} -> result_code: ${result_code}"
+    # TODO a changer
+    case $action in
+    'compile')
+        [ $result_code != 0 ] && echo "Unable to compile project. Cancel git push." && exit 1
+        ;;
+
+    'unittest')
+        [ $result_code != 0 ] && echo "Unit tests are not successful. Cancel git push." && exit 1
+        ;;
+
+    'coverage')
+        [ $result_code != 0 ] && echo "Code is not enough cover. Cancel git push." && exit 1
+        ;;
+    esac
+}
+
+###
+# Build golang project
+###
+function compile() {
+    [ "${DETAILED}" == "true" ] && go build || go build >/dev/null
+    return $?
+}
+
+###
+# Execute go test
+###
+function unittest() {
+    [ "${DETAILED}" == "true" ] && go test ./... || go test ./... >/dev/null
+    return $?
+}
+
+################################################################### Utils functions ###################################################################
+
+###
+# Display datetime (ex: 2022-01-10 23:20:35)
+###
+function get_datetime {
+    log $(date '+%Y-%m-%d %H:%M:%S')
+}
+
+################################################################### Logging functions ###################################################################
+
+###
+# Print function
+###
+function log {
+    echo -e $@
+}
+
+###
+# Print color function
+###
+function log_color {
+    message=$1
+    color=$2
+    log ${COLORS[$color]}$message${COLORS[nc]}
+}
+
+typeset -A COLORS=(
+    [default]='\033[0;39m'
+    [black]='\033[0;30m'
+    [red]='\033[0;31m'
+    [green]='\033[0;32m'
+    [yellow]='\033[0;33m'
+    [blue]='\033[0;34m'
+    [magenta]='\033[0;35m'
+    [cyan]='\033[0;36m'
+    [light_gray]='\033[0;37m'
+    [light_grey]='\033[0;37m'
+    [dark_gray]='\033[0;90m'
+    [dark_grey]='\033[0;90m'
+    [light_red]='\033[0;91m'
+    [light_green]='\033[0;92m'
+    [light_yellow]='\033[0;93m'
+    [light_blue]='\033[0;94m'
+    [light_magenta]='\033[0;95m'
+    [light_cyan]='\033[0;96m'
+    [nc]='\033[0m' # No Color
+)
+
+###
+# Print in debug mode
+###
+function log_verbose {
+    message=$@
+    date=$(get_datetime)
+    if [ "${DEBUG}" = "true" ]; then log_color "[$date] $message" "light_blue"; fi
+    return
+}
+
+main "$@"
