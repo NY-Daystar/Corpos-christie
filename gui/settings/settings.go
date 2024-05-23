@@ -71,7 +71,6 @@ func (s *Settings) Set(key string, value interface{}) {
 
 // Save write file with settings data
 func (s *Settings) save() {
-	s.logger.Sugar().Debug("Save settings")
 	settingsPath, err := filepath.Abs(config.SETTINGS_PATH)
 	if err != nil {
 		s.logger.Error("Can't get absolute path of settings", zap.String("error", err.Error()))

@@ -40,6 +40,7 @@ Source code analysed with [DeepSource](https://deepsource.com/)
 -   [Requirements](#requirements)
 -   [How to launch program](#how-to-launch-program)
 -   [For Developpers](#for-developpers)
+    -   [Setup hook git](#setup-githooks)
 -   [Packaging App](#packaging-app)
 -   [Installing and Setup Golang](#installing-and-setup-golang)
 -   [Cve analysis](#cve-analysis)
@@ -143,6 +144,14 @@ $ go doc github.com/NY-Daystar/corpos-christie/tax
 ```
 
 See [Project dependencies](https://deps.dev/go/github.com/NY-Daystar/corpos-christie) To watch go project used in this program
+
+### Setup githooks
+
+1. To add git hook
+
+```bash
+git config --add core.hooksPath .githooks
+```
 
 ## Packaging App
 
