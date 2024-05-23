@@ -5,10 +5,12 @@
 package core
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui"
+	"github.com/NY-Daystar/corpos-christie/updater"
 	"github.com/NY-Daystar/corpos-christie/user"
 )
 
@@ -22,7 +24,10 @@ const (
 // Get Options passed on program and launch appropriate system
 func Start(cfg *config.Config, user *user.User) {
 	var appSelected string = selectMode(os.Args)
-
+	fmt.Printf("appMode:  %+v\n", appSelected)
+	// TODO envoyer le logger
+	updater.StartUpdater()
+	fmt.Printf("UPDATER TERMINE\n")
 	// Launch program (Console or GUI)
 	switch m := appSelected; m {
 	case GUI:

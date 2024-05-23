@@ -60,6 +60,7 @@ type Yaml struct {
 	Year          string            `yaml:"year"`
 	File          string            `yaml:"file"`
 	Settings      string            `yaml:"settings"`
+	Update        string            `yaml:"update"`
 	Income        string            `yaml:"income"`
 	Status        string            `yaml:"status"`
 	Children      string            `yaml:"children"`

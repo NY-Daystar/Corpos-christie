@@ -22,6 +22,7 @@ tax_headers:
     header_5: "TAX"
 file: File
 settings: Settings
+update: Check for Updates...
 income: Enter your income
 status: Marital status
 status_list:
