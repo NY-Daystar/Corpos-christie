@@ -22,6 +22,7 @@ tax_headers:
     header_5: "IMPOSTA"
 file: Dossier
 settings: Impostazioni
+update: controlla l'aggiornamento
 income: Inserisci il tuo reddito
 status: Stato civile
 status_list:

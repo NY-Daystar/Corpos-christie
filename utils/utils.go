@@ -7,6 +7,8 @@ package utils
 import (
 	"bufio"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -107,4 +109,22 @@ func SetPadding(tab []string, v string) string {
 	var gap = padding - len(v) + DEFAULT_PADDING
 	var space = strings.Repeat(" ", gap)
 	return space
+}
+
+// DownloadFile from url to destination
+func DownloadFile(url, dest string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	out, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	return err
 }

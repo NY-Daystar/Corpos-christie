@@ -22,6 +22,7 @@ tax_headers:
     header_5: IMPUESTO
 file: Archivo
 settings: Configuración
+update: comprobar actualización
 income: Ingrese sus ingresos
 status: Estado civil
 status_list:

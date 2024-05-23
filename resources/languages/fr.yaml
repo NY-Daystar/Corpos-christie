@@ -22,6 +22,7 @@ tax_headers:
     header_5: "IMPÔT"
 file: Fichier
 settings: Paramètres
+update: Vérifier les mises à jour
 income: Entrer vos revenus
 status: Statut marital
 status_list:

@@ -22,6 +22,7 @@ tax_headers:
     header_5: STEUER
 file: Datei
 settings: Einstellungen
+update: Update prüfen
 income: Geben Sie Ihr Einkommen ein
 status: Familienstand
 status_list:

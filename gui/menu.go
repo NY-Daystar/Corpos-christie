@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"net/url"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -13,6 +14,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
+	"github.com/NY-Daystar/corpos-christie/updater"
 )
 
 // GUIMenu represents menu of window application
@@ -69,9 +71,24 @@ func (menu *GUIMenu) createFileMenu() *fyne.Menu {
 
 // createHelpMenu create help item in toolbar to show about app
 func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
-	url, _ := url.Parse(config.APP_LINK)
+	helpMenu := fyne.NewMenu(menu.Controller.Model.Language.Help,
+		fyne.NewMenuItem(menu.Controller.Model.Language.About, func() {
+			dialog.ShowCustom(menu.Controller.Model.Language.About, menu.Controller.Model.Language.Close,
+				menu.createAboutDialog(),
+				menu.Window)
+		}),
+		fyne.NewMenuItem(menu.Controller.Model.Language.Update, func() {
+			fmt.Printf("Vérification mise à jour ")
+			dialog.ShowCustom(menu.Controller.Model.Language.Update, menu.Controller.Model.Language.Close,
+				menu.createUpdateDialog(),
+				menu.Window)
+		}))
+	return helpMenu
+}
 
-	// TODO mettre le bouton Check updates
+// createAboutDialog create dialog box for about content
+func (menu *GUIMenu) createAboutDialog() *fyne.Container {
+	url, _ := url.Parse(config.APP_LINK)
 
 	menu.Controller.Model.LabelsAbout.Set(menu.Controller.Model.Language.GetAbouts())
 	var labels []binding.DataItem
@@ -101,18 +118,54 @@ func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 		widget.NewLabel(config.APP_AUTHOR),
 	)
 
-	helpMenu := fyne.NewMenu(menu.Controller.Model.Language.Help,
-		fyne.NewMenuItem(menu.Controller.Model.Language.About, func() {
-			dialog.ShowCustom(menu.Controller.Model.Language.About, menu.Controller.Model.Language.Close,
-				container.NewVBox(
-					firstLine,
-					secondLine,
-					thirdLine,
-					fourthLine,
-					fifthLine,
-				), menu.Window)
-		}))
-	return helpMenu
+	return container.NewVBox(
+		firstLine,
+		secondLine,
+		thirdLine,
+		fourthLine,
+		fifthLine,
+	)
+}
+
+// createUpdateDialog create dialog box for updates
+func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
+	if !updater.IsNewUpdateAvailable() {
+		return container.NewVBox(
+			container.NewHBox(
+				widget.NewLabel("Pas de mise à jour"),
+			),
+		)
+	}
+
+	// Lancement de l'update avec progression
+	fmt.Printf("Demarrage de l'update\n")
+	updater.StartUpdater()
+
+	progress := widget.NewProgressBar()
+	infinite := widget.NewProgressBarInfinite()
+
+	// TODO make a circular progress simualate with 5sec latences
+	// TODO utiliser la demo : https://docs.fyne.io/started/demo.html
+	// TODO la mettre dans le readme
+	// TODO l'utiliser pour changer la barre de progression ou mettre un circular
+
+	go func() {
+		for i := 0.0; i <= 1.0; i += 0.1 {
+			time.Sleep(time.Millisecond * 250)
+			progress.SetValue(i)
+		}
+		infinite.Hide()
+		if infinite.Hidden {
+			fmt.Printf("Fin du check\n")
+		}
+
+	}()
+
+	return container.NewVBox(
+		container.NewHBox(widget.NewLabel("Vérification de mise à jour")),
+		container.NewHBox(widget.NewLabel("Vérification de mise à jour")),
+		container.NewVBox(progress, infinite),
+	)
 }
 
 // Refresh change for each option in menu old language for new in model
@@ -147,6 +200,9 @@ func (menu *GUIMenu) Refresh(oldModelLanguage settings.Yaml) {
 			// For about option
 			if item.Label == oldModelLanguage.About {
 				item.Label = menu.Controller.Model.Language.About
+			}
+			if item.Label == oldModelLanguage.Update {
+				item.Label = menu.Controller.Model.Language.Update
 			}
 		}
 		menu.Controller.Menu.MainMenu.Refresh()
