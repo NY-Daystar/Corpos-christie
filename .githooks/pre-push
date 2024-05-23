@@ -17,26 +17,27 @@ function main() {
         DETAILED=true
         DEBUG=true
         log_verbose "Detailed mode" "yellow"
-
     fi
 
-    log_verbose "Compiling"
+    log_color "Compiling" "blue"
     compile $DETAILED
     check 'compile' $?
-    log_verbose "Compiling DONE..."
+    log_color "Compiling DONE..." "blue"
 
-    log_verbose "Executing unit tests..."
+    log_color "Executing unit tests..." "green"
     unittest
     check 'unittest' $?
-    log_verbose "Executing tests DONE..."
+    log_color "Executing tests DONE..." "green"
 
-    # log_verbose "Executing coverage tests"
-    # log_verbose "commande :  .githooks/ei-coverage \"$DLL\" \"$RESULT_DIRECTORY\" \"$THRESHOLD\""
-    # .githooks/ei-coverage "$DLL" "$RESULT_DIRECTORY" "$THRESHOLD"
-    # check 'coverage' 1
-    # log_verbose "Executing coverage tests DONE..."
+    log_color "Executing coverage tests" "yellow"
+    coverage
+    log_color "Executing coverage tests DONE..." "yellow"
 
-    echo -e "Tous les contrôles sont vérifiés"
+    log_color "Executing sca analysis" "magenta"
+    sca_analysis
+    log_color "Executing sca analysis DONE..." "magenta"
+
+    log_color "Every controls are checked" "blue"
 }
 
 ###
@@ -48,36 +49,35 @@ function check() {
     action=$1
     result_code=$2
     log_verbose "action ${action} -> result_code: ${result_code}"
-    # TODO a changer
     case $action in
     'compile')
-        [ $result_code != 0 ] && echo "Unable to compile project. Cancel git push." && exit 1
+        [ $result_code != 0 ] && log_color "Unable to compile project. Cancel git push." "red" && exit 1
         ;;
 
     'unittest')
-        [ $result_code != 0 ] && echo "Unit tests are not successful. Cancel git push." && exit 1
-        ;;
-
-    'coverage')
-        [ $result_code != 0 ] && echo "Code is not enough cover. Cancel git push." && exit 1
+        [ $result_code != 0 ] && log_color "Unit tests are not successful. Cancel git push." "red" && exit 1
         ;;
     esac
 }
 
-###
-# Build golang project
-###
 function compile() {
     [ "${DETAILED}" == "true" ] && go build || go build >/dev/null
     return $?
 }
 
-###
-# Execute go test
-###
 function unittest() {
-    [ "${DETAILED}" == "true" ] && go test ./... || go test ./... >/dev/null
+    go test ./...
     return $?
+}
+
+function coverage() {
+    go mod download golang.org/x/tools
+    go test ./... -coverprofile cover.out
+    go tool cover -html=cover.out
+}
+
+function sca_analysis() {
+    govulncheck ./...
 }
 
 ################################################################### Utils functions ###################################################################
