@@ -42,12 +42,13 @@ Source code analysed with [DeepSource](https://deepsource.com/)
 -   [For Developpers](#for-developpers)
 -   [Packaging App](#packaging-app)
 -   [Installing and Setup Golang](#installing-and-setup-golang)
+-   [Cve analysis](#cve-analysis)
 -   [Suggestions](#suggestions)
 -   [Credits](#credits)
 
 ## Requirements
 
--   [Golang](https://golang.org/dl/) >= 1.21.0
+-   [Golang](https://golang.org/dl/) >= 1.22.3
 
 ## How to launch program
 
@@ -180,10 +181,31 @@ $ make package-test
 To install golang
 
 ```bash
-$ wget https://golang.org/dl/go1.16.5.linux-amd64.tar.gz
-$ tar -xvf go1.16.5.linux-amd64.tar.gz
+$ wget https://golang.org/dl/go1.22.3.linux-amd64.tar.gz
+$ tar -xvf go1.22.3.linux-amd64.tar.gz
 $ sudo mv go /usr/lib
 $ go version
+```
+
+## Cve analysis
+
+CVE analyzed with [Go vulnerability Database](https://pkg.go.dev/vuln/)  
+To setup :
+
+```bash
+go install golang.org/x/vuln/cmd/govulncheck@latest`
+```
+
+To launch analyzis
+
+```bash
+govulncheck ./...
+```
+
+To launch verbose analysis
+
+```bash
+govulncheck -show verbose ./...
 ```
 
 ## Suggestions
