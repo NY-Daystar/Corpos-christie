@@ -111,20 +111,31 @@ func SetPadding(tab []string, v string) string {
 	return space
 }
 
-// DownloadFile from url to destination
+// TODO tester la methode avec des urls bonne et mauvaise
+func Get(url string) (*http.Response, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	return response, response.Body.Close()
+}
+
+// DownloadFile from url to destination\
+// TODO mettre un logger
 func DownloadFile(url, dest string) error {
-	resp, err := http.Get(url)
+	response, err := Get(url)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
 	out, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
-	defer out.Close()
 
-	_, err = io.Copy(out, resp.Body)
-	return err
+	_, err = io.Copy(out, response.Body)
+	if err != nil {
+		return err
+	}
+	return out.Close()
 }
