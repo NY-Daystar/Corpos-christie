@@ -39,6 +39,12 @@ func (DarkTheme) Color(c fyne.ThemeColorName, v fyne.ThemeVariant) color.Color {
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x99}
 	case theme.ColorNameShadow:
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x66}
+	case theme.ColorNameSelection:
+		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
+	case theme.ColorNameMenuBackground:
+		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
+	case theme.ColorNameOverlayBackground:
+		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
 	default:
 		return theme.DefaultTheme().Color(c, v)
 	}
