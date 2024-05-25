@@ -12,8 +12,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// TODO optimiser les commentaires avec les parametres et les retours
-
 // Enum for type of tranche
 const (
 	MIN   string = "MIN"
@@ -52,7 +50,7 @@ type GUIModel struct {
 	LabelsTaxHeaders   binding.StringList // List of label for tax details headers
 	LabelsMinTranche   binding.StringList // List of labels for min tranche in grid
 	LabelsMaxTranche   binding.StringList // List of labels for max tranche in grid
-	LabelsRateTranche  binding.StringList // List of labesl for rate tranche in grid
+	LabelsRateTranche  binding.StringList // List of labels for rate tranche in grid
 	LabelsTrancheTaxes binding.StringList // List of tranches tax label results
 }
 
@@ -70,8 +68,7 @@ func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIMo
 	return &model
 }
 
-// TODO Le couple ne change pas le nombre de part
-// prepare init data and binding
+// Init data and binding for GUI
 func (model *GUIModel) prepare() {
 	model.LabelIncome = binding.NewString()
 	model.LabelStatus = binding.NewString()
@@ -103,20 +100,19 @@ func (model *GUIModel) prepare() {
 // Returns Array of label widget in fyne object
 func (model *GUIModel) createTrancheLabels(enumTranche string) *[]string {
 	var tranches []config.Tranche = model.Config.Tax.Tranches
-	currency, _ := model.Currency.Get()
 	var labels []string = make([]string, 0, len(tranches))
 
 	// To handle `min` tranche
 	if enumTranche == MIN {
 		for _, tranche := range tranches {
-			var min string = utils.ConvertIntToString(tranche.Min) + " " + currency
+			var min string = utils.ConvertIntToString(tranche.Min)
 			labels = append(labels, min)
 		}
 
 		// To handle `max` tranche
 	} else if enumTranche == MAX {
 		for _, tranche := range tranches {
-			var max = utils.ConvertIntToString(tranche.Max) + " " + currency
+			var max = utils.ConvertIntToString(tranche.Max)
 			if tranche.Max == math.MaxInt64 {
 				max = "-"
 			}
@@ -178,7 +174,7 @@ func (model *GUIModel) Reload() {
 	// Reload rate tranches
 	var rateList []string
 	for index := 0; index < model.LabelsRateTranche.Length(); index++ {
-		var rate string = model.Config.Tax.Tranches[index].Rate
+		var rate string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Rate)
 		rateList = append(rateList, rate)
 	}
 	model.LabelsRateTranche.Set(rateList)

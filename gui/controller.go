@@ -177,5 +177,6 @@ func (controller *GUIController) SetYear(year string) {
 	controller.Model.Year.Set(year)
 	controller.Model.Settings.Set("year", year)
 	controller.Model.Config.ChangeTax(utils.ConvertBindStringToInt(controller.Model.Year))
+	controller.Model.Reload()
 	controller.calculate()
 }
