@@ -233,7 +233,7 @@ func (view *GUIView) createLayoutTaxDetails() *fyne.Container {
 	}
 
 	return container.New(
-		layout.NewMaxLayout(),
+		layout.NewStackLayout(),
 		grid,
 	)
 }
