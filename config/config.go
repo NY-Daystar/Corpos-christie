@@ -4,7 +4,6 @@
 // Package config define the loading of configuration of the program
 package config
 
-// TODO test unitaires
 import (
 	"fmt"
 	"math"

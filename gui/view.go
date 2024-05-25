@@ -107,9 +107,10 @@ func (view *GUIView) createLayoutForm() *fyne.Container {
 // createLayoutIncome Setup layouts and widget for income layout
 func (view *GUIView) createLayoutIncome() *fyne.Container {
 	view.Model.LabelIncome = binding.BindString(&view.Model.Language.Income)
+	var bindIncome = binding.NewSprintf("%s (%s)", view.Model.LabelIncome, view.Model.Currency)
 	return container.New(
 		layout.NewFormLayout(),
-		widget.NewLabelWithData(view.Model.LabelIncome),
+		widget.NewLabelWithData(bindIncome),
 		view.EntryIncome,
 	)
 }
@@ -162,9 +163,6 @@ func (view *GUIView) createLayoutTax() *fyne.Container {
 
 // createLayoutTaxResult Setup right top side of window
 func (view *GUIView) createLayoutTaxYear() *fyne.Container {
-	view.Model.LabelYear = binding.NewString()
-	view.Model.Year = binding.NewString()
-
 	return container.New(layout.NewGridLayout(8),
 		widget.NewLabel(""),
 		widget.NewLabel(""),
@@ -186,18 +184,18 @@ func (view *GUIView) createLayoutTaxResult() *fyne.Container {
 	view.Model.LabelRemainder = binding.NewString()
 	view.Model.Remainder = binding.NewString()
 
-	return container.New(layout.NewGridLayout(3),
+	var taxBind = binding.NewSprintf("%s (%s)", view.Model.Tax, view.Model.Currency)
+	var remainderBind = binding.NewSprintf("%s (%s)", view.Model.Remainder, view.Model.Currency)
+
+	return container.New(layout.NewGridLayout(2),
 		widget.NewLabelWithData(view.Model.LabelTax),
-		widget.NewLabelWithData(view.Model.Tax),
-		widget.NewLabelWithData(view.Model.Currency),
+		widget.NewLabelWithData(taxBind),
+
+		widget.NewLabelWithData(view.Model.LabelRemainder),
+		widget.NewLabelWithData(remainderBind),
 
 		widget.NewLabelWithData(view.Model.LabelShares),
 		widget.NewLabelWithData(view.Model.Shares),
-		widget.NewLabelWithData(view.Model.Currency),
-
-		widget.NewLabelWithData(view.Model.LabelRemainder),
-		widget.NewLabelWithData(view.Model.Remainder),
-		widget.NewLabelWithData(view.Model.Currency),
 	)
 }
 
@@ -210,22 +208,28 @@ func (view *GUIView) createLayoutTaxDetails() *fyne.Container {
 
 	for index, header := range view.Model.Language.GetTaxHeaders() {
 		view.Model.LabelsTaxHeaders.Append(header)
-		h, _ := view.Model.LabelsTaxHeaders.GetItem(index)
-		grid.Add(widget.NewLabelWithData(h.(binding.String)))
+		headerItem, _ := view.Model.LabelsTaxHeaders.GetItem(index)
+		var headerBind = binding.NewSprintf("%s", headerItem)
+		grid.Add(widget.NewLabelWithData(headerBind))
 	}
 
 	// Add Tranche rows in grid
 	for index := 0; index < view.Model.LabelsTrancheTaxes.Length(); index++ {
 		minItem, _ := view.Model.LabelsMinTranche.GetItem(index)
 		maxItem, _ := view.Model.LabelsMaxTranche.GetItem(index)
-		rateItem, _ := view.Model.LabelsRateTranche.GetItem(index)
+		rateItem, _ := view.Model.LabelsRateTranche.GetItem(index) // TODO mettre le pourcentage et passer en int la valeur de rate
 		taxItem, _ := view.Model.LabelsTrancheTaxes.GetItem(index)
 
+		minBind := binding.NewSprintf("%s %s", minItem, view.Model.Currency)
+		maxBind := binding.NewSprintf("%s %s", maxItem, view.Model.Currency)
+		rateBind := binding.NewSprintf("%s", rateItem)
+		taxBind := binding.NewSprintf("%s %s", taxItem, view.Model.Currency)
+
 		grid.Add(widget.NewLabel("Tranche " + utils.ConvertIntToString(index+1)))
-		grid.Add(widget.NewLabelWithData(minItem.(binding.String)))
-		grid.Add(widget.NewLabelWithData(maxItem.(binding.String)))
-		grid.Add(widget.NewLabelWithData(rateItem.(binding.String)))
-		grid.Add(widget.NewLabelWithData(taxItem.(binding.String)))
+		grid.Add(widget.NewLabelWithData(minBind))
+		grid.Add(widget.NewLabelWithData(maxBind))
+		grid.Add(widget.NewLabelWithData(rateBind))
+		grid.Add(widget.NewLabelWithData(taxBind))
 	}
 
 	return container.New(

@@ -16,7 +16,6 @@ import (
 	"github.com/NY-Daystar/corpos-christie/utils/colors"
 )
 
-// TODO test unitaires core
 // Console represents the console application
 type Console struct {
 	Config *config.Config // Config to use correctly the program
