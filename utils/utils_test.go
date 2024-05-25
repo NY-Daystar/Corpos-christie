@@ -5,7 +5,6 @@
 package utils
 
 import (
-	"os"
 	"testing"
 
 	"fyne.io/fyne/v2/data/binding"
@@ -194,65 +193,39 @@ func TestSetPadding(t *testing.T) {
 	}
 }
 
-func TestGetWithGoodUrl(t *testing.T) {
-	var url = "https://github.com/NY-Daystar/corpos-christie/tree/main?tab=readme-ov-file#corpos-christie"
-	var expected = 200
+func TestDownloadWithGoodUrl(t *testing.T) {
+	var url = "https://github.com/NY-Daystar/corpos-christie/releases/download/v2.1.0/windows-corpos-christie-2.0.0.zip"
+	var destFile = "./release.zip"
+	var expected = 0
 
-	response, err := Get(url)
-	t.Logf("Status code %d", response.StatusCode)
+	statusCode, err := DownloadFile(url, destFile)
+	t.Logf("Status code %d", statusCode)
 
-	if response.StatusCode != expected {
-		t.Errorf("Bad status code for url %s - status code : %d <> %d", url, response.StatusCode, expected)
+	if statusCode != expected {
+		t.Errorf("Bad status code for url %s - status code : %d <> %d", url, statusCode, expected)
 	}
 	if err != nil {
-		t.Errorf("Unable to get url %s, err: %v", url, err)
+		t.Errorf("Unable to download url %s, err: %v", url, err)
 	}
 }
 
-func TestGetWith404Url(t *testing.T) {
-	var url = "https://github.com/NY-Daystar/corpos-christie/tree/WRONG-BRANCH"
+func TestDownloadWithWrongUrl(t *testing.T) {
+	var url = "https://github.com/NY-Daystar/WRONG-REPOSITORY/tree/"
+	var destFile = "./release.zip"
 	var expected = 404
 
-	response, err := Get(url)
-	t.Logf("Status code %d", response.StatusCode)
+	statusCode, _ := DownloadFile(url, destFile)
 
-	if response.StatusCode != expected {
-		t.Errorf("Bad status code for url %s - status code : %d <> %d", url, response.StatusCode, expected)
-	}
-	if err != nil {
-		t.Errorf("Unable to get url %s, err: %v", url, err)
+	if statusCode != expected {
+		t.Errorf("Bad status code for url %s - status code : %d <> %d", url, statusCode, expected)
 	}
 }
 
-func TestGetWithWrongUrl(t *testing.T) {
-	var url = "WRONG-PROTOCOL://github.com/NY-Daystar/corpos-christie/tree/WRONG-BRANCH"
-
-	_, err := Get(url)
-	t.Logf("Error: %v", err)
-
-	if err == nil {
-		t.Errorf("Unable to get url %s, err: %v", url, err)
-	}
-}
-
-func TestDownloadFile(t *testing.T) {
-	var url = "https://github.com/NY-Daystar/corpos-christie/releases/download/v2.1.0/linux-corpos-christie-2.0.0.zip"
-	var destFile = "./release.zip"
-
-	err := DownloadFile(url, destFile)
-	t.Logf("Errora: %v", err)
-
-	if err != nil {
-		t.Errorf("Error when downloading file, err: %v", err)
-	}
-	os.Remove(destFile)
-}
-
-func TestDownloadFileWrongUrl(t *testing.T) {
+func TestDownloadWithWrongProtocol(t *testing.T) {
 	var url = "Wrong-protocol://github.com/NY-Daystar/corpos-christie/releases/download/v2.1.0/linux-corpos-christie-2.0.0.zip"
 	var destFile = "./dest.zip"
 
-	err := DownloadFile(url, destFile)
+	_, err := DownloadFile(url, destFile)
 	t.Logf("Error: %v", err)
 
 	if err == nil {

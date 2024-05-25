@@ -25,6 +25,7 @@ func init() {
 	cfg.ChangeTax(2022)
 }
 
+// TODO copier ces tests TestIsNewUpdateAvailable
 // Calculate tax for a single person with 30000 of income
 func TestCalculateTaxForSinglePerson(t *testing.T) {
 	var user = user.User{}
