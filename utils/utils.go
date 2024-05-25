@@ -12,7 +12,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"fyne.io/fyne/v2/data/binding"
 )
@@ -42,10 +41,7 @@ func ConvertStringToInt(str string) (int, error) {
 // ConvertBindStringToInt convert bindstring (fyne) to an int and returns it
 // return an error if the string is not convertible into an int
 func ConvertBindStringToInt(str binding.String) int {
-	bstr, err := str.Get()
-	if err != nil {
-		return 0
-	}
+	bstr, _ := str.Get()
 	i, err := strconv.Atoi(bstr)
 	if err != nil {
 		return 0
@@ -60,7 +56,6 @@ func ConvertFloat64ToString(v float64) string {
 
 // ConvertInt64ToString convert int64 to a string and returns it
 func ConvertInt64ToString(v int64) string {
-	// return fmt.Sprintf("%f", v)
 	return strconv.FormatInt(v, 10)
 }
 
@@ -78,12 +73,6 @@ func ConvertPercentageToFloat64(str string) (float64, error) {
 		return 0, err
 	}
 	return f, nil
-}
-
-// GetCurrentYear returns current year (ex: 2024)
-func GetCurrentYear() int {
-	year, _, _ := time.Now().Date()
-	return year
 }
 
 // GetMaxLength get max length string among the tab slice and returns its length
@@ -128,14 +117,9 @@ func DownloadFile(url, dest string) error {
 		return err
 	}
 
-	out, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
+	out, _ := os.Create(dest)
 
-	_, err = io.Copy(out, response.Body)
-	if err != nil {
-		return err
-	}
+	io.Copy(out, response.Body)
+
 	return out.Close()
 }

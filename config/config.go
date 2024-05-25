@@ -4,11 +4,12 @@
 // Package config define the loading of configuration of the program
 package config
 
+// TODO test unitaires
 import (
 	"fmt"
 	"math"
+	"time"
 
-	"github.com/NY-Daystar/corpos-christie/utils"
 	"github.com/NY-Daystar/corpos-christie/utils/colors"
 )
 
@@ -117,7 +118,7 @@ func New() *Config {
 // If not we set the last tax metrics present in the cfg Config
 func (cfg *Config) loadTaxYear() {
 	for _, tax := range cfg.TaxList {
-		if tax.Year == utils.GetCurrentYear() { // get tax of current year
+		if tax.Year == time.Now().Year() { // get tax of current year
 			cfg.Tax = tax
 			break
 		}

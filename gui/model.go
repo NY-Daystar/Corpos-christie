@@ -12,6 +12,8 @@ import (
 	"go.uber.org/zap"
 )
 
+// TODO optimiser les commentaires avec les parametres et les retours
+
 // Enum for type of tranche
 const (
 	MIN   string = "MIN"
@@ -68,9 +70,19 @@ func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIMo
 	return &model
 }
 
+// TODO Le couple ne change pas le nombre de part
 // prepare init data and binding
 func (model *GUIModel) prepare() {
-	model.Settings, _ = settings.Load(model.Logger)
+	// TODO mettre dans la labelIncome la currency
+	model.LabelIncome = binding.NewString()
+	model.LabelStatus = binding.NewString()
+	model.LabelChildren = binding.NewString()
+	model.LabelTax = binding.NewString()
+	model.LabelYear = binding.NewString()
+	model.LabelRemainder = binding.NewString()
+	model.LabelShares = binding.NewString()
+
+	model.Settings, _ = settings.Load(model.Logger, "")
 	model.Currency = binding.BindString(model.Settings.Currency)
 
 	model.LabelsAbout = binding.NewStringList()
@@ -136,7 +148,6 @@ func (model *GUIModel) Reload() {
 	model.LabelYear.Set(model.Language.Year)
 	model.LabelRemainder.Set(model.Language.Remainder)
 	model.LabelShares.Set(model.Language.Share)
-
 	// Handle widget
 	// gui.buttonSave.SetText(gui.Language.Save) // TODO saveExcel
 

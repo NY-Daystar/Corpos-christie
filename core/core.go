@@ -1,39 +1,43 @@
-// Copyright 2016 The corpos-christie author
-// Licensed under GPLv3.
-
-// Package core defines core functions to run GUI app or Console app
 package core
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui"
-	"github.com/NY-Daystar/corpos-christie/updater"
 	"github.com/NY-Daystar/corpos-christie/user"
 )
 
 // Enum for launched mode
 const (
-	GUI     string = "gui"
-	CONSOLE string = "console"
+	GUI       string = "gui"
+	CONSOLE   string = "console"
+	TEST_MODE string = "test"
 )
 
 // Start Core program
 // Get Options passed on program and launch appropriate system
-func Start(cfg *config.Config, user *user.User) {
-	var appSelected string = selectMode(os.Args)
-	fmt.Printf("appMode:  %+v\n", appSelected)
+func Start(cfg *config.Config, user *user.User, mode ...string) {
+	var appSelected string
+	if len(mode) == 0 {
+		appSelected = selectMode(os.Args)
+	} else {
+		appSelected = mode[0]
+	}
+
+	//fmt.Printf("appMode:  %+v\n", appSelected)
 	// TODO envoyer le logger
-	updater.StartUpdater()
-	fmt.Printf("UPDATER TERMINE\n")
+	//updater.StartUpdater()
+	//fmt.Printf("UPDATER TERMINE\n")
+
 	// Launch program (Console or GUI)
 	switch m := appSelected; m {
 	case GUI:
 		gui.Start(cfg, user)
 	case CONSOLE:
 		Console{Config: cfg, User: user}.Start()
+	case TEST_MODE:
+		return
 	default:
 		gui.Start(cfg, user)
 	}

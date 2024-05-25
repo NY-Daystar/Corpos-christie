@@ -19,10 +19,15 @@ type Settings struct {
 }
 
 // Load gui settings from settings file
-func Load(logger *zap.Logger) (Settings, error) {
+func Load(logger *zap.Logger, filePath string) (Settings, error) {
 	var settings Settings
 	settings.logger = logger
-	settingsPath, _ := filepath.Abs(config.SETTINGS_PATH)
+
+	if filePath == "" {
+		filePath = config.SETTINGS_PATH
+	}
+
+	settingsPath, _ := filepath.Abs(filePath)
 	settings.logger.Info("Loading settings", zap.String("path", settingsPath))
 
 	settingsFile, err := os.Open(settingsPath)
@@ -31,6 +36,7 @@ func Load(logger *zap.Logger) (Settings, error) {
 		settings.logger.Info("Create and load default settings")
 		return createDefaultSettings(), nil
 	}
+
 	jsonParser := json.NewDecoder(settingsFile)
 	if err := jsonParser.Decode(&settings); err != nil {
 		settings.logger.Fatal("Can't decode json : ", zap.String("error", err.Error()))

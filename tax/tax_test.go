@@ -5,7 +5,6 @@
 package tax
 
 import (
-	"math"
 	"testing"
 
 	"github.com/NY-Daystar/corpos-christie/config"
@@ -18,64 +17,12 @@ import (
 // $ go test -v
 
 // Global variables
-var CONFIG *config.Config
+var cfg *config.Config
 
 // Init global variables
 func init() {
-	CONFIG = new(config.Config)
-	CONFIG.Tax = config.Tax{
-		Year: 2022,
-		Tranches: []config.Tranche{
-			{Min: 0, Max: 10225, Rate: "0 %"},
-			{Min: 10226, Max: 26070, Rate: "11 %"},
-			{Min: 26071, Max: 74545, Rate: "30 %"},
-			{Min: 74546, Max: 160336, Rate: "41 %"},
-			{Min: 160337, Max: math.MaxInt64, Rate: "45 %"},
-		},
-	}
-	CONFIG.TaxList = []config.Tax{
-		{
-			Year: 2022,
-			Tranches: []config.Tranche{
-
-				{Min: 0, Max: 10225, Rate: "0 %"},
-				{Min: 10226, Max: 26070, Rate: "11 %"},
-				{Min: 26071, Max: 74545, Rate: "30 %"},
-				{Min: 74546, Max: 160336, Rate: "41 %"},
-				{Min: 160337, Max: 1000000, Rate: "45 %"},
-			},
-		},
-		{
-			Year: 2021,
-			Tranches: []config.Tranche{
-				{Min: 0, Max: 10084, Rate: "0 %"},
-				{Min: 10085, Max: 25710, Rate: "11 %"},
-				{Min: 25711, Max: 73516, Rate: "30 %"},
-				{Min: 73517, Max: 158122, Rate: "41 %"},
-				{Min: 158123, Max: 1000000, Rate: "45 %"},
-			},
-		},
-		{
-			Year: 2020,
-			Tranches: []config.Tranche{
-				{Min: 0, Max: 10064, Rate: "0 %"},
-				{Min: 10065, Max: 25659, Rate: "11 %"},
-				{Min: 25660, Max: 73369, Rate: "30 %"},
-				{Min: 73370, Max: 157806, Rate: "41 %"},
-				{Min: 157807, Max: 1000000, Rate: "45 %"},
-			},
-		},
-		{
-			Year: 2019,
-			Tranches: []config.Tranche{
-				{Min: 0, Max: 10064, Rate: "0 %"},
-				{Min: 10065, Max: 27794, Rate: "14 %"},
-				{Min: 27795, Max: 74517, Rate: "30 %"},
-				{Min: 74518, Max: 157806, Rate: "41 %"},
-				{Min: 157807, Max: 1000000, Rate: "45 %"},
-			},
-		},
-	}
+	cfg = config.New()
+	cfg.ChangeTax(2022)
 }
 
 // Calculate tax for a single person with 30000 of income
@@ -83,7 +30,7 @@ func TestCalculateTaxForSinglePerson(t *testing.T) {
 	var user = user.User{}
 	user.Income = 30000
 
-	result := CalculateTax(&user, CONFIG)
+	result := CalculateTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 30000, Tax: 2922, Remainder: 27078}
@@ -104,7 +51,7 @@ func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
 		Children:   2,
 	}
 
-	result := CalculateTax(&user, CONFIG)
+	result := CalculateTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 60000, Tax: 3225, Remainder: 56775}
@@ -125,7 +72,7 @@ func TestCalculateTaxForCoupleWith3Children(t *testing.T) {
 		Children:   3,
 	}
 
-	result := CalculateTax(&user, CONFIG)
+	result := CalculateTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 100000, Tax: 6501, Remainder: 93499}
@@ -146,7 +93,7 @@ func TestCalculateTaxForCoupleWithNoChildren(t *testing.T) {
 		Children:   0,
 	}
 
-	result := CalculateTax(&user, CONFIG)
+	result := CalculateTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 60000, Tax: 5843, Remainder: 54157}
@@ -166,7 +113,7 @@ func TestCalculateTaxForIsolatedParent(t *testing.T) {
 		Children:   2,
 	}
 
-	result := CalculateTax(&user, CONFIG)
+	result := CalculateTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 30000, Tax: 488, Remainder: 29512}
@@ -185,7 +132,7 @@ func TestCalculateReverseTaxForSinglePerson(t *testing.T) {
 		Remainder: 28395,
 	}
 
-	result := calculateReverseTax(&user, CONFIG)
+	result := calculateReverseTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 32000, Tax: 3605, Remainder: 28395}
@@ -206,7 +153,7 @@ func TestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
 		Children:   2,
 	}
 
-	result := calculateReverseTax(&user, CONFIG)
+	result := calculateReverseTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 55950, Tax: 2826, Remainder: 53124}
@@ -227,7 +174,7 @@ func TestCalculateReverseTaxForCoupleWith3Children(t *testing.T) {
 		Children:   3,
 	}
 
-	result := calculateReverseTax(&user, CONFIG)
+	result := calculateReverseTax(&user, cfg)
 	t.Logf("Function result:\t%+v", result)
 
 	expected := Result{Income: 100000, Tax: 6563, Remainder: 93437}
