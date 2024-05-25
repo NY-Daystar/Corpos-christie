@@ -2,6 +2,7 @@ package updater
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -102,8 +103,8 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 	var releaseTag = regexVersion.FindStringSubmatch(release.TagName)
 
 	if len(releaseTag) == 0 {
-		fmt.Println("Pas de release")
-		return nil, nil
+		fmt.Println("No release, reached rate limiter")
+		return nil, errors.New("rate limiter reached")
 	}
 
 	// TODO a testé
@@ -136,12 +137,12 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 //	returns true if new version is available otherwise return false
 //
 // IsNewUpdateAvailable Check for GUI and return true if new update
-func IsNewUpdateAvailable(version string) bool {
+func IsNewUpdateAvailable(version string) (bool, error) {
 	release, err := checkForUpdate(version)
 
 	if err != nil || release == nil {
-		return false
+		return false, err
 	}
 
-	return true
+	return true, nil
 }

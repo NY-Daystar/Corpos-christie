@@ -243,4 +243,5 @@ func TestShow(t *testing.T) {
 		Remainder:  43548,
 	}
 	u.Show()
+	t.Logf("User: %v", u)
 }

@@ -29,9 +29,15 @@ func TestIsNewUpdateAvailable(t *testing.T) {
 
 	for _, testCase := range tests {
 		t.Logf("Version: %v", testCase.version)
-		result := IsNewUpdateAvailable(testCase.version)
+		result, err := IsNewUpdateAvailable(testCase.version)
 		t.Logf("Res: %v", result)
+		t.Logf("Err: %s", err)
 		t.Logf("Expected %v", testCase.expected)
+		//var w = errors.New("no release")
+		if err.Error() == "rate limiter reached" {
+			t.Logf("Unable to download the release")
+			continue
+		}
 		if testCase.expected != result {
 			t.Errorf("Test case failed for given input version:%s - expected:%v", testCase.version, testCase.expected)
 		}
