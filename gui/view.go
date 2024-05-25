@@ -217,12 +217,12 @@ func (view *GUIView) createLayoutTaxDetails() *fyne.Container {
 	for index := 0; index < view.Model.LabelsTrancheTaxes.Length(); index++ {
 		minItem, _ := view.Model.LabelsMinTranche.GetItem(index)
 		maxItem, _ := view.Model.LabelsMaxTranche.GetItem(index)
-		rateItem, _ := view.Model.LabelsRateTranche.GetItem(index) // TODO mettre le pourcentage et passer en int la valeur de rate
+		rateItem, _ := view.Model.LabelsRateTranche.GetItem(index)
 		taxItem, _ := view.Model.LabelsTrancheTaxes.GetItem(index)
 
 		minBind := binding.NewSprintf("%s %s", minItem, view.Model.Currency)
 		maxBind := binding.NewSprintf("%s %s", maxItem, view.Model.Currency)
-		rateBind := binding.NewSprintf("%s", rateItem)
+		rateBind := binding.NewSprintf("%s %%", rateItem)
 		taxBind := binding.NewSprintf("%s %s", taxItem, view.Model.Currency)
 
 		grid.Add(widget.NewLabel("Tranche " + utils.ConvertIntToString(index+1)))

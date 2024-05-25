@@ -147,7 +147,7 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 	)
 }
 
-// TODO a documenter
+// Show dialog box for settings like change language, year, currency, etc...
 func (menu *GUIMenu) ShowFileItem() {
 	dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
 		container.NewVBox(
@@ -164,7 +164,7 @@ func (menu *GUIMenu) ShowFileItem() {
 		), menu.Window)
 }
 
-// TODO a commenter
+// Show dialog box about application (author, project and other)
 func (menu *GUIMenu) ShowAboutItem() {
 	dialog.ShowCustom(
 		menu.Controller.Model.Language.About,
@@ -173,9 +173,9 @@ func (menu *GUIMenu) ShowAboutItem() {
 		menu.Window)
 }
 
-// TODO a commenter
+// Show dialog box about update application
 func (menu *GUIMenu) ShowUpdateItem() {
-	fmt.Printf("Vérification mise à jour ")
+	fmt.Printf("Check update")
 	dialog.ShowCustom(
 		menu.Controller.Model.Language.Update,
 		menu.Controller.Model.Language.Close,

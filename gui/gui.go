@@ -18,8 +18,11 @@ type GUI struct {
 	Logger     *zap.Logger
 }
 
-// Start Launch GUI application
-// TODO a commenter
+//	config: Configuration with taxes data of each year
+//	user: The user with his data
+//	display: [optionnal] param to know If we have to display GUI (used for unit tests)
+//
+// Launch GUI application.
 func Start(config *config.Config, user *user.User, display ...bool) {
 	var logger = initLogger()
 	logger.Info("Launch application")

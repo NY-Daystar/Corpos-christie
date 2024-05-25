@@ -175,7 +175,7 @@ func CalculateTax(user *user.User, cfg *config.Config) Result {
 
 	// for each tranche
 	for _, tranche := range cfg.GetTax().Tranches {
-		var taxTranche = calculateTranche(taxable, tranche)
+		var taxTranche = calculateTranche(int(taxable), tranche)
 		taxTranches = append(taxTranches, taxTranche)
 
 		// add into final tax the tax tranche
@@ -201,6 +201,7 @@ func CalculateTax(user *user.User, cfg *config.Config) Result {
 	return result
 }
 
+// TODO a mettre sur la GUI
 // calculateReverseTax determine the income to have, and tax to pay from the remainder of the user
 // returns the result of the processing
 func calculateReverseTax(user *user.User, cfg *config.Config) Result {
@@ -223,7 +224,7 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 		taxTranches = make([]TaxTranche, 0)
 		// for each tranche
 		for _, tranche := range cfg.GetTax().Tranches {
-			var taxTranche = calculateTranche(target, tranche)
+			var taxTranche = calculateTranche(int(target), tranche)
 			taxTranches = append(taxTranches, taxTranche)
 
 			// add into final tax the tax tranche
@@ -259,22 +260,23 @@ func calculateReverseTax(user *user.User, cfg *config.Config) Result {
 
 // calculateTranche calculate the tax for the tranche base on your taxable income
 // returns TaxTranche which amount to pay for the specific tranche
-func calculateTranche(taxable float64, tranche config.Tranche) TaxTranche {
+func calculateTranche(taxable int, tranche config.Tranche) TaxTranche {
 	var taxTranche = TaxTranche{
 		tranche: tranche,
 	}
 
-	// convert rate string like '10%' into float 10.00
-	rate, _ := utils.ConvertPercentageToFloat64(tranche.Rate)
+	// convert rate in percentage
+	// Ex:'30' in 0.30 to get 30%
+	var rate float64 = float64(tranche.Rate) / 100.
 
-	// if income is superior to maximum of the tranche to pass to tranch superior
+	// If income is superior to maximum of the tranche to pass to tranch superior
 	// Diff between min and max of the tranche applied tax rate
-	if int(taxable) > tranche.Max {
-		taxTranche.Tax = float64(tranche.Max-tranche.Min) * (rate / 100)
-	} else if int(taxable) > tranche.Min && int(taxable) < tranche.Max {
+	if taxable > tranche.Max {
+		taxTranche.Tax = float64(tranche.Max-tranche.Min) * rate
 		// else if your income taxable is between min and max tranch is the last operation
 		// Diff between min of the tranche and the income of the user applied tax rate
-		taxTranche.Tax = float64(int(taxable)-tranche.Min) * (rate / 100)
+	} else if taxable > tranche.Min && taxable < tranche.Max {
+		taxTranche.Tax = float64(int(taxable)-tranche.Min) * rate
 	}
 	return taxTranche
 }
@@ -326,17 +328,16 @@ func showTaxTrancheResult(result Result, year int) {
 		index := i + 1
 
 		var trancheNumber = fmt.Sprintf("Tranche %d", index)
-		var min = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Min))
-		var max = fmt.Sprintf("%s €", strconv.Itoa(val.tranche.Max))
-		rate, _ := utils.ConvertPercentageToFloat64(val.tranche.Rate)
-		var rateStr = fmt.Sprintf("%s %%", strconv.Itoa(int(rate)))
-		var tax = fmt.Sprintf("%s €", strconv.Itoa(int(val.Tax)))
+		var min = fmt.Sprintf("%d €", val.tranche.Min)
+		var max = fmt.Sprintf("%d €", val.tranche.Max)
+		var rate = fmt.Sprintf("%d %%", val.tranche.Rate)
+		var tax = fmt.Sprintf("%d €", int(val.Tax))
 
 		var line = make([]string, 5)
 		line[0] = trancheNumber
 		line[1] = min
 		line[2] = max
-		line[3] = rateStr
+		line[3] = rate
 		line[4] = tax
 		data = append(data, line)
 	}
