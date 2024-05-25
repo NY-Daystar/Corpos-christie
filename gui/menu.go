@@ -108,7 +108,8 @@ func (menu *GUIMenu) createAboutDialog() *fyne.Container {
 
 // createUpdateDialog create dialog box for updates
 func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
-	if !updater.IsNewUpdateAvailable(config.APP_VERSION) {
+	check, _ := updater.IsNewUpdateAvailable(config.APP_VERSION)
+	if !check {
 		return container.NewVBox(
 			container.NewHBox(
 				widget.NewLabel("Pas de mise à jour"),

@@ -47,6 +47,7 @@ func TestDarkTheme(t *testing.T) {
 	theme.Size(fyne.ThemeSizeName("headingText"))
 	theme.Size(fyne.ThemeSizeName("subHeadingText"))
 	theme.Size(fyne.ThemeSizeName("inputBorder"))
+	t.Logf("%v", theme)
 }
 
 func TestLightTheme(t *testing.T) {
@@ -86,4 +87,5 @@ func TestLightTheme(t *testing.T) {
 	theme.Size(fyne.ThemeSizeName("headingText"))
 	theme.Size(fyne.ThemeSizeName("subHeadingText"))
 	theme.Size(fyne.ThemeSizeName("inputBorder"))
+	t.Logf("%v", theme)
 }

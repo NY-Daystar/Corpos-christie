@@ -267,7 +267,7 @@ func calculateTranche(taxable int, tranche config.Tranche) TaxTranche {
 
 	// convert rate in percentage
 	// Ex:'30' in 0.30 to get 30%
-	var rate float64 = float64(tranche.Rate) / 100.
+	var rate = float64(tranche.Rate) / 100.
 
 	// If income is superior to maximum of the tranche to pass to tranch superior
 	// Diff between min and max of the tranche applied tax rate
