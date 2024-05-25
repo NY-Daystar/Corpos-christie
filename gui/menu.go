@@ -108,7 +108,7 @@ func (menu *GUIMenu) createAboutDialog() *fyne.Container {
 
 // createUpdateDialog create dialog box for updates
 func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
-	if !updater.IsNewUpdateAvailable() {
+	if !updater.IsNewUpdateAvailable(config.APP_VERSION) {
 		return container.NewVBox(
 			container.NewHBox(
 				widget.NewLabel("Pas de mise à jour"),
@@ -118,7 +118,7 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 
 	// Lancement de l'update avec progression
 	fmt.Printf("Demarrage de l'update\n")
-	updater.StartUpdater()
+	updater.StartUpdater(menu.Controller.Logger)
 
 	progress := widget.NewProgressBar()
 	infinite := widget.NewProgressBarInfinite()

@@ -19,7 +19,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-// TODO retester en local
+// TODO remove console code en v3.0.0
 
 // Result define the result after calculating tax
 type Result struct {
@@ -201,7 +201,7 @@ func CalculateTax(user *user.User, cfg *config.Config) Result {
 	return result
 }
 
-// TODO a mettre sur la GUI
+// TODO put ON GUI
 // calculateReverseTax determine the income to have, and tax to pay from the remainder of the user
 // returns the result of the processing
 func calculateReverseTax(user *user.User, cfg *config.Config) Result {

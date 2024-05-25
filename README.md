@@ -153,6 +153,10 @@ See [Project dependencies](https://deps.dev/go/github.com/NY-Daystar/corpos-chri
 git config --add core.hooksPath .githooks
 ```
 
+## Testing
+
+Inspired by: https://dev.to/ankitmalikg/how-to-write-unit-test-cases-for-golang-3ln0
+
 ## Packaging App
 
 This app is developed with [fyne library](https://fyne.io/)

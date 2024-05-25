@@ -22,7 +22,7 @@ func TestGUI(t *testing.T) {
 	var logger *zap.Logger = zaptest.NewLogger(t)
 	var cfg *config.Config = config.New()
 
-	Start(cfg, user, false)
+	Start(cfg, user, logger, false)
 
 	var model = NewModel(cfg, user, logger)
 	var view = NewView(model, logger)
