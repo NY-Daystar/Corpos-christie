@@ -73,7 +73,6 @@ func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIMo
 // TODO Le couple ne change pas le nombre de part
 // prepare init data and binding
 func (model *GUIModel) prepare() {
-	// TODO mettre dans la labelIncome la currency
 	model.LabelIncome = binding.NewString()
 	model.LabelStatus = binding.NewString()
 	model.LabelChildren = binding.NewString()
@@ -132,7 +131,7 @@ func (model *GUIModel) createTrancheLabels(enumTranche string) *[]string {
 		// To handle `value` of tranche
 	} else if enumTranche == VALUE {
 		for i := 1; i <= len(tranches); i++ {
-			labels = append(labels, "0"+" "+currency)
+			labels = append(labels, "0")
 		}
 	}
 	return &labels
@@ -159,9 +158,8 @@ func (model *GUIModel) Reload() {
 
 	// Reload grid min tranches
 	var minList []string
-	currency, _ := model.Currency.Get()
 	for index := 0; index < model.LabelsMinTranche.Length(); index++ {
-		var min string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Min) + " " + currency
+		var min string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Min)
 		minList = append(minList, min)
 	}
 	model.LabelsMinTranche.Set(minList)
@@ -169,7 +167,7 @@ func (model *GUIModel) Reload() {
 	// Reload grid max tranches
 	var maxList []string
 	for index := 0; index < model.LabelsMaxTranche.Length(); index++ {
-		var max string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Max) + " " + currency
+		var max string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Max)
 		if model.Config.Tax.Tranches[index].Max == math.MaxInt64 {
 			max = "-"
 		}

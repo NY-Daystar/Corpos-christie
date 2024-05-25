@@ -257,9 +257,10 @@ func (menu *GUIMenu) createSelectLanguage() *fyne.Container {
 
 // createSelectCurrency create select to change currency
 func (menu *GUIMenu) createSelectCurrency() *fyne.Container {
-	selectCurrency := widget.NewSelect(settings.GetCurrencies(), func(currency string) {
-		menu.Controller.SetCurrency(currency) // Update model
-	})
+	selectCurrency := widget.NewSelect(
+		settings.GetCurrencies(),
+		menu.Controller.SetCurrency,
+	)
 
 	currency, _ := menu.Controller.Model.Currency.Get()
 	selectCurrency.SetSelected(currency)

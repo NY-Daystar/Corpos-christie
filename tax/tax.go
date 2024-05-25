@@ -308,7 +308,6 @@ func getShares(user user.User) float64 {
 	return shares
 }
 
-// TODO test unitaires tax
 // showTaxTranche show details of calculation showing every tax at each tranche
 func showTaxTrancheResult(result Result, year int) {
 
@@ -360,7 +359,6 @@ func showTaxTrancheResult(result Result, year int) {
 	table.Render()
 }
 
-// TODO test unitaires tax
 // ShowTaxList show in the console the list of year metrics
 func ShowTaxList(cfg config.Config) {
 	fmt.Println(colors.Yellow("Tax list year"))
@@ -374,7 +372,6 @@ func ShowTaxList(cfg config.Config) {
 	}
 }
 
-// TODO test unitaires tax
 // ShowTaxTranche show in the console the list of year metrics
 func ShowTaxTranche(cfg config.Config) {
 	fmt.Printf("Tax tranche of year (%s)\n", colors.Teal(cfg.GetTax().Year))
@@ -384,13 +381,11 @@ func ShowTaxTranche(cfg config.Config) {
 	}
 }
 
-// TODO test unitaires tax
 // ShowTaxListUsed show the current tax used in the console
 func ShowTaxListUsed(cfg config.Config) {
 	fmt.Printf("The tax year base to calculate your taxes is %s\n", colors.Teal(cfg.GetTax().Year))
 }
 
-// TODO test unitaires tax
 // SelectTaxYear ask in console if you want
 // Ask to the user if he wants to change the year of the tax metrics
 // to calculate taxes from another year

@@ -69,6 +69,7 @@ func (controller *GUIController) setAppSettings() {
 	controller.SetLanguage(settings.GetLanguageIndexFromCode(*controller.Model.Settings.Language))
 	controller.SetCurrency(*controller.Model.Settings.Currency)
 	controller.SetYear(*controller.Model.Settings.Year)
+	controller.Model.Reload()
 }
 
 // calculate Get values of gui to calculate tax
@@ -80,20 +81,15 @@ func (controller *GUIController) calculate() {
 	result := tax.CalculateTax(controller.Model.User, controller.Model.Config)
 	controller.Logger.Sugar().Debugf("Result taxes %#v", result)
 
-	var tax string = utils.ConvertInt64ToString(int64(result.Tax))
-	var remainder string = utils.ConvertInt64ToString(int64(result.Remainder))
-	var shares string = utils.ConvertInt64ToString(int64(result.Shares))
-
 	// Set data in tax layout
-	controller.Model.Tax.Set(tax)
-	controller.Model.Remainder.Set(remainder)
-	controller.Model.Shares.Set(shares)
+	controller.Model.Tax.Set(utils.ConvertInt64ToString(int64(result.Tax)))
+	controller.Model.Remainder.Set(utils.ConvertInt64ToString(int64(result.Remainder)))
+	controller.Model.Shares.Set(utils.ConvertInt64ToString(int64(result.Shares)))
 
 	// Set Tax details
-	currency, _ := controller.Model.Currency.Get()
 	for index := 0; index < controller.Model.LabelsTrancheTaxes.Length(); index++ {
 		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[index].Tax))
-		controller.Model.LabelsTrancheTaxes.SetValue(index, taxTranche+" "+currency)
+		controller.Model.LabelsTrancheTaxes.SetValue(index, taxTranche)
 	}
 }
 
@@ -170,7 +166,6 @@ func (controller *GUIController) SetCurrency(currency string) {
 	controller.Logger.Info("Set currency", zap.String("currency", currency))
 	controller.Model.Currency.Set(currency)
 	controller.Model.Settings.Set("currency", currency)
-	controller.Model.Reload()
 }
 
 // SetYear change Year to calculate taxes of the application
@@ -182,6 +177,5 @@ func (controller *GUIController) SetYear(year string) {
 	controller.Model.Year.Set(year)
 	controller.Model.Settings.Set("year", year)
 	controller.Model.Config.ChangeTax(utils.ConvertBindStringToInt(controller.Model.Year))
-	controller.Model.Reload()
-	controller.calculate() // Recalculate taxes
+	controller.calculate()
 }

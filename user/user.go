@@ -99,7 +99,6 @@ func (user *User) IsIsolated() bool {
 }
 
 // Show show details of the user struct
-// TODO a changer
 func (user *User) Show() {
 	var isInCouple = "No"
 	if user.IsInCouple {
