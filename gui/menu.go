@@ -44,26 +44,12 @@ func (menu *GUIMenu) Start() {
 
 // createFileMenu create file item in toolbar to handle app settings
 func (menu *GUIMenu) createFileMenu() *fyne.Menu {
-	settingsMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Settings, func() {
-		dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
-			container.NewVBox(
-				menu.createSelectTheme(),
-				widget.NewSeparator(),
-				menu.createSelectLanguage(),
-				widget.NewSeparator(),
-				menu.createSelectCurrency(),
-				widget.NewSeparator(),
-				menu.createSelectYear(),
-				widget.NewSeparator(),
-				menu.createLabelLogs(),
-				widget.NewSeparator(),
-			), menu.Window)
-	})
-
+	settingsMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Settings, menu.ShowFileItem)
 	quitMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Quit, func() { menu.App.Quit() })
 	quitMenuItem.IsQuit = true
 
-	return fyne.NewMenu(menu.Controller.Model.Language.File,
+	return fyne.NewMenu(
+		menu.Controller.Model.Language.File,
 		settingsMenuItem,
 		quitMenuItem,
 	)
@@ -71,18 +57,11 @@ func (menu *GUIMenu) createFileMenu() *fyne.Menu {
 
 // createHelpMenu create help item in toolbar to show about app
 func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
-	helpMenu := fyne.NewMenu(menu.Controller.Model.Language.Help,
-		fyne.NewMenuItem(menu.Controller.Model.Language.About, func() {
-			dialog.ShowCustom(menu.Controller.Model.Language.About, menu.Controller.Model.Language.Close,
-				menu.createAboutDialog(),
-				menu.Window)
-		}),
-		fyne.NewMenuItem(menu.Controller.Model.Language.Update, func() {
-			fmt.Printf("Vérification mise à jour ")
-			dialog.ShowCustom(menu.Controller.Model.Language.Update, menu.Controller.Model.Language.Close,
-				menu.createUpdateDialog(),
-				menu.Window)
-		}))
+	helpMenu := fyne.NewMenu(
+		menu.Controller.Model.Language.Help,
+		fyne.NewMenuItem(menu.Controller.Model.Language.About, menu.ShowAboutItem),
+		fyne.NewMenuItem(menu.Controller.Model.Language.Update, menu.ShowUpdateItem),
+	)
 	return helpMenu
 }
 
@@ -168,6 +147,42 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 	)
 }
 
+// TODO a documenter
+func (menu *GUIMenu) ShowFileItem() {
+	dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
+		container.NewVBox(
+			menu.createSelectTheme(),
+			widget.NewSeparator(),
+			menu.createSelectLanguage(),
+			widget.NewSeparator(),
+			menu.createSelectCurrency(),
+			widget.NewSeparator(),
+			menu.createSelectYear(),
+			widget.NewSeparator(),
+			menu.createLabelLogs(),
+			widget.NewSeparator(),
+		), menu.Window)
+}
+
+// TODO a commenter
+func (menu *GUIMenu) ShowAboutItem() {
+	dialog.ShowCustom(
+		menu.Controller.Model.Language.About,
+		menu.Controller.Model.Language.Close,
+		menu.createAboutDialog(),
+		menu.Window)
+}
+
+// TODO a commenter
+func (menu *GUIMenu) ShowUpdateItem() {
+	fmt.Printf("Vérification mise à jour ")
+	dialog.ShowCustom(
+		menu.Controller.Model.Language.Update,
+		menu.Controller.Model.Language.Close,
+		menu.createUpdateDialog(),
+		menu.Window)
+}
+
 // Refresh change for each option in menu old language for new in model
 func (menu *GUIMenu) Refresh(oldModelLanguage settings.Yaml) {
 	if menu.Controller.Menu != nil && menu.Controller.Menu.MainMenu != nil {
@@ -229,28 +244,9 @@ func (menu *GUIMenu) createSelectTheme() *fyne.Container {
 // createSelectLanguage create select to change language
 func (menu *GUIMenu) createSelectLanguage() *fyne.Container {
 	selectLanguage := widget.NewSelect(menu.Controller.Model.Language.GetLanguages(), nil)
-	selectLanguage.SetSelectedIndex(settings.GetLanguageIndex(menu.Controller.Model.Language.Code))
+	selectLanguage.SetSelectedIndex(settings.GetLanguageIndexFromCode(menu.Controller.Model.Language.Code))
 	selectLanguage.OnChanged = func(s string) {
-		index := selectLanguage.SelectedIndex()
-		var getLanguage = func() string {
-			switch index {
-			case 0:
-				return settings.ENGLISH
-			case 1:
-				return settings.FRENCH
-			case 2:
-				return settings.SPANISH
-			case 3:
-				return settings.GERMAN
-			case 4:
-				return settings.ITALIAN
-			default:
-				return settings.ENGLISH
-			}
-		}
-
-		language := getLanguage()
-		menu.Controller.SetLanguage(language) // Update model
+		menu.Controller.SetLanguage(selectLanguage.SelectedIndex())
 	}
 
 	return container.NewHBox(

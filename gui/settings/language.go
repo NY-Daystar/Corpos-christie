@@ -79,28 +79,30 @@ type Yaml struct {
 	Quit          string            `yaml:"quit"`
 }
 
+// getLanguages return all languages
+func getLanguages() []string {
+	return []string{ENGLISH, FRENCH, SPANISH, GERMAN, ITALIAN}
+}
+
 // GetDefaultLanguage get value of last language selected (fr, en)
 func GetDefaultLanguage() *string {
 	var lang = ENGLISH
 	return &lang
 }
 
-// getLanguageIndex get index to selectLanguage in settings from language of the app
-func GetLanguageIndex(langue string) int {
-	switch langue {
-	case ENGLISH:
-		return 0
-	case FRENCH:
-		return 1
-	case SPANISH:
-		return 2
-	case GERMAN:
-		return 3
-	case ITALIAN:
-		return 4
-	default:
-		return 0
+// GetLanguageIndex get index to select language in settings from language of the app
+func GetLanguageIndexFromCode(language string) int {
+	for index, value := range getLanguages() {
+		if value == language {
+			return index
+		}
 	}
+	return 0
+}
+
+// GetLanguageIndex get index to selectLanguage in settings from language of the app
+func GetLanguageCodeFromIndex(index int) string {
+	return getLanguages()[index]
 }
 
 // GetThemes parse ThemeYaml struct to get value of each field

@@ -42,7 +42,6 @@ func NewView(model *GUIModel, logger *zap.Logger) *GUIView {
 	}
 
 	view.prepare() // Init Fyne component to avoid error
-
 	view.Logger.Info("Launch view")
 	return view
 }
@@ -50,9 +49,12 @@ func NewView(model *GUIModel, logger *zap.Logger) *GUIView {
 // prepare initialize Fyne application and components to avoid error
 func (view *GUIView) prepare() {
 	view.App = app.New() // Launch Fyne App
+
 	view.EntryIncome = widgets.CreateIncomeEntry()
+	view.EntryIncome.SetPlaceHolder("30000")
 	view.RadioStatus = widgets.CreateStatusRadio()
 	view.SelectChildren = widgets.CreateChildrenSelect()
+	view.SelectChildren.SetText("0")
 
 	// Setup Fyne window
 	view.Window = view.App.NewWindow(config.APP_NAME)

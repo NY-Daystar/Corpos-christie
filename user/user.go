@@ -7,7 +7,6 @@ package user
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"github.com/NY-Daystar/corpos-christie/utils/colors"
@@ -27,11 +26,7 @@ type User struct {
 // if value is set returns true, otherwise false
 func (user *User) AskIncome() (bool, error) {
 	var input = utils.ReadValue()
-	income, err := utils.ConvertStringToInt(input)
-	if err != nil {
-		log.Printf("Error: Tax income is not convertible in int, details: %v", err)
-		return false, err
-	}
+	income, _ := utils.ConvertStringToInt(input)
 	user.Income = income
 	return true, nil
 }
@@ -40,11 +35,7 @@ func (user *User) AskIncome() (bool, error) {
 // if value is set returns true, otherwise false
 func (user *User) AskRemainder() (bool, error) {
 	var input = utils.ReadValue()
-	remainder, err := utils.ConvertStringToInt(input)
-	if err != nil {
-		log.Printf("Error: Tax remainder is not convertible in int, details: %v", err)
-		return false, err
-	}
+	remainder, _ := utils.ConvertStringToInt(input)
 	user.Remainder = float64(remainder)
 	return true, nil
 }
@@ -74,11 +65,7 @@ func (user *User) AskHasChildren() (bool, error) {
 		return true, nil
 	}
 
-	childrens, err := utils.ConvertStringToInt(input)
-	if err != nil {
-		log.Printf("Error: Childrens value is not convertible in int, details: %v", err)
-		return false, err
-	}
+	childrens, _ := utils.ConvertStringToInt(input)
 
 	user.Children = childrens
 	return true, nil
@@ -87,7 +74,6 @@ func (user *User) AskHasChildren() (bool, error) {
 // AskTaxDetails asks to the user if he wants to see details of his taxes
 // returns true if wants otherwise false
 func (*User) AskTaxDetails() (bool, error) {
-	fmt.Print("Do you want to see tax details (Y/n) ? ")
 	response, err := askYesNo()
 	if err != nil {
 		return false, err
@@ -113,6 +99,7 @@ func (user *User) IsIsolated() bool {
 }
 
 // Show show details of the user struct
+// TODO a changer
 func (user *User) Show() {
 	var isInCouple = "No"
 	if user.IsInCouple {

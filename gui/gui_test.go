@@ -4,13 +4,68 @@ import (
 	"testing"
 
 	"fyne.io/fyne/v2"
+	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
+	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils/colors"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 )
 
 // For testing
 // $ cd gui
 // $ go test -v
+
+// Test GUI components
+func TestGUI(t *testing.T) {
+	var user = &user.User{}
+	var logger *zap.Logger = zaptest.NewLogger(t)
+	var cfg *config.Config = config.New()
+
+	Start(cfg, user, false)
+
+	var model = NewModel(cfg, user, logger)
+	var view = NewView(model, logger)
+	var controller = NewController(model, view, logger)
+	var menu = NewMenu(controller)
+
+	model.Reload()
+	t.Logf("Gui Model %+v", model)
+	t.Logf("Gui View %+v", view)
+	t.Logf("Gui Controller %#v", controller)
+
+	if model == nil {
+		t.Errorf("No model loaded")
+	}
+	if view == nil {
+		t.Errorf("No view loaded")
+	}
+	if controller == nil {
+		t.Errorf("No controller loaded")
+	}
+	if menu == nil {
+		t.Errorf("No menu loaded")
+	}
+	menu.ShowFileItem()
+	menu.ShowAboutItem()
+	menu.ShowUpdateItem()
+
+	var yaml = settings.Yaml{
+		Theme:         settings.ThemeYaml{Dark: "dark", Light: "light"},
+		Languages:     settings.LanguageYaml{English: "en", French: "fr"},
+		Abouts:        settings.AboutYaml{Text1: "My text 1", Text2: "My text 2", Text3: "My text 3", Text4: "My Text 4"},
+		TaxHeaders:    settings.TaxHeadersYaml{Header1: "Header 1", Header2: "Header 2", Header3: "Header 3"},
+		MaritalStatus: settings.MaritalStatusYaml{Single: "Single", Couple: "Couple"},
+	}
+	menu.Refresh(yaml)
+
+	if view.EntryIncome == nil || view.RadioStatus == nil || view.SelectChildren == nil {
+		t.Errorf("No widgets loaded")
+	}
+	view.EntryIncome.SetText("45000")
+	view.RadioStatus.SetSelected("Couple")
+	view.SelectChildren.SetText("0")
+}
 
 // Test to know if file icon is reachable
 func TestIconAccess(t *testing.T) {

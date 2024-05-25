@@ -1,17 +1,24 @@
-// Copyright 2016 The corpos-christie author
-// Licensed under GPLv3.
-
 package core
 
 import (
 	"testing"
 
+	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils/colors"
 )
 
 // For testing
 // $ cd core
 // $ go test -v
+
+// Test select mode when gui params
+func TestStart(t *testing.T) {
+	var user = &user.User{}
+
+	var cfg *config.Config = config.New()
+	Start(cfg, user, TEST_MODE)
+}
 
 // Test select mode when gui params
 func TestSelectModeWithGUIParams(t *testing.T) {

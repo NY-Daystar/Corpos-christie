@@ -1,8 +1,6 @@
 package gui
 
 import (
-	"errors"
-	"log"
 	"os"
 
 	"github.com/NY-Daystar/corpos-christie/config"
@@ -21,7 +19,8 @@ type GUI struct {
 }
 
 // Start Launch GUI application
-func Start(config *config.Config, user *user.User) {
+// TODO a commenter
+func Start(config *config.Config, user *user.User, display ...bool) {
 	var logger = initLogger()
 	logger.Info("Launch application")
 
@@ -35,7 +34,10 @@ func Start(config *config.Config, user *user.User) {
 		Controller: controller,
 	}
 
-	gui.View.Start(controller)
+	// Launch GUI if bool ok
+	if len(display) == 0 {
+		gui.View.Start(controller)
+	}
 }
 
 // initLogger create logger with zap librairy
@@ -46,12 +48,7 @@ func initLogger() *zap.Logger {
 
 	// Create logs folder if not exists
 	path := "logs"
-	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(path, os.ModePerm)
-		if err != nil {
-			log.Println(err)
-		}
-	}
+	os.Mkdir(path, os.ModePerm)
 
 	logger := lumberjack.Logger{
 		Filename:   config.LOGS_PATH, // File path

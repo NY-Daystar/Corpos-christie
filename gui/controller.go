@@ -66,7 +66,7 @@ func (controller *GUIController) setAppSettings() {
 	)
 
 	controller.SetTheme(controller.Model.Settings.Theme)
-	controller.SetLanguage(*controller.Model.Settings.Language)
+	controller.SetLanguage(settings.GetLanguageIndexFromCode(*controller.Model.Settings.Language))
 	controller.SetCurrency(*controller.Model.Settings.Currency)
 	controller.SetYear(*controller.Model.Settings.Year)
 }
@@ -135,7 +135,8 @@ func (controller *GUIController) SetTheme(theme int) {
 }
 
 // SetLanguage change language of the application
-func (controller *GUIController) SetLanguage(code string) {
+func (controller *GUIController) SetLanguage(index int) {
+	code := settings.GetLanguageCodeFromIndex(index)
 	controller.Logger.Info("Set language", zap.String("code", code))
 
 	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)

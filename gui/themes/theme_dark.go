@@ -10,42 +10,57 @@ import (
 type DarkTheme struct{}
 
 func (DarkTheme) Color(c fyne.ThemeColorName, v fyne.ThemeVariant) color.Color {
-	switch c {
-	case theme.ColorNameBackground:
+	if c == theme.ColorNameBackground {
 		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
-	case theme.ColorNameButton:
+	}
+	if c == theme.ColorNameButton {
 		return color.Alpha16{A: 0x0}
-	case theme.ColorNameDisabledButton:
-		return color.NRGBA{R: 0x26, G: 0x26, B: 0x26, A: 0xff}
-	case theme.ColorNameDisabled:
-		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0x42}
-	case theme.ColorNameError:
+	}
+	if c == theme.ColorNameDisabled {
+		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x42}
+	}
+	if c == theme.ColorNameError {
 		return color.NRGBA{R: 0xf4, G: 0x43, B: 0x36, A: 0xff}
-	case theme.ColorNameFocus:
+	}
+	if c == theme.ColorNameDisabledButton {
+		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0x42}
+	}
+	if c == theme.ColorNameFocus {
 		return color.NRGBA{R: 0x21, G: 0x96, B: 0xf3, A: 0x7f}
-	case theme.ColorNameForeground:
+	}
+	if c == theme.ColorNameForeground {
 		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
-	case theme.ColorNameHover:
+	}
+	if c == theme.ColorNameHover {
 		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xf}
-	case theme.ColorNameInputBackground:
+	}
+	if c == theme.ColorNameInputBackground {
 		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0x19}
-	case theme.ColorNamePlaceHolder:
+	}
+	if c == theme.ColorNamePlaceHolder {
 		return color.NRGBA{R: 0xb2, G: 0xb2, B: 0xb2, A: 0xff}
-	case theme.ColorNamePressed:
+	}
+	if c == theme.ColorNamePressed {
 		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0x66}
-	case theme.ColorNamePrimary:
+	}
+	if c == theme.ColorNamePrimary {
 		return color.NRGBA{R: 0x21, G: 0x96, B: 0xf3, A: 0xff}
-	case theme.ColorNameScrollBar:
+	}
+	if c == theme.ColorNameScrollBar {
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x99}
-	case theme.ColorNameShadow:
+	}
+	if c == theme.ColorNameShadow {
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x66}
-	case theme.ColorNameSelection:
+	}
+	if c == theme.ColorNameSelection {
 		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
-	case theme.ColorNameMenuBackground:
+	}
+	if c == theme.ColorNameMenuBackground {
 		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
-	case theme.ColorNameOverlayBackground:
+	}
+	if c == theme.ColorNameOverlayBackground {
 		return color.NRGBA{R: 0xf, G: 0xf, B: 0x15, A: 0xff}
-	default:
+	} else {
 		return theme.DefaultTheme().Color(c, v)
 	}
 }
