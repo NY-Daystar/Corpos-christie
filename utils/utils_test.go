@@ -43,7 +43,7 @@ func TestBadStringConvertToInt(t *testing.T) {
 
 // Test bind string conversion to int
 func TestBindStringConvertToInt(t *testing.T) {
-	var ref string = "15554"
+	var ref = "15554"
 	var stringRef binding.String = binding.BindString(&ref)
 	var expected = 15554
 
@@ -56,7 +56,7 @@ func TestBindStringConvertToInt(t *testing.T) {
 }
 
 func TestBadBindStringConvertToInt(t *testing.T) {
-	var ref string = "abc"
+	var ref = "abc"
 	var stringRef binding.String = binding.BindString(&ref)
 	var expected = 0
 

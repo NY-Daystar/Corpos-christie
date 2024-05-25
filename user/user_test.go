@@ -1,7 +1,6 @@
 package user
 
 import (
-	"log"
 	"os"
 	"testing"
 )
@@ -13,20 +12,13 @@ import (
 // MoqStdIn Moq standard input to simulate user action
 func MoqStdIn(value string) *os.File {
 	content := []byte(value)
-	tmpfile, err := os.CreateTemp("", "example")
-	if err != nil {
-		log.Fatal(err)
-	}
+	tmpfile, _ := os.CreateTemp("", "example")
 
 	defer os.Remove(tmpfile.Name()) // clean up
 
-	if _, err := tmpfile.Write(content); err != nil {
-		log.Fatal(err)
-	}
+	tmpfile.Write(content)
 
-	if _, err := tmpfile.Seek(0, 0); err != nil {
-		log.Fatal(err)
-	}
+	tmpfile.Seek(0, 0)
 
 	return tmpfile
 }
@@ -40,7 +32,7 @@ func TestAskIncome(t *testing.T) {
 	var stringRef = "32000"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	check, err := u.AskIncome()
 
 	if !check {
@@ -60,7 +52,7 @@ func TestAskRemainder(t *testing.T) {
 	var stringRef = "5254"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	check, _ := u.AskRemainder()
 
 	if !check {
@@ -78,7 +70,7 @@ func TestIsInCoupleSayYes(t *testing.T) {
 	var stringRef = "yes"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	check, _ := u.AskIsInCouple()
 
 	if !check {
@@ -96,7 +88,7 @@ func TestIsInCoupleSayNo(t *testing.T) {
 	var stringRef = "no"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	check, _ := u.AskIsInCouple()
 
 	if check {
@@ -115,7 +107,7 @@ func TestIsInCoupleBadAnswer(t *testing.T) {
 	var stringRef = "invalid answer"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	_, err := u.AskIsInCouple()
 
 	if err == nil {
@@ -132,7 +124,7 @@ func TestAskHasChildren(t *testing.T) {
 	var stringRef = "3"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	check, _ := u.AskHasChildren()
 
 	if !check {
@@ -152,7 +144,7 @@ func TestAskHasChildrenSkip(t *testing.T) {
 	var stringRef = ""
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	check, _ := u.AskHasChildren()
 
 	if !check {
@@ -171,7 +163,7 @@ func TestAskTaxDetails(t *testing.T) {
 	var stringRef = "no"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	check, _ := u.AskTaxDetails()
 
 	if check {
@@ -187,7 +179,7 @@ func TestAskTaxDetailsWrongAnswer(t *testing.T) {
 	var stringRef = "wrong answer"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
+	var u = User{}
 	_, err := u.AskTaxDetails()
 
 	if err == nil {
@@ -203,8 +195,8 @@ func TestAskRestart(t *testing.T) {
 	var stringRef = "yes"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{}
-	var check bool = u.AskRestart()
+	var u = User{}
+	var check = u.AskRestart()
 
 	if !check {
 		t.Error("AskRestart in error")
@@ -219,11 +211,11 @@ func TestIsIsolated(t *testing.T) {
 	var stringRef = "32000"
 	os.Stdin = MoqStdIn(stringRef)
 
-	var u User = User{
+	var u = User{
 		IsInCouple: false,
 		Children:   1,
 	}
-	var check bool = u.IsIsolated()
+	var check = u.IsIsolated()
 
 	if !check {
 		t.Error("user has to be isolated")
@@ -232,7 +224,7 @@ func TestIsIsolated(t *testing.T) {
 
 func TestGetShares(t *testing.T) {
 	var expected = 3.5
-	var u User = User{Shares: 3.5}
+	var u = User{Shares: 3.5}
 
 	shares := u.GetShares()
 
@@ -242,7 +234,7 @@ func TestGetShares(t *testing.T) {
 }
 
 func TestShow(t *testing.T) {
-	var u User = User{
+	var u = User{
 		Income:     50000,
 		IsInCouple: true,
 		Children:   5,
