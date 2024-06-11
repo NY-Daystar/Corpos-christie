@@ -107,6 +107,38 @@ func GetMaxLength(tab []string) int {
 	return maxIndexLength
 }
 
+// ReadFileLastNLines read the last N lines of the files
+// TODO A TESTER
+func ReadFileLastNLines(filePath string, n int) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
+	// Garder uniquement les N dernières lignes
+	if len(lines) > n {
+		lines = lines[len(lines)-n:]
+	}
+
+	// Ajouter les numéros de ligne
+	var result string
+	for i, line := range lines {
+		result += fmt.Sprintf("%3d: %s\n", i+1, line)
+	}
+
+	return result, nil
+}
+
 // getPadding get padding necessary between values in tab for each of them to align items
 func getPadding(tab []string) int {
 	return GetMaxLength(tab)
