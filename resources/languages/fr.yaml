@@ -30,6 +30,7 @@ status_list:
     couple: Marié
 children: Saisissez le nombre d'enfants
 tax: Impôts
+reverse_tax: Impôts inversés
 remainder: Restants
 share: Parts
 save: Sauvegarder

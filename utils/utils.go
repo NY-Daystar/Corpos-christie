@@ -38,6 +38,16 @@ func ConvertStringToInt(str string) (int, error) {
 	return i, nil
 }
 
+// ConvertStringToFloat64 convert str string to a float64 and returns it
+// return an error if the string is not convertible into an float64
+func ConvertStringToFloat64(str string) (float64, error) {
+	i, err := strconv.Atoi(str)
+	if err != nil {
+		return 0, err
+	}
+	return float64(i), nil
+}
+
 // ConvertBindStringToInt convert bindstring (fyne) to an int and returns it
 // return an error if the string is not convertible into an int
 func ConvertBindStringToInt(str binding.String) int {
