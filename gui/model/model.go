@@ -1,7 +1,9 @@
-package gui
+package model
 
 import (
+	"fmt"
 	"math"
+	"os"
 
 	"fyne.io/fyne/v2/data/binding"
 	"github.com/NY-Daystar/corpos-christie/config"
@@ -10,6 +12,7 @@ import (
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
+	"gopkg.in/yaml.v3"
 )
 
 // Enum for type of tranche
@@ -36,6 +39,7 @@ type GUIModel struct {
 	// buttonSave *widget.Button // Label for save button
 
 	// Bindings
+	Income             binding.String     // Bind for income value
 	Tax                binding.String     // Bind for tax value
 	Remainder          binding.String     // Bind for remainder value
 	Shares             binding.String     // Bind for shares value
@@ -62,31 +66,48 @@ func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIMo
 		Logger: logger,
 	}
 
+	model.configure()
 	model.prepare()
 
 	model.Logger.Info("Launch model")
 	return &model
 }
 
-// Init data and binding for GUI
-func (model *GUIModel) prepare() {
-	model.LabelIncome = binding.NewString()
-	model.LabelStatus = binding.NewString()
-	model.LabelChildren = binding.NewString()
-	model.LabelTax = binding.NewString()
-	model.LabelYear = binding.NewString()
-	model.LabelRemainder = binding.NewString()
-	model.LabelShares = binding.NewString()
-
+// Set settings of model like language, currency and other
+func (model *GUIModel) configure() {
 	model.Settings, _ = settings.Load(model.Logger, "")
-	model.Currency = binding.BindString(model.Settings.Currency)
+	var code = *model.Settings.Language
 
-	model.LabelsAbout = binding.NewStringList()
-	model.LabelsTaxHeaders = binding.NewStringList()
+	model.LoadLanguage(code)
+
+	// Refactoring model with language
+	model.Logger.Sugar().Debugf("Language Yaml %v", model.Language)
+	model.Language.Code = code
+	model.Settings.Set("language", code)
+
+	// Set currency
+	model.Currency = binding.BindString(model.Settings.Currency)
 
 	// Set tax year
 	model.Year = binding.BindString(model.Settings.Year)
 	model.Config.Tax.Year = utils.ConvertBindStringToInt(model.Year)
+}
+
+// Init data and binding for GUI
+func (model *GUIModel) prepare() {
+	model.LabelIncome = binding.NewString()
+	model.Income = binding.NewString()
+	model.LabelStatus = binding.NewString()
+	model.LabelChildren = binding.NewString()
+	model.LabelYear = binding.NewString()
+	model.LabelTax = binding.NewString()
+	model.Tax = binding.NewString()
+	model.LabelRemainder = binding.NewString()
+	model.Remainder = binding.NewString()
+	model.LabelShares = binding.NewString()
+	model.Shares = binding.NewString()
+	model.LabelsAbout = binding.NewStringList()
+	model.LabelsTaxHeaders = binding.NewStringList()
 
 	// Setup binding for min, max and taxes columns
 	model.LabelsMinTranche = binding.BindStringList(model.createTrancheLabels(MIN))
@@ -178,4 +199,17 @@ func (model *GUIModel) Reload() {
 		rateList = append(rateList, rate)
 	}
 	model.LabelsRateTranche.Set(rateList)
+}
+
+// readLanguage Load into model data language
+func (model *GUIModel) LoadLanguage(code string) {
+	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)
+	model.Logger.Info("Configure settings with code language", zap.String("file", languageFile), zap.String("code", code))
+
+	yamlFile, _ := os.ReadFile(languageFile)
+	err := yaml.Unmarshal(yamlFile, &model.Language)
+
+	if err != nil {
+		model.Logger.Sugar().Fatalf("Unmarshal language file %s: %v", languageFile, err)
+	}
 }

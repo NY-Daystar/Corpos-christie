@@ -2,13 +2,14 @@ package gui
 
 import (
 	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"go.uber.org/zap"
 )
 
 // MVC for appliaction
 type GUI struct {
-	Model      *GUIModel
+	Model      *model.GUIModel
 	View       *GUIView
 	Controller *GUIController
 	Logger     *zap.Logger
@@ -23,7 +24,7 @@ type GUI struct {
 func Start(config *config.Config, user *user.User, logger *zap.Logger, display ...bool) {
 	logger.Info("Launch application")
 
-	var model = NewModel(config, user, logger)
+	var model = model.NewModel(config, user, logger)
 	var view = NewView(model, logger)
 	var controller = NewController(model, view, logger)
 

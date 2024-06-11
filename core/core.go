@@ -1,12 +1,10 @@
 package core
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui"
-	"github.com/NY-Daystar/corpos-christie/updater"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -31,9 +29,9 @@ func Start(cfg *config.Config, user *user.User, mode ...string) {
 		appSelected = mode[0]
 	}
 
-	fmt.Printf("START UPDATER\n")
-	updater.StartUpdater(logger)
-	fmt.Printf("UPDATER TERMINE\n")
+	//fmt.Printf("START UPDATER\n")
+	//updater.StartUpdater(logger)
+	//fmt.Printf("UPDATER TERMINE\n")
 
 	// Launch program (Console or GUI)
 	switch m := appSelected; m {
