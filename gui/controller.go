@@ -1,28 +1,25 @@
 package gui
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/NY-Daystar/corpos-christie/config"
+	"fyne.io/fyne/v2/container"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
 	"github.com/NY-Daystar/corpos-christie/tax"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
-	"gopkg.in/yaml.v3"
 )
 
 // GuiController of MVC to handle event and data
 type GUIController struct {
-	Model  *GUIModel
+	Model  *model.GUIModel
 	View   *GUIView
 	Menu   *GUIMenu
 	Logger *zap.Logger
 }
 
 // NewController instantiate new controller with data model and event to update view
-func NewController(model *GUIModel, view *GUIView, logger *zap.Logger) *GUIController {
+func NewController(model *model.GUIModel, view *GUIView, logger *zap.Logger) *GUIController {
 	var controller *GUIController = &GUIController{
 		Model:  model,
 		View:   view,
@@ -50,6 +47,16 @@ func (controller *GUIController) prepare() {
 	controller.View.SelectChildren.OnChanged = func(input string) {
 		controller.calculate()
 	}
+	controller.View.EntryRemainder.OnChanged = func(input string) {
+		controller.reverseCalculate()
+	}
+
+	// READ:  https://github.com/fyne-io/fyne/issues/3466
+	controller.View.Tabs.OnSelected = func(item *container.TabItem) {
+		var index = controller.View.Tabs.SelectedIndex()
+		controller.Logger.Sugar().Infof("Change tab index: %v - %v", "value", index, item.Text)
+	}
+
 	controller.Logger.Info("Events loaded")
 
 	controller.Logger.Info("Menu is set")
@@ -75,7 +82,7 @@ func (controller *GUIController) setAppSettings() {
 // calculate Get values of gui to calculate tax
 func (controller *GUIController) calculate() {
 	controller.Model.User.Income = controller.getIncome()
-	controller.Model.User.IsInCouple = controller.getStatus()
+	controller.Model.User.IsInCouple = controller.IsCoupleSelected()
 	controller.Model.User.Children = controller.getChildren()
 
 	result := tax.CalculateTax(controller.Model.User, controller.Model.Config)
@@ -93,7 +100,28 @@ func (controller *GUIController) calculate() {
 	}
 }
 
-// getIncome Get value of widget entry
+// reverseCalculate Get values of gui to calculate income with taxes
+func (controller *GUIController) reverseCalculate() {
+	controller.Model.User.Remainder = controller.getRemainder()
+
+	result := tax.CalculateReverseTax(controller.Model.User, controller.Model.Config)
+	controller.Logger.Sugar().Debugf("Reverse taxes %#v", result)
+
+	// Set data in tax layout
+	controller.Model.Income.Set(utils.ConvertInt64ToString(int64(result.Income)))
+
+	// Set taxes value
+	var w = utils.ConvertInt64ToString(int64(result.Income))
+	controller.View.EntryIncome.SetText(w)
+
+	// Set Tax details
+	for index := 0; index < controller.Model.LabelsTrancheTaxes.Length(); index++ {
+		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[index].Tax))
+		controller.Model.LabelsTrancheTaxes.SetValue(index, taxTranche)
+	}
+}
+
+// getIncome Get value of widget entry of income
 func (controller *GUIController) getIncome() int {
 	intVal, err := utils.ConvertStringToInt(controller.View.EntryIncome.Text)
 	if err != nil {
@@ -102,9 +130,10 @@ func (controller *GUIController) getIncome() int {
 	return intVal
 }
 
-// getStatus Get value of widget radioGroup
-func (controller *GUIController) getStatus() bool {
-	return controller.View.RadioStatus.Selected == "Couple"
+// IsCoupleSelected Get value of widget radioGroup
+// returns 1 if it's couple, 0 if single
+func (controller *GUIController) IsCoupleSelected() bool {
+	return utils.FindIndex(controller.View.RadioStatus.Options, controller.View.RadioStatus.Selected) == 1
 }
 
 // getChildren get value of widget select
@@ -114,6 +143,15 @@ func (controller *GUIController) getChildren() int {
 		return 0
 	}
 	return children
+}
+
+// getRemainder Get value of widget entry of taxes
+func (controller *GUIController) getRemainder() float64 {
+	intVal, err := utils.ConvertStringToFloat64(controller.View.EntryRemainder.Text)
+	if err != nil {
+		return 0
+	}
+	return intVal
 }
 
 // SetTheme change theme of the application
@@ -133,18 +171,9 @@ func (controller *GUIController) SetTheme(theme int) {
 // SetLanguage change language of the application
 func (controller *GUIController) SetLanguage(index int) {
 	code := settings.GetLanguageCodeFromIndex(index)
-	controller.Logger.Info("Set language", zap.String("code", code))
-
-	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)
-	controller.Logger.Debug("Load file for language", zap.String("file", languageFile))
-
-	yamlFile, _ := os.ReadFile(languageFile)
 	oldModelLanguage := controller.Model.Language
-	err := yaml.Unmarshal(yamlFile, &controller.Model.Language)
 
-	if err != nil {
-		controller.Logger.Sugar().Fatalf("Unmarshal language file %s: %v", languageFile, err)
-	}
+	controller.Model.LoadLanguage(code)
 
 	// Refactoring model with language
 	controller.Logger.Sugar().Debugf("Language Yaml %v", controller.Model.Language)
@@ -157,7 +186,7 @@ func (controller *GUIController) SetLanguage(index int) {
 	controller.View.RadioStatus.SetSelected(controller.View.RadioStatus.Options[0])
 	controller.View.RadioStatus.Refresh()
 
-	controller.Logger.Debug("Renommage du menu", zap.String("file", languageFile))
+	// Refreshing menu
 	controller.Menu.Refresh(oldModelLanguage)
 }
 

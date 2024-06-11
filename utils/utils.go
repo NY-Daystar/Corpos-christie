@@ -75,6 +75,17 @@ func ConvertPercentageToFloat64(str string) (float64, error) {
 	return f, nil
 }
 
+// FindIndex get index in slice of string if target is in
+// If not found return -1
+func FindIndex(slice []string, target string) int {
+	for i, v := range slice {
+		if v == target {
+			return i
+		}
+	}
+	return -1
+}
+
 // GetMaxLength get max length string among the tab slice and returns its length
 func GetMaxLength(tab []string) int {
 	var maxIndexLength int

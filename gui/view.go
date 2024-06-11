@@ -5,15 +5,15 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/theme"
 	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/gui/layouts"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/widgets"
-	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/data/binding"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -23,19 +23,21 @@ const HEIGHT = 540
 
 // GUIView View of the application
 type GUIView struct {
-	Model  *GUIModel
+	Model  *model.GUIModel
 	App    fyne.App    // Fyne application
 	Window fyne.Window // Fyne window
 	Logger *zap.Logger
 
 	// Widgets
+	Tabs           *container.AppTabs  // Tabs to handle layout
 	EntryIncome    *widget.Entry       // Input Entry to set income
 	RadioStatus    *widget.RadioGroup  // Input Radio buttons to get status
 	SelectChildren *widget.SelectEntry // Input Select to know how children
+	EntryRemainder *widget.Entry       // Input Entry to set remainder wished
 }
 
 // NewView instantiate view with existing model (data)
-func NewView(model *GUIModel, logger *zap.Logger) *GUIView {
+func NewView(model *model.GUIModel, logger *zap.Logger) *GUIView {
 	view := &GUIView{
 		Model:  model,
 		Logger: logger,
@@ -49,9 +51,10 @@ func NewView(model *GUIModel, logger *zap.Logger) *GUIView {
 // prepare initialize Fyne application and components to avoid error
 func (view *GUIView) prepare() {
 	view.App = app.New() // Launch Fyne App
-
-	view.EntryIncome = widgets.CreateIncomeEntry()
+	view.EntryIncome = widgets.CreateEntry()
 	view.EntryIncome.SetPlaceHolder("30000")
+	view.EntryRemainder = widgets.CreateEntry()
+	view.EntryRemainder.SetPlaceHolder("30000")
 	view.RadioStatus = widgets.CreateStatusRadio()
 	view.SelectChildren = widgets.CreateChildrenSelect()
 	view.SelectChildren.SetText("0")
@@ -87,56 +90,44 @@ func (view *GUIView) setIcon() {
 
 // setLayouts Setup components/widget in the window
 func (view *GUIView) setLayouts() {
-	content := container.New(layout.NewGridLayout(2),
-		view.createLayoutForm(),
-		view.createLayoutTax(),
-	)
-	view.Window.SetContent(content)
+	view.Window.SetContent(view.createAppTabs())
 }
 
-// createLayoutForm Setup left side of window
-func (view *GUIView) createLayoutForm() *fyne.Container {
-	return container.New(layout.NewVBoxLayout(),
-		view.createLayoutIncome(),
-		view.createLayoutStatus(),
-		view.createLayoutChildren(),
-		// gui.createLayoutSave(), // TODO saveExcel
-	)
-}
+// createAppTabs Setup tabs for taxes and widget for income layout
+func (view *GUIView) createAppTabs() *container.AppTabs {
+	mainLayout := view.clone()
 
-// createLayoutIncome Setup layouts and widget for income layout
-func (view *GUIView) createLayoutIncome() *fyne.Container {
-	view.Model.LabelIncome = binding.BindString(&view.Model.Language.Income)
-	var bindIncome = binding.NewSprintf("%s (%s)", view.Model.LabelIncome, view.Model.Currency)
-	return container.New(
-		layout.NewFormLayout(),
-		widget.NewLabelWithData(bindIncome),
-		view.EntryIncome,
-	)
-}
+	views := []struct {
+		name   string
+		icon   fyne.Resource
+		layout layouts.ViewLayout
+	}{
+		{
+			name:   view.Model.Language.Tax,
+			icon:   theme.AccountIcon(),
+			layout: &layouts.TaxLayout{MainLayout: mainLayout},
+		},
+		{
+			name:   view.Model.Language.ReverseTax,
+			icon:   theme.ComputerIcon(),
+			layout: &layouts.ReverseTaxLayout{MainLayout: mainLayout},
+		},
+		{
+			name:   "History", // TODO language
+			icon:   theme.FileIcon(),
+			layout: &layouts.HistoryLayout{MainLayout: mainLayout},
+		},
+	}
 
-// createLayoutStatus Setup layouts and widget for income layout
-func (view *GUIView) createLayoutStatus() *fyne.Container {
-	view.Model.LabelStatus = binding.BindString(&view.Model.Language.Status)
-	return container.NewHBox(
-		widget.NewLabelWithData(view.Model.LabelStatus),
-		container.New(
-			layout.NewVBoxLayout(),
-			view.RadioStatus,
-		),
-	)
-}
+	// Load Tabs
+	view.Tabs = container.NewAppTabs()
+	for _, item := range views {
+		tab := container.NewTabItemWithIcon(item.name, item.icon, item.layout.SetLayout())
+		view.Tabs.Append(tab)
+	}
 
-// createLayoutChildren Setup layouts and widget for income layout
-func (view *GUIView) createLayoutChildren() *fyne.Container {
-	view.Model.LabelChildren = binding.BindString(&view.Model.Language.Children)
-	return container.NewHBox(
-		widget.NewLabelWithData(view.Model.LabelChildren),
-		container.New(
-			layout.NewVBoxLayout(),
-			view.SelectChildren,
-		),
-	)
+	view.Tabs.SetTabLocation(container.TabLocationTop)
+	return view.Tabs
 }
 
 // TODO saveExcel
@@ -150,90 +141,17 @@ func (view *GUIView) createLayoutChildren() *fyne.Container {
 // 	return container.NewHBox(gui.buttonSave)
 // }
 
-// createLayoutTax Setup right side of window
-func (view *GUIView) createLayoutTax() *fyne.Container {
-	return container.New(
-		layout.NewVBoxLayout(),
-		view.createLayoutTaxYear(),
-		view.createLayoutTaxResult(),
-		container.NewVBox(widget.NewLabel(""), widget.NewSeparator(), widget.NewLabel("")),
-		view.createLayoutTaxDetails(),
-	)
-}
-
-// createLayoutTaxResult Setup right top side of window
-func (view *GUIView) createLayoutTaxYear() *fyne.Container {
-	return container.New(layout.NewGridLayout(8),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabelWithData(view.Model.LabelYear),
-		widget.NewLabelWithData(view.Model.Year),
-	)
-}
-
-// createLayoutTaxResult Setup right top side of window
-func (view *GUIView) createLayoutTaxResult() *fyne.Container {
-	view.Model.LabelTax = binding.NewString()
-	view.Model.Tax = binding.NewString()
-	view.Model.LabelShares = binding.NewString()
-	view.Model.Shares = binding.NewString()
-	view.Model.LabelRemainder = binding.NewString()
-	view.Model.Remainder = binding.NewString()
-
-	var taxBind = binding.NewSprintf("%s (%s)", view.Model.Tax, view.Model.Currency)
-	var remainderBind = binding.NewSprintf("%s (%s)", view.Model.Remainder, view.Model.Currency)
-
-	return container.New(layout.NewGridLayout(2),
-		widget.NewLabelWithData(view.Model.LabelTax),
-		widget.NewLabelWithData(taxBind),
-
-		widget.NewLabelWithData(view.Model.LabelRemainder),
-		widget.NewLabelWithData(remainderBind),
-
-		widget.NewLabelWithData(view.Model.LabelShares),
-		widget.NewLabelWithData(view.Model.Shares),
-	)
-}
-
-// createLayoutTax Setup right bottom side of window
-func (view *GUIView) createLayoutTaxDetails() *fyne.Container {
-	var trancheNumber int = view.Model.LabelsTrancheTaxes.Length()
-
-	// Add header columns in grid
-	grid := container.New(layout.NewGridLayout(trancheNumber))
-
-	for index, header := range view.Model.Language.GetTaxHeaders() {
-		view.Model.LabelsTaxHeaders.Append(header)
-		headerItem, _ := view.Model.LabelsTaxHeaders.GetItem(index)
-		var headerBind = binding.NewSprintf("%s", headerItem)
-		grid.Add(widget.NewLabelWithData(headerBind))
+// clone create a copy of data in view for every layouts
+func (view *GUIView) clone() layouts.MainLayout {
+	return layouts.MainLayout{
+		Model:          view.Model,
+		App:            view.App,
+		Window:         view.Window,
+		Logger:         view.Logger,
+		Tabs:           view.Tabs,
+		EntryIncome:    view.EntryIncome,
+		RadioStatus:    view.RadioStatus,
+		SelectChildren: view.SelectChildren,
+		EntryRemainder: view.EntryRemainder,
 	}
-
-	// Add Tranche rows in grid
-	for index := 0; index < view.Model.LabelsTrancheTaxes.Length(); index++ {
-		minItem, _ := view.Model.LabelsMinTranche.GetItem(index)
-		maxItem, _ := view.Model.LabelsMaxTranche.GetItem(index)
-		rateItem, _ := view.Model.LabelsRateTranche.GetItem(index)
-		taxItem, _ := view.Model.LabelsTrancheTaxes.GetItem(index)
-
-		minBind := binding.NewSprintf("%s %s", minItem, view.Model.Currency)
-		maxBind := binding.NewSprintf("%s %s", maxItem, view.Model.Currency)
-		rateBind := binding.NewSprintf("%s %%", rateItem)
-		taxBind := binding.NewSprintf("%s %s", taxItem, view.Model.Currency)
-
-		grid.Add(widget.NewLabel("Tranche " + utils.ConvertIntToString(index+1)))
-		grid.Add(widget.NewLabelWithData(minBind))
-		grid.Add(widget.NewLabelWithData(maxBind))
-		grid.Add(widget.NewLabelWithData(rateBind))
-		grid.Add(widget.NewLabelWithData(taxBind))
-	}
-
-	return container.New(
-		layout.NewStackLayout(),
-		grid,
-	)
 }
