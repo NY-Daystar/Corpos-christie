@@ -129,7 +129,7 @@ func StartReverseTaxCalculator(cfg *config.Config, user *user.User) {
 	}
 
 	// Calculate tax
-	result := calculateReverseTax(user, cfg)
+	result := CalculateReverseTax(user, cfg)
 	user.Shares = result.Shares
 
 	user.Show()
@@ -201,10 +201,9 @@ func CalculateTax(user *user.User, cfg *config.Config) Result {
 	return result
 }
 
-// TODO put ON GUI
 // calculateReverseTax determine the income to have, and tax to pay from the remainder of the user
 // returns the result of the processing
-func calculateReverseTax(user *user.User, cfg *config.Config) Result {
+func CalculateReverseTax(user *user.User, cfg *config.Config) Result {
 	var income float64
 
 	var taxTranches []TaxTranche

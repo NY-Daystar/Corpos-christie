@@ -65,6 +65,7 @@ type Yaml struct {
 	Status        string            `yaml:"status"`
 	Children      string            `yaml:"children"`
 	Tax           string            `yaml:"tax"`
+	ReverseTax    string            `yaml:"reverse_tax"`
 	Remainder     string            `yaml:"remainder"`
 	Share         string            `yaml:"share"`
 	Save          string            `yaml:"save"`

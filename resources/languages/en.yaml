@@ -30,6 +30,7 @@ status_list:
     couple: Couple
 children: Select children number
 tax: Taxes
+reverse_tax: Reverse Taxes
 remainder: Remainder
 share: Shares
 save: Save

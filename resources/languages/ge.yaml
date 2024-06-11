@@ -30,6 +30,7 @@ status_list:
     couple: Verheiratet
 children: Kindernummer auswählen
 tax: Steuern
+reverse_tax: Umgekehrte Steuern
 remainder: Rest
 share: Aktien
 save: Speichern
