@@ -107,9 +107,6 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 		return nil, errors.New("rate limiter reached")
 	}
 
-	// TODO a testé
-	fmt.Println(0)
-
 	tag, err := go_version.NewVersion(releaseTag[1])
 	if err != nil {
 		fmt.Printf("3 %v", err)
@@ -120,11 +117,10 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 	}
 
 	if tag.LessThan(versionCompared) {
-		fmt.Printf("%s is less than %s\n", tag, versionCompared)
+		fmt.Printf("Actual version (%s) is less than latest version (%s)\n", tag, versionCompared)
 		//return &release, nil
-	}
-	if versionCompared.LessThan(tag) {
-		fmt.Printf("%s is less than %s\n", versionCompared, tag)
+	} else {
+		fmt.Printf("Actual version (%s) is greater or equal than latest version (%s)\n", tag, versionCompared)
 		return &release, nil
 	}
 	// if tag > version {
