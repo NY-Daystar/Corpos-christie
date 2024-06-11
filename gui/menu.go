@@ -3,6 +3,7 @@ package gui
 import (
 	"fmt"
 	"image/color"
+	"log"
 	"net/url"
 	"time"
 
@@ -11,10 +12,12 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/updater"
+	"github.com/NY-Daystar/corpos-christie/utils"
 )
 
 // GUIMenu represents menu of window application
@@ -289,6 +292,57 @@ func (menu *GUIMenu) createSelectYear() *fyne.Container {
 func (menu *GUIMenu) createLabelLogs() *fyne.Container {
 	return container.NewHBox(
 		widget.NewLabel(menu.Controller.Model.Language.Logs),
-		widget.NewLabel(config.LOGS_PATH),
+		widget.NewButton(config.LOGS_PATH, menu.showLogsDialog),
 	)
+}
+
+// Show dialog box for Logs to show them, copy them or save them
+// TODO mettre dans un test
+func (menu *GUIMenu) showLogsDialog() {
+	copyPasteButton := widget.NewButton("Copier-coller", menu.action1) // TODO language
+	saveButton := widget.NewButton("Save in file", menu.action2)       // TODO language
+
+	lines, err := utils.ReadFileLastNLines(config.LOGS_PATH, 500)
+	if err != nil {
+		log.Fatalf("Failed to read file: %v", err)
+	}
+
+	entry := widget.NewMultiLineEntry()
+	entry.SetText(string(lines))
+	scroll := container.NewScroll(entry)
+
+	// NewSpacer push to the right buttons
+	buttonContainer := container.NewHBox(layout.NewSpacer(), copyPasteButton, saveButton)
+
+	// Init container
+	contentContainer := container.NewBorder(
+		buttonContainer,
+		nil,
+		nil,
+		nil,
+		scroll)
+
+	customDialog := dialog.NewCustom(
+		"Logs",
+		menu.Controller.Model.Language.Close,
+		contentContainer,
+		menu.Window)
+
+	customDialog.Resize(fyne.NewSize(1400, 900))
+
+	customDialog.Show()
+}
+
+// TODO a faire
+// TODO a commenter
+// TODO mettre dans un test
+func (menu *GUIMenu) action1() {
+	fmt.Printf("un pour copier coller les logs \n")
+}
+
+// TODO a faire
+// TODO a commenter
+// TODO mettre dans un test
+func (menu *GUIMenu) action2() {
+	fmt.Printf("Un pour sauvegarder les logs dans un fichier \n")
 }
