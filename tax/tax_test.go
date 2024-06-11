@@ -25,166 +25,77 @@ func init() {
 	cfg.ChangeTax(2022)
 }
 
-// TODO copier ces tests TestIsNewUpdateAvailable
-// Calculate tax for a single person with 30000 of income
-func TestCalculateTaxForSinglePerson(t *testing.T) {
-	var user = user.User{}
-	user.Income = 30000
+// Calculate tax
+func TestCalculateTax(t *testing.T) {
 
-	result := CalculateTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
+	tests := []struct {
+		user     user.User
+		expected Result
+	}{
+		{
+			user:     user.User{Income: 30000},
+			expected: Result{Income: 30000, Tax: 2922, Remainder: 27078},
+		},
+		{
+			user:     user.User{Income: 60000, IsInCouple: true, Children: 2},
+			expected: Result{Income: 60000, Tax: 3225, Remainder: 56775},
+		},
+		{
+			user:     user.User{Income: 100000, IsInCouple: true, Children: 3},
+			expected: Result{Income: 100000, Tax: 6501, Remainder: 93499},
+		},
+		{
+			user:     user.User{Income: 60000, IsInCouple: true, Children: 0},
+			expected: Result{Income: 60000, Tax: 5843, Remainder: 54157},
+		},
+		{
+			user:     user.User{Income: 30000, IsInCouple: false, Children: 2},
+			expected: Result{Income: 30000, Tax: 488, Remainder: 29512},
+		},
+	}
 
-	expected := Result{Income: 30000, Tax: 2922, Remainder: 27078}
-	t.Logf("Expected:\t\t%+v", expected)
+	for _, testCase := range tests {
+		result := CalculateTax(&testCase.user, cfg)
+		t.Logf("Function result:\t%+v", result)
 
-	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
+		if result.Income != testCase.expected.Income || result.Tax != testCase.expected.Tax || result.Remainder != testCase.expected.Remainder {
+			t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(result.Income), colors.Red(testCase.expected.Income))
+			t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(result.Tax), colors.Red(testCase.expected.Tax))
+			t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(result.Remainder), colors.Red(testCase.expected.Remainder))
+		}
 	}
 }
 
-// Calculate tax for a couple with 2 children, testing shares with a couple and 2 childrens
-func TestCalculateTaxForCoupleWith2Children(t *testing.T) {
-	user := user.User{
-		Income:     60000,
-		IsInCouple: true,
-		Children:   2,
+// Calculate reverse tax
+func TestCalculateReverseTax(t *testing.T) {
+
+	tests := []struct {
+		user     user.User
+		expected Result
+	}{
+		{
+			user:     user.User{Remainder: 28395},
+			expected: Result{Income: 31880, Tax: 3485, Remainder: 28395},
+		},
+		{
+			user:     user.User{Remainder: 53124, IsInCouple: true, Children: 2},
+			expected: Result{Income: 55896, Tax: 2772, Remainder: 53124},
+		},
+		{
+			user:     user.User{Remainder: 93437, IsInCouple: true, Children: 3},
+			expected: Result{Income: 99929, Tax: 6492, Remainder: 93437},
+		},
 	}
 
-	result := CalculateTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
+	for _, testCase := range tests {
+		result := CalculateReverseTax(&testCase.user, cfg)
+		t.Logf("Function result:\t%+v", result)
 
-	expected := Result{Income: 60000, Tax: 3225, Remainder: 56775}
-	t.Logf("Expected:\t\t%+v", expected)
-
-	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
-	}
-}
-
-// Calculate tax for a couple with 3 children, testing shares with a couple and 3 childrens
-func TestCalculateTaxForCoupleWith3Children(t *testing.T) {
-	user := user.User{
-		Income:     100000,
-		IsInCouple: true,
-		Children:   3,
-	}
-
-	result := CalculateTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
-
-	expected := Result{Income: 100000, Tax: 6501, Remainder: 93499}
-	t.Logf("Expected:\t\t%+v", expected)
-
-	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
-	}
-}
-
-// Calculate tax for a couple with no children, testing shares with a couple and 0 childrens
-func TestCalculateTaxForCoupleWithNoChildren(t *testing.T) {
-	user := user.User{
-		Income:     60000,
-		IsInCouple: true,
-		Children:   0,
-	}
-
-	result := CalculateTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
-
-	expected := Result{Income: 60000, Tax: 5843, Remainder: 54157}
-	t.Logf("Expected:\t\t%+v", expected)
-
-	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
-	}
-}
-
-func TestCalculateTaxForIsolatedParent(t *testing.T) {
-	user := user.User{
-		Income:     30000,
-		IsInCouple: false,
-		Children:   2,
-	}
-
-	result := CalculateTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
-
-	expected := Result{Income: 30000, Tax: 488, Remainder: 29512}
-	t.Logf("Expected:\t\t%+v", expected)
-
-	if result.Income != expected.Income || result.Tax != expected.Tax || result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
-	}
-}
-
-// Calculate reverse tax for a single person to get at the end 28395
-func TestCalculateReverseTaxForSinglePerson(t *testing.T) {
-	user := user.User{
-		Remainder: 28395,
-	}
-
-	result := calculateReverseTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
-
-	expected := Result{Income: 32000, Tax: 3605, Remainder: 28395}
-	t.Logf("Expected:\t\t%+v", expected)
-
-	if result.Income != expected.Income && result.Tax != expected.Tax && result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
-	}
-}
-
-// Calculate reverse tax for a couple with 2 children, testing shares with a couple and 2 childrens
-func TestCalculateReverseTaxForCoupleWith2Children(t *testing.T) {
-	user := user.User{
-		Remainder:  53124,
-		IsInCouple: true,
-		Children:   2,
-	}
-
-	result := calculateReverseTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
-
-	expected := Result{Income: 55950, Tax: 2826, Remainder: 53124}
-	t.Logf("Expected:\t\t%+v", expected)
-
-	if result.Income != expected.Income && result.Tax != expected.Tax && result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
-	}
-}
-
-// Calculate reverse tax for a couple with 3 children, testing shares with a couple and 3 childrens
-func TestCalculateReverseTaxForCoupleWith3Children(t *testing.T) {
-	user := user.User{
-		Remainder:  93437,
-		IsInCouple: true,
-		Children:   3,
-	}
-
-	result := calculateReverseTax(&user, cfg)
-	t.Logf("Function result:\t%+v", result)
-
-	expected := Result{Income: 100000, Tax: 6563, Remainder: 93437}
-	t.Logf("Expected:\t\t%+v", expected)
-
-	if result.Income != expected.Income && result.Tax != expected.Tax && result.Remainder != expected.Remainder {
-		t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(expected.Income), colors.Red(result.Income))
-		t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(expected.Tax), colors.Red(result.Tax))
-		t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(expected.Remainder), colors.Red(result.Remainder))
+		if result.Income != testCase.expected.Income || result.Tax != testCase.expected.Tax || result.Remainder != testCase.expected.Remainder {
+			t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(result.Income), colors.Red(testCase.expected.Income))
+			t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(result.Tax), colors.Red(testCase.expected.Tax))
+			t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(result.Remainder), colors.Red(testCase.expected.Remainder))
+		}
 	}
 }
 

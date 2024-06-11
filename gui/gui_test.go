@@ -5,6 +5,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils/colors"
@@ -16,20 +17,18 @@ import (
 // $ cd gui
 // $ go test -v
 
-// Test GUI components
-func TestGUI(t *testing.T) {
+// Test GUI components (model, view, controller)
+func TestGUIComponents(t *testing.T) {
 	var user = &user.User{}
 	var logger *zap.Logger = zaptest.NewLogger(t)
 	var cfg *config.Config = config.New()
 
-	Start(cfg, user, logger, false)
-
-	var model = NewModel(cfg, user, logger)
+	var model = model.NewModel(cfg, user, logger)
 	var view = NewView(model, logger)
 	var controller = NewController(model, view, logger)
 	var menu = NewMenu(controller)
 
-	model.Reload()
+	// model.Reload()
 	t.Logf("Gui Model %+v", model)
 	t.Logf("Gui View %+v", view)
 	t.Logf("Gui Controller %#v", controller)

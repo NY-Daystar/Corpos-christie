@@ -8,8 +8,8 @@ import (
 // $ cd gui/widgets
 // $ go test -v
 
-func TestWidgetCreateIncomeEntry(t *testing.T) {
-	var entry = CreateIncomeEntry()
+func TestWidgetCreateEntry(t *testing.T) {
+	var entry = CreateEntry()
 
 	if entry == nil {
 		t.Errorf("No entry widget created")
