@@ -8,7 +8,6 @@ import (
 // $ cd updater
 // $ go test -v
 
-// Calculate tax for a single person with 30000 of income
 func TestIsNewUpdateAvailable(t *testing.T) {
 	tests := []struct {
 		version  string
@@ -21,7 +20,12 @@ func TestIsNewUpdateAvailable(t *testing.T) {
 		{
 			version:  "1.0",
 			expected: true,
-		}, {
+		},
+		{
+			version:  "2.1.0",
+			expected: true,
+		},
+		{
 			version:  "100.0",
 			expected: false,
 		},
@@ -31,10 +35,10 @@ func TestIsNewUpdateAvailable(t *testing.T) {
 		t.Logf("Version: %v", testCase.version)
 		result, err := IsNewUpdateAvailable(testCase.version)
 		t.Logf("Res: %v", result)
-		t.Logf("Err: %s", err)
+		t.Logf("Err: %v", err)
 		t.Logf("Expected %v", testCase.expected)
 		//var w = errors.New("no release")
-		if err.Error() == "rate limiter reached" {
+		if err != nil && err.Error() == "rate limiter reached" {
 			t.Logf("Unable to download the release")
 			continue
 		}

@@ -232,3 +232,41 @@ func TestDownloadWithWrongProtocol(t *testing.T) {
 		t.Error("No error detected")
 	}
 }
+
+func TestFindIndex(t *testing.T) {
+	tests := []struct {
+		slice    []string
+		target   string
+		expected int
+	}{
+		{
+			slice:    []string{"one", "two", "three"},
+			target:   "one",
+			expected: 0,
+		},
+		{
+			slice:    []string{"one", "two", "three"},
+			target:   "two",
+			expected: 1,
+		},
+		{
+			slice:    []string{"one", "two", "three"},
+			target:   "three",
+			expected: 2,
+		},
+		{
+			slice:    []string{"one", "two", "three"},
+			target:   "four",
+			expected: -1,
+		},
+	}
+
+	for _, testCase := range tests {
+		var index = FindIndex(testCase.slice, testCase.target)
+		t.Logf("Index found: %v", index)
+
+		if testCase.expected != index {
+			t.Errorf("Test case failed with result: %d - expected: %d", index, testCase.expected)
+		}
+	}
+}
