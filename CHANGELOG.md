@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project releases
 
+TODO changer la date
+
+## 3.0.0 - May, 16th 2024 - Remove console app
+
+### Removed
+
+-   Console applicatio
+    TODO mettre dans le README d'utiliser la version 2.2.0 pour avoir la console
+
+TODO changer la date
+
 ## 2.2.0 - May, 16th 2024 - Long fixes
 
 ### Added
@@ -15,8 +26,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Optimize setup when launching application
 -   Add screen in documentation (README)
 -   Add new configuration to change year of tax calculation in GUI
--   Add an autoupdater
+-   Add an auto-updater
 -   Add new command in console and GUI for tax history
+-   Add new tab bar in GUI to get taxes and reverse tax calculation
 
 ### Fixed
 
