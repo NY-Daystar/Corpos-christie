@@ -95,6 +95,8 @@ func (view *GUIView) setLayouts() {
 
 // createAppTabs Setup tabs for taxes and widget for income layout
 func (view *GUIView) createAppTabs() *container.AppTabs {
+	view.Tabs = container.NewAppTabs()
+
 	mainLayout := view.clone()
 
 	views := []struct {
@@ -120,7 +122,6 @@ func (view *GUIView) createAppTabs() *container.AppTabs {
 	}
 
 	// Load Tabs
-	view.Tabs = container.NewAppTabs()
 	for _, item := range views {
 		tab := container.NewTabItemWithIcon(item.name, item.icon, item.layout.SetLayout())
 		view.Tabs.Append(tab)

@@ -13,7 +13,7 @@ TODO changer la date
 
 ### Removed
 
--   Console applicatio
+-   Console application
     TODO mettre dans le README d'utiliser la version 2.2.0 pour avoir la console
 
 TODO changer la date

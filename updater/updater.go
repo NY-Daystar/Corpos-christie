@@ -78,6 +78,7 @@ func StartUpdater(logger *zap.Logger) {
 			}
 		}
 	} else {
+		// if no internet access
 		fmt.Println("No new version available")
 	}
 }

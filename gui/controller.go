@@ -82,6 +82,10 @@ func (controller *GUIController) setAppSettings() {
 // calculate Get values of gui to calculate tax
 func (controller *GUIController) calculate() {
 	controller.Model.User.Income = controller.getIncome()
+	// If income to low no need to calculate
+	if controller.Model.User.Income < 10000 {
+		return
+	}
 	controller.Model.User.IsInCouple = controller.IsCoupleSelected()
 	controller.Model.User.Children = controller.getChildren()
 
@@ -98,6 +102,8 @@ func (controller *GUIController) calculate() {
 		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[index].Tax))
 		controller.Model.LabelsTrancheTaxes.SetValue(index, taxTranche)
 	}
+
+	// TODO sauvegarder dans un fichier data.json
 }
 
 // reverseCalculate Get values of gui to calculate income with taxes

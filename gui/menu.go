@@ -297,7 +297,6 @@ func (menu *GUIMenu) createLabelLogs() *fyne.Container {
 }
 
 // Show dialog box for Logs to show them, copy them or save them
-// TODO mettre dans un test
 func (menu *GUIMenu) showLogsDialog() {
 	copyPasteButton := widget.NewButton("Copier-coller", menu.action1) // TODO language
 	saveButton := widget.NewButton("Save in file", menu.action2)       // TODO language
