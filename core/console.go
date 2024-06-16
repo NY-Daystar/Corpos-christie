@@ -76,6 +76,7 @@ func init() {
 			exec:        func(cfg *config.Config, user *user.User) { showAbout() },
 			description: "Show options list",
 		},
+		// TODO mettre l'history ici aussi
 		{
 			name:        "quit",
 			exec:        func(cfg *config.Config, user *user.User) { fmt.Println("Quitting program"); os.Exit(0) },

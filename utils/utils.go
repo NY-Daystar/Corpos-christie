@@ -164,7 +164,6 @@ func DownloadFile(url, dest string) (int, error) {
 
 	resp, err := http.Get(url)
 	if err != nil || resp.StatusCode == 404 {
-		fmt.Printf("SALUT\n")
 		return 404, err
 	}
 	defer resp.Body.Close()
