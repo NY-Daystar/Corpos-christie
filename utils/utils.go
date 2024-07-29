@@ -10,10 +10,13 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
+	"runtime"
 	"strconv"
 	"strings"
 
 	"fyne.io/fyne/v2/data/binding"
+	"github.com/NY-Daystar/corpos-christie/config"
 )
 
 const (
@@ -153,6 +156,38 @@ func SetPadding(tab []string, v string) string {
 	return space
 }
 
+// getAppDataPath returns the path to the AppData directory on Windows
+// and the home directory on Linux.
+func GetAppDataPath() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	if runtime.GOOS == "windows" {
+		appDataPath := os.Getenv("APPDATA")
+		if appDataPath == "" {
+			return "", fmt.Errorf("APPDATA environment variable is not set")
+		}
+		return appDataPath, nil
+	} else {
+		return homeDir, nil
+	}
+}
+
+// get logs filePath
+func GetLogsPath(appName string) string {
+	appPath, _ := GetAppDataPath()
+	var logsFolder = path.Join(appPath, config.APP_NAME, "logs")
+	return path.Join(logsFolder, "log.json")
+}
+
+// get history filePath
+func GetHistoryFile(appName string) string {
+	appPath, _ := GetAppDataPath()
+	return path.Join(appPath, "history.json")
+}
+
 // DownloadFile from url to destination return int and error
 // If success then return 0 and no error
 func DownloadFile(url, dest string) (int, error) {
@@ -173,5 +208,5 @@ func DownloadFile(url, dest string) (int, error) {
 		return 3, err
 	}
 
-	return 0, out.Close()
+	return 0, out.Sync()
 }

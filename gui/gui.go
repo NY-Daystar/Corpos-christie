@@ -29,9 +29,7 @@ func Start(config *config.Config, user *user.User, logger *zap.Logger, display .
 	var controller = NewController(model, view, logger)
 
 	var gui *GUI = &GUI{
-		Model:      model,
-		View:       view,
-		Controller: controller,
+		View: view,
 	}
 
 	// Launch GUI if bool ok

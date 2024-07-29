@@ -2,10 +2,12 @@ package core
 
 import (
 	"os"
+	"path"
 
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui"
 	"github.com/NY-Daystar/corpos-christie/user"
+	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -72,14 +74,15 @@ func initLogger() *zap.Logger {
 	fileEncoder := zapcore.NewJSONEncoder(configZap)
 
 	// Create logs folder if not exists
-	path := "logs"
-	os.Mkdir(path, os.ModePerm)
+	appPath, _ := utils.GetAppDataPath()
+	var logsFolder = path.Join(appPath, config.APP_NAME, "logs")
+	os.Mkdir(logsFolder, os.ModePerm)
 
 	logger := lumberjack.Logger{
-		Filename:   config.LOGS_PATH, // File path
-		MaxSize:    500,              // 500 megabytes per files
-		MaxBackups: 3,                // 3 files before rotate
-		MaxAge:     15,               // 15 days
+		Filename:   utils.GetLogsPath(config.APP_NAME), // File path
+		MaxSize:    500,                                // 500 megabytes per files
+		MaxBackups: 3,                                  // 3 files before rotate
+		MaxAge:     15,                                 // 15 days
 	}
 
 	writer := zapcore.AddSync(&logger)

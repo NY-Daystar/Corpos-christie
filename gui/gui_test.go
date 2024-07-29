@@ -45,9 +45,10 @@ func TestGUIComponents(t *testing.T) {
 	if menu == nil {
 		t.Errorf("No menu loaded")
 	}
-	menu.ShowFileItem()
-	menu.ShowAboutItem()
-	menu.ShowUpdateItem()
+	menu.showFileItem()
+	menu.showAboutItem()
+	menu.showUpdateItem()
+	menu.showLogsDialog()
 
 	var yaml = settings.Yaml{
 		Theme:         settings.ThemeYaml{Dark: "dark", Light: "light"},
