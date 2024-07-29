@@ -6,9 +6,9 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/NY-Daystar/corpos-christie/utils"
 )
 
-// TODO corriger les issues deepsource
 // Layout to display history tab
 type HistoryLayout struct {
 	MainLayout
@@ -23,21 +23,8 @@ func (view HistoryLayout) SetLayout() *fyne.Container {
 
 // Create list for history
 func (view HistoryLayout) setLeftLayout() *fyne.Container {
-	// TODO load data from file
-	data := []struct {
-		Date     string
-		Income   string
-		Couple   string
-		Children string
-		Icon     fyne.Resource
-	}{
-		{"2023-06-01", "40000", "Yes", "0", theme.DocumentIcon()},
-		{"2023-06-02", "50000", "No", "1", theme.DocumentIcon()},
-		{"2023-06-03", "70000", "No", "2", theme.DocumentIcon()},
-	}
-
 	list := widget.NewList(
-		func() int { return len(data) },
+		func() int { return len(view.Model.Histories) },
 		func() fyne.CanvasObject {
 			dateLabel := widget.NewLabel("")
 			num1Label := widget.NewLabel("")
@@ -62,27 +49,36 @@ func (view HistoryLayout) setLeftLayout() *fyne.Container {
 		func(i widget.ListItemID, o fyne.CanvasObject) {
 			line := o.(*fyne.Container).Objects[0].(*fyne.Container)
 			children := line.Objects
-			children[0].(*widget.Label).SetText(data[i].Date)
-			children[2].(*widget.Label).SetText(data[i].Income)
-			children[4].(*widget.Label).SetText(data[i].Couple)
-			children[6].(*widget.Label).SetText(data[i].Children)
-			children[8].(*widget.Button).SetIcon(data[i].Icon)
+
+			var history = view.Model.Histories[i]
+			var date = history.Date
+			var income = utils.ConvertIntToString(history.Income)
+			var couple = history.Couple
+			var coupleText = history.IsInCouple
+			var childrenNumber = utils.ConvertIntToString(history.Children)
+			var icon = theme.DocumentIcon()
+
+			children[0].(*widget.Label).SetText(date)
+			children[2].(*widget.Label).SetText(income)
+			children[4].(*widget.Label).SetText(coupleText)
+			children[6].(*widget.Label).SetText(childrenNumber)
+			children[8].(*widget.Button).SetIcon(icon)
 
 			children[8].(*widget.Button).OnTapped = func() {
-				view.recalculate(data[i].Income)
+				view.recalculate(income, couple, childrenNumber)
 			}
 		})
 
 	headers := container.NewHBox(
-		widget.NewLabel("Date"), // TODO language
+		widget.NewLabel(view.Model.Language.HistoryHeaders.Date),
 		layout.NewSpacer(),
-		widget.NewLabel("Income"), // TODO language
+		widget.NewLabel(view.Model.Language.HistoryHeaders.Income),
 		layout.NewSpacer(),
-		widget.NewLabel("Couple"), // TODO language
+		widget.NewLabel(view.Model.Language.HistoryHeaders.Couple),
 		layout.NewSpacer(),
-		widget.NewLabel("Children"), // TODO language
+		widget.NewLabel(view.Model.Language.HistoryHeaders.Children),
 		layout.NewSpacer(),
-		widget.NewLabel("Actions"), // TODO language
+		widget.NewLabel(view.Model.Language.HistoryHeaders.Actions),
 		layout.NewSpacer(),
 	)
 
@@ -92,9 +88,18 @@ func (view HistoryLayout) setLeftLayout() *fyne.Container {
 }
 
 // Go into tab taxes to recalculate
-func (view HistoryLayout) recalculate(income string) {
+func (view HistoryLayout) recalculate(income string, couple bool, children string) {
 	view.Tabs.SelectIndex(0)
+
 	view.EntryIncome.SetText(income)
+	view.SelectChildren.SetText(children)
+
+	var option = 0
+	if couple {
+		option = 1
+	}
+	view.RadioStatus.SetSelected(view.RadioStatus.Options[option])
+
 }
 
 // No use for this layout

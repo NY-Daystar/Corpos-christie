@@ -20,6 +20,14 @@ tax_headers:
     header_3: "MAX"
     header_4: "RATIO"
     header_5: "IMPÔT"
+history_headers:
+    header_1: "Date"
+    header_2: "Revenus"
+    header_3: "Couple"
+    header_4: "Nombre d'enfants"
+    header_5: "Actions"
+yes: "Oui"
+no: "Non"
 file: Fichier
 settings: Paramètres
 update: Vérifier les mises à jour
@@ -33,6 +41,7 @@ tax: Impôts
 reverse_tax: Impôts inversés
 remainder: Restants
 share: Parts
+history: Historique
 save: Sauvegarder
 language: Langues
 theme: Themes

@@ -115,7 +115,7 @@ func (view *GUIView) createAppTabs() *container.AppTabs {
 			layout: &layouts.ReverseTaxLayout{MainLayout: mainLayout},
 		},
 		{
-			name:   "History", // TODO language
+			name:   view.Model.Language.History,
 			icon:   theme.FileIcon(),
 			layout: &layouts.HistoryLayout{MainLayout: mainLayout},
 		},

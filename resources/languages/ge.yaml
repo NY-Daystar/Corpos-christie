@@ -20,6 +20,14 @@ tax_headers:
     header_3: MAX
     header_4: RATE
     header_5: STEUER
+history_headers:
+    header_1: "Datum"
+    header_2: "Einkommen"
+    header_3: "Paar"
+    header_4: "Anzahl der Kinder"
+    header_5: "Aktionen"
+yes: "Ja"
+no: "Nein"
 file: Datei
 settings: Einstellungen
 update: Update prüfen
@@ -33,6 +41,7 @@ tax: Steuern
 reverse_tax: Umgekehrte Steuern
 remainder: Rest
 share: Aktien
+history: Historisch
 save: Speichern
 language: Sprachen
 theme: Themen

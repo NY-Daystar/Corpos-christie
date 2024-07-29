@@ -111,7 +111,6 @@ func GetMaxLength(tab []string) int {
 }
 
 // ReadFileLastNLines read the last N lines of the files
-// TODO A TESTER
 func ReadFileLastNLines(filePath string, n int) (string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -128,18 +127,35 @@ func ReadFileLastNLines(filePath string, n int) (string, error) {
 		return "", err
 	}
 
-	// Garder uniquement les N dernières lignes
+	// Keep only last N lines
 	if len(lines) > n {
 		lines = lines[len(lines)-n:]
 	}
 
-	// Ajouter les numéros de ligne
+	// Add line number
 	var result string
 	for i, line := range lines {
 		result += fmt.Sprintf("%3d: %s\n", i+1, line)
 	}
 
 	return result, nil
+}
+
+// Read history files and return list of string
+func GetHistory(filePath string) []string {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+
+	return lines
 }
 
 // getPadding get padding necessary between values in tab for each of them to align items
@@ -177,15 +193,20 @@ func GetAppDataPath() (string, error) {
 
 // get logs filePath
 func GetLogsPath(appName string) string {
-	appPath, _ := GetAppDataPath()
-	var logsFolder = path.Join(appPath, config.APP_NAME, "logs")
+	appDataPath, _ := GetAppDataPath()
+	var logsFolder = path.Join(appDataPath, config.APP_NAME, "logs")
 	return path.Join(logsFolder, "log.json")
 }
 
 // get history filePath
 func GetHistoryFile(appName string) string {
-	appPath, _ := GetAppDataPath()
-	return path.Join(appPath, "history.json")
+	appDataPath, _ := GetAppDataPath()
+	var appFolder = path.Join(appDataPath, config.APP_NAME)
+	var historyPath = path.Join(appFolder, "history.json")
+	if _, err := os.Stat(historyPath); err != nil {
+		os.Create(historyPath)
+	}
+	return historyPath
 }
 
 // DownloadFile from url to destination return int and error
