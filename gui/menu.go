@@ -126,6 +126,8 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 	progress := widget.NewProgressBar()
 	infinite := widget.NewProgressBarInfinite()
 
+	// TODO mettre une popup dès le lancement de l'interface pour demander la mise à jour
+
 	// TODO make a circular progress simualate with 5sec latences
 	// TODO utiliser la demo : https://docs.fyne.io/started/demo.html
 	// TODO la mettre dans le readme
@@ -291,7 +293,7 @@ func (menu *GUIMenu) createSelectYear() *fyne.Container {
 func (menu *GUIMenu) createLabelLogs() *fyne.Container {
 	return container.NewHBox(
 		widget.NewLabel(menu.Controller.Model.Language.Logs),
-		widget.NewButton(utils.GetLogsPath(config.APP_NAME), menu.showLogsDialog),
+		widget.NewButton(utils.GetLogsPath(), menu.showLogsDialog),
 	)
 }
 
@@ -300,7 +302,7 @@ func (menu *GUIMenu) showLogsDialog() {
 	copyPasteButton := widget.NewButton("Copier-coller", menu.action1) // TODO language
 	saveButton := widget.NewButton("Save in file", menu.action2)       // TODO language
 
-	lines, err := utils.ReadFileLastNLines(utils.GetLogsPath(config.APP_NAME), 500)
+	lines, err := utils.ReadFileLastNLines(utils.GetLogsPath(), 500)
 	if err != nil {
 		menu.Controller.View.Logger.Sugar().Errorf("Failed to read file: %v", err)
 	}

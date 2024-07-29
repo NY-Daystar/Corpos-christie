@@ -94,21 +94,20 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
 	var release GitHubRelease
 	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
 		return nil, err
 	}
-	regexVersion := regexp.MustCompile("v([0-9].[0-9].[0-9])")
-	var releaseTag = regexVersion.FindStringSubmatch(release.TagName)
 
-	if len(releaseTag) == 0 {
+	var releaseTag = GetTag(release.TagName)
+
+	if releaseTag == "" {
 		fmt.Println("No release, reached rate limiter")
 		return nil, errors.New("rate limiter reached")
 	}
 
-	tag, err := go_version.NewVersion(releaseTag[1])
+	tag, err := go_version.NewVersion(releaseTag)
 	if err != nil {
 		fmt.Printf("3 %v", err)
 	}
@@ -119,7 +118,7 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 
 	if tag.LessThan(versionCompared) {
 		fmt.Printf("Actual version (%s) is less than latest version (%s)\n", tag, versionCompared)
-		//return &release, nil
+		// return &release, nil
 	} else {
 		fmt.Printf("Actual version (%s) is greater or equal than latest version (%s)\n", tag, versionCompared)
 		return &release, nil
@@ -127,7 +126,18 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 	// if tag > version {
 	// 	return &release, nil
 	// }
-	return nil, nil
+	return nil, resp.Body.Close()
+}
+
+// Get version of release based on tag
+// If no matching return ""
+func GetTag(tag string) string {
+	var re = regexp.MustCompile(`v(\d+\.\d+\.\d+)`)
+	var result = re.FindStringSubmatch(tag)
+	if len(result) == 0 {
+		return ""
+	}
+	return result[1]
 }
 
 //	version [string]: actual version of application and check if superior one exists

@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"fyne.io/fyne/v2/container"
-	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
@@ -229,7 +228,7 @@ func (controller *GUIController) SetYear(year string) {
 // Save calculation in history file
 func (controller *GUIController) save() {
 	// Open history file
-	var filePath = utils.GetHistoryFile(config.APP_NAME)
+	var filePath = utils.GetHistoryFile()
 
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
@@ -256,7 +255,7 @@ func (controller *GUIController) save() {
 
 // Load history from file
 func (controller *GUIController) LoadHistory() {
-	var lines = utils.GetHistory(utils.GetHistoryFile(config.APP_NAME))
+	var lines = utils.GetHistory(utils.GetHistoryFile())
 
 	var histories = make([]model.History, 0, len(lines))
 	for _, line := range lines {

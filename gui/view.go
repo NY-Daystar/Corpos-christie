@@ -132,7 +132,8 @@ func (view *GUIView) createAppTabs() *container.AppTabs {
 }
 
 // TODO saveExcel
-// createLayoutSave Setup layouts and widget for save button layout
+//
+//	createLayoutSave Setup layouts and widget for save button layout
 // func (view *GUIView) createLayoutSave() *fyne.Container {
 // 	gui.Model.buttonSave = widget.NewButton(gui.Model.Language.Save, func() {
 // 		gui.Model.Calculate()
