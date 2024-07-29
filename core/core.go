@@ -31,9 +31,9 @@ func Start(cfg *config.Config, user *user.User, mode ...string) {
 		appSelected = mode[0]
 	}
 
-	//fmt.Printf("START UPDATER\n")
-	//updater.StartUpdater(logger)
-	//fmt.Printf("UPDATER TERMINE\n")
+	// fmt.Printf("START UPDATER\n")
+	// updater.StartUpdater(logger)
+	// fmt.Printf("UPDATER TERMINE\n")
 
 	// Launch program (Console or GUI)
 	switch m := appSelected; m {

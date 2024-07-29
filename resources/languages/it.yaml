@@ -20,6 +20,14 @@ tax_headers:
     header_3: "MAX"
     header_4: "TARIFFA"
     header_5: "IMPOSTA"
+history_headers:
+    header_1: "Data"
+    header_2: "Reddito"
+    header_3: "Coppia"
+    header_4: "Numero di bambini"
+    header_5: "Azioni"
+yes: "Si"
+no: "No"
 file: Dossier
 settings: Impostazioni
 update: controlla l'aggiornamento
@@ -33,6 +41,7 @@ tax: Tasse
 reverse_tax: Inverte le tasse
 remainder: Resto
 share: azioni
+history: Storico
 save: Salvare
 language: Lingue
 theme: Temi

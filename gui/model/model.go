@@ -25,9 +25,10 @@ const (
 
 // GUIModel data of the application
 type GUIModel struct {
-	Config *config.Config // Config to use correctly the program
-	User   *user.User     // User params to use program
-	Logger *zap.Logger
+	Config    *config.Config // Config to use correctly the program
+	User      *user.User     // User params to use program
+	Logger    *zap.Logger    // Logger
+	Histories []History      // List of tax history saved
 
 	// Settings
 	Settings settings.Settings // Settings of the app
@@ -120,8 +121,8 @@ func (model *GUIModel) prepare() {
 // Convert this value into an array
 // Returns Array of label widget in fyne object
 func (model *GUIModel) createTrancheLabels(enumTranche string) *[]string {
-	var tranches []config.Tranche = model.Config.Tax.Tranches
-	var labels []string = make([]string, 0, len(tranches))
+	var tranches = model.Config.Tax.Tranches
+	var labels = make([]string, 0, len(tranches))
 
 	// To handle `min` tranche
 	if enumTranche == MIN {
@@ -176,7 +177,7 @@ func (model *GUIModel) Reload() {
 	// Reload grid min tranches
 	var minList []string
 	for index := 0; index < model.LabelsMinTranche.Length(); index++ {
-		var min string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Min)
+		var min = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Min)
 		minList = append(minList, min)
 	}
 	model.LabelsMinTranche.Set(minList)
@@ -184,7 +185,7 @@ func (model *GUIModel) Reload() {
 	// Reload grid max tranches
 	var maxList []string
 	for index := 0; index < model.LabelsMaxTranche.Length(); index++ {
-		var max string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Max)
+		var max = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Max)
 		if model.Config.Tax.Tranches[index].Max == math.MaxInt64 {
 			max = "-"
 		}
@@ -195,7 +196,7 @@ func (model *GUIModel) Reload() {
 	// Reload rate tranches
 	var rateList []string
 	for index := 0; index < model.LabelsRateTranche.Length(); index++ {
-		var rate string = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Rate)
+		var rate = utils.ConvertIntToString(model.Config.Tax.Tranches[index].Rate)
 		rateList = append(rateList, rate)
 	}
 	model.LabelsRateTranche.Set(rateList)
@@ -203,7 +204,7 @@ func (model *GUIModel) Reload() {
 
 // readLanguage Load into model data language
 func (model *GUIModel) LoadLanguage(code string) {
-	var languageFile string = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)
+	var languageFile = fmt.Sprintf("%s/%s.yaml", config.LANGUAGES_PATH, code)
 	model.Logger.Info("Configure settings with code language", zap.String("file", languageFile), zap.String("code", code))
 
 	yamlFile, _ := os.ReadFile(languageFile)

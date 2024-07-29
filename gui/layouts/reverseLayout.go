@@ -110,7 +110,7 @@ func (view *ReverseTaxLayout) createLayoutTaxResult() *fyne.Container {
 
 // createLayoutTax Setup right bottom side of window
 func (view *ReverseTaxLayout) createLayoutTaxDetails() *fyne.Container {
-	var trancheNumber int = view.Model.LabelsTrancheTaxes.Length()
+	var trancheNumber = view.Model.LabelsTrancheTaxes.Length()
 
 	// Add header columns in grid
 	grid := container.New(layout.NewGridLayout(trancheNumber))

@@ -1,7 +1,14 @@
 package gui
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"sort"
+	"time"
+
 	"fyne.io/fyne/v2/container"
+	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
@@ -51,9 +58,11 @@ func (controller *GUIController) prepare() {
 		controller.reverseCalculate()
 	}
 
+	// Handle tabs selections
 	// READ:  https://github.com/fyne-io/fyne/issues/3466
 	controller.View.Tabs.OnSelected = func(item *container.TabItem) {
 		var index = controller.View.Tabs.SelectedIndex()
+		controller.LoadHistory()
 		controller.Logger.Sugar().Infof("Change tab index: %v - %v", "value", index, item.Text)
 	}
 
@@ -103,7 +112,8 @@ func (controller *GUIController) calculate() {
 		controller.Model.LabelsTrancheTaxes.SetValue(index, taxTranche)
 	}
 
-	// TODO sauvegarder dans un fichier data.json
+	// TODO ce sera que dans le bouton save qu'on fait la sauvegarde
+	controller.save()
 }
 
 // reverseCalculate Get values of gui to calculate income with taxes
@@ -214,4 +224,58 @@ func (controller *GUIController) SetYear(year string) {
 	controller.Model.Config.ChangeTax(utils.ConvertBindStringToInt(controller.Model.Year))
 	controller.Model.Reload()
 	controller.calculate()
+}
+
+// Save calculation in history file
+func (controller *GUIController) save() {
+	// Open history file
+	var filePath = utils.GetHistoryFile(config.APP_NAME)
+
+	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer f.Close()
+
+	// Format data to save
+	var dateTime = time.Now().Format("2006-01-02 15:04:05")
+	var history = &model.History{
+		Date:     dateTime,
+		Income:   controller.Model.User.Income,
+		Couple:   controller.Model.User.IsInCouple,
+		Children: controller.Model.User.Children,
+	}
+	byteArray, _ := json.Marshal(history)
+
+	// Saving data
+	if _, err := fmt.Fprintf(f, "%s\n", byteArray); err != nil {
+		fmt.Println(err)
+	}
+}
+
+// Load history from file
+func (controller *GUIController) LoadHistory() {
+	var lines = utils.GetHistory(utils.GetHistoryFile(config.APP_NAME))
+
+	var histories = make([]model.History, 0, len(lines))
+	for _, line := range lines {
+		var history = model.History{}
+		json.Unmarshal([]byte(line), &history)
+		if history.Couple {
+			history.IsInCouple = controller.Model.Language.Yes
+		} else {
+			history.IsInCouple = controller.Model.Language.No
+		}
+		histories = append(histories, history)
+	}
+
+	// Sort by date
+	sort.Slice(histories, func(i, j int) bool {
+		timeI, _ := time.Parse("2006-01-02 15:05:05", histories[i].Date)
+		timeJ, _ := time.Parse("2006-01-02 15:05:05", histories[j].Date)
+		return timeI.After(timeJ)
+	})
+
+	controller.Model.Histories = histories
 }
