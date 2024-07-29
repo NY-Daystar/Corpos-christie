@@ -127,7 +127,7 @@ func (model *GUIModel) createTrancheLabels(enumTranche string) *[]string {
 	// To handle `min` tranche
 	if enumTranche == MIN {
 		for _, tranche := range tranches {
-			var min string = utils.ConvertIntToString(tranche.Min)
+			var min = utils.ConvertIntToString(tranche.Min)
 			labels = append(labels, min)
 		}
 

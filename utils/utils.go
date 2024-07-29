@@ -116,7 +116,6 @@ func ReadFileLastNLines(filePath string, n int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer file.Close()
 
 	var lines []string
 	scanner := bufio.NewScanner(file)
@@ -138,7 +137,7 @@ func ReadFileLastNLines(filePath string, n int) (string, error) {
 		result += fmt.Sprintf("%3d: %s\n", i+1, line)
 	}
 
-	return result, nil
+	return result, file.Sync()
 }
 
 // Read history files and return list of string
@@ -147,13 +146,13 @@ func GetHistory(filePath string) []string {
 	if err != nil {
 		return nil
 	}
-	defer file.Close()
 
 	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
+	file.Sync()
 
 	return lines
 }
@@ -192,14 +191,14 @@ func GetAppDataPath() (string, error) {
 }
 
 // get logs filePath
-func GetLogsPath(appName string) string {
+func GetLogsPath() string {
 	appDataPath, _ := GetAppDataPath()
 	var logsFolder = path.Join(appDataPath, config.APP_NAME, "logs")
 	return path.Join(logsFolder, "log.json")
 }
 
 // get history filePath
-func GetHistoryFile(appName string) string {
+func GetHistoryFile() string {
 	appDataPath, _ := GetAppDataPath()
 	var appFolder = path.Join(appDataPath, config.APP_NAME)
 	var historyPath = path.Join(appFolder, "history.json")
@@ -222,12 +221,11 @@ func DownloadFile(url, dest string) (int, error) {
 	if err != nil || resp.StatusCode == 404 {
 		return 404, err
 	}
-	defer resp.Body.Close()
 
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
 		return 3, err
 	}
-
+	resp.Body.Close()
 	return 0, out.Sync()
 }
