@@ -17,6 +17,5 @@ const (
 	RESOURCES_PATH string = "resources/"          // Path to resources folder
 	LANGUAGES_PATH string = "resources/languages" // Path to languages folder
 	ASSETS_PATH    string = "resources/assets"    // Path to assets folder
-	LOGS_PATH      string = "logs/log.json"       // Path of the logs
 	SETTINGS_PATH  string = ".settings.json"      // Path of GUI settings
 )

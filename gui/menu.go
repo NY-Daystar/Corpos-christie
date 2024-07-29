@@ -3,7 +3,6 @@ package gui
 import (
 	"fmt"
 	"image/color"
-	"log"
 	"net/url"
 	"time"
 
@@ -47,7 +46,7 @@ func (menu *GUIMenu) Start() {
 
 // createFileMenu create file item in toolbar to handle app settings
 func (menu *GUIMenu) createFileMenu() *fyne.Menu {
-	settingsMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Settings, menu.ShowFileItem)
+	settingsMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Settings, menu.showFileItem)
 	quitMenuItem := fyne.NewMenuItem(menu.Controller.Model.Language.Quit, func() { menu.App.Quit() })
 	quitMenuItem.IsQuit = true
 
@@ -62,8 +61,8 @@ func (menu *GUIMenu) createFileMenu() *fyne.Menu {
 func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 	helpMenu := fyne.NewMenu(
 		menu.Controller.Model.Language.Help,
-		fyne.NewMenuItem(menu.Controller.Model.Language.About, menu.ShowAboutItem),
-		fyne.NewMenuItem(menu.Controller.Model.Language.Update, menu.ShowUpdateItem),
+		fyne.NewMenuItem(menu.Controller.Model.Language.About, menu.showAboutItem),
+		fyne.NewMenuItem(menu.Controller.Model.Language.Update, menu.showUpdateItem),
 	)
 	return helpMenu
 }
@@ -152,7 +151,7 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 }
 
 // Show dialog box for settings like change language, year, currency, etc...
-func (menu *GUIMenu) ShowFileItem() {
+func (menu *GUIMenu) showFileItem() {
 	dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
 		container.NewVBox(
 			menu.createSelectTheme(),
@@ -169,7 +168,7 @@ func (menu *GUIMenu) ShowFileItem() {
 }
 
 // Show dialog box about application (author, project and other)
-func (menu *GUIMenu) ShowAboutItem() {
+func (menu *GUIMenu) showAboutItem() {
 	dialog.ShowCustom(
 		menu.Controller.Model.Language.About,
 		menu.Controller.Model.Language.Close,
@@ -178,7 +177,7 @@ func (menu *GUIMenu) ShowAboutItem() {
 }
 
 // Show dialog box about update application
-func (menu *GUIMenu) ShowUpdateItem() {
+func (menu *GUIMenu) showUpdateItem() {
 	fmt.Printf("Check update")
 	dialog.ShowCustom(
 		menu.Controller.Model.Language.Update,
@@ -292,7 +291,7 @@ func (menu *GUIMenu) createSelectYear() *fyne.Container {
 func (menu *GUIMenu) createLabelLogs() *fyne.Container {
 	return container.NewHBox(
 		widget.NewLabel(menu.Controller.Model.Language.Logs),
-		widget.NewButton(config.LOGS_PATH, menu.showLogsDialog),
+		widget.NewButton(utils.GetLogsPath(config.APP_NAME), menu.showLogsDialog),
 	)
 }
 
@@ -301,9 +300,9 @@ func (menu *GUIMenu) showLogsDialog() {
 	copyPasteButton := widget.NewButton("Copier-coller", menu.action1) // TODO language
 	saveButton := widget.NewButton("Save in file", menu.action2)       // TODO language
 
-	lines, err := utils.ReadFileLastNLines(config.LOGS_PATH, 500)
+	lines, err := utils.ReadFileLastNLines(utils.GetLogsPath(config.APP_NAME), 500)
 	if err != nil {
-		log.Fatalf("Failed to read file: %v", err)
+		menu.Controller.View.Logger.Sugar().Errorf("Failed to read file: %v", err)
 	}
 
 	entry := widget.NewMultiLineEntry()
