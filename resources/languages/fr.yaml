@@ -26,6 +26,9 @@ history_headers:
     header_3: "Couple"
     header_4: "Nombre d'enfants"
     header_5: "Actions"
+export:
+    export_title: "Export réussi"
+    export_message: "Votre export se trouve à cet emplacement"
 yes: "Oui"
 no: "Non"
 file: Fichier

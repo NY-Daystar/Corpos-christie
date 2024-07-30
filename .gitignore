@@ -36,3 +36,5 @@ go.work
 build/
 logs/
 fyne-cross/
+utils/downloaded.zip
+utils/release.zip
