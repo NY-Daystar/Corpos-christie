@@ -215,7 +215,6 @@ func DownloadFile(url, dest string) (int, error) {
 	if err != nil {
 		return 1, err
 	}
-	defer out.Close()
 
 	resp, err := http.Get(url)
 	if err != nil || resp.StatusCode == 404 {

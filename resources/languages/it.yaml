@@ -26,6 +26,9 @@ history_headers:
     header_3: "Coppia"
     header_4: "Numero di bambini"
     header_5: "Azioni"
+export:
+    export_title: "Esportazione riuscita"
+    export_message: "La tua esportazione si trova in questa posizione"
 yes: "Si"
 no: "No"
 file: Dossier

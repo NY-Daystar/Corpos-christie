@@ -223,7 +223,7 @@ func TestDownloadWithWrongUrl(t *testing.T) {
 
 func TestDownloadWithWrongProtocol(t *testing.T) {
 	var url = "Wrong-protocol://github.com/NY-Daystar/corpos-christie/releases/download/v2.1.0/linux-corpos-christie-2.0.0.zip"
-	var destFile = "./dest.zip"
+	var destFile = "./downloaded.zip"
 
 	_, err := DownloadFile(url, destFile)
 	t.Logf("Error: %v", err)
