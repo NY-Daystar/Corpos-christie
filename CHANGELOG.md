@@ -38,6 +38,7 @@ TODO changer la date
 ### Changed
 
 -   Refactoring GUI code structure with MVC
+-   Change path for data file (settings, logs, history)
 
 ## 2.1.0 - January, 15th 2024 - Small fixes
 
