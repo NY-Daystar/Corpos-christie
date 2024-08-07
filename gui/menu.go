@@ -305,7 +305,7 @@ func (menu *GUIMenu) createSelectYear() *fyne.Container {
 func (menu *GUIMenu) createLabelLogs() *fyne.Container {
 	return container.NewHBox(
 		widget.NewLabel(menu.Controller.Model.Language.Logs),
-		widget.NewButton(utils.GetLogsPath(), menu.showLogsDialog),
+		widget.NewButton(utils.GetLogsFile(), menu.showLogsDialog),
 	)
 }
 
@@ -314,7 +314,7 @@ func (menu *GUIMenu) showLogsDialog() {
 	copyPasteButton := widget.NewButton("Copier-coller", menu.action1) // TODO language
 	saveButton := widget.NewButton("Save in file", menu.action2)       // TODO language
 
-	lines, err := utils.ReadFileLastNLines(utils.GetLogsPath(), 500)
+	lines, err := utils.ReadFileLastNLines(utils.GetLogsFile(), 500)
 	if err != nil {
 		menu.Controller.View.Logger.Sugar().Errorf("Failed to read file: %v", err)
 	}

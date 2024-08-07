@@ -191,7 +191,7 @@ func GetAppDataPath() (string, error) {
 }
 
 // get logs filePath
-func GetLogsPath() string {
+func GetLogsFile() string {
 	appDataPath, _ := GetAppDataPath()
 	var logsFolder = path.Join(appDataPath, config.APP_NAME, "logs")
 	return path.Join(logsFolder, "log.json")
@@ -206,6 +206,17 @@ func GetHistoryFile() string {
 		os.Create(historyPath)
 	}
 	return historyPath
+}
+
+// get setings filePath
+func GetSettingsFile() string {
+	appDataPath, _ := GetAppDataPath()
+	var appFolder = path.Join(appDataPath, config.APP_NAME)
+	var settingsPath = path.Join(appFolder, "settings.json")
+	if _, err := os.Stat(settingsPath); err != nil {
+		os.Create(settingsPath)
+	}
+	return settingsPath
 }
 
 // DownloadFile from url to destination return int and error

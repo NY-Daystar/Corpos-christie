@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 )
 
@@ -24,7 +24,7 @@ func Load(logger *zap.Logger, filePath string) (Settings, error) {
 	settings.logger = logger
 
 	if filePath == "" {
-		filePath = config.SETTINGS_PATH
+		filePath = utils.GetSettingsFile()
 	}
 
 	settingsPath, _ := filepath.Abs(filePath)
@@ -53,7 +53,7 @@ func createDefaultSettings() Settings {
 		Year:     GetDefaultYear(),
 	}
 	file, _ := json.MarshalIndent(settingsDefault, "", " ")
-	_ = os.WriteFile(config.SETTINGS_PATH, file, 0644)
+	_ = os.WriteFile(utils.GetSettingsFile(), file, 0644)
 	return settingsDefault
 }
 
@@ -77,7 +77,7 @@ func (s *Settings) Set(key string, value interface{}) {
 
 // Save write file with settings data
 func (s *Settings) save() {
-	settingsPath, err := filepath.Abs(config.SETTINGS_PATH)
+	settingsPath, err := filepath.Abs(utils.GetSettingsFile())
 	if err != nil {
 		s.logger.Error("Can't get absolute path of settings", zap.String("error", err.Error()))
 	}

@@ -79,7 +79,7 @@ func initLogger() *zap.Logger {
 	os.Mkdir(logsFolder, os.ModePerm)
 
 	logger := lumberjack.Logger{
-		Filename:   utils.GetLogsPath(), // File path
+		Filename:   utils.GetLogsFile(), // File path
 		MaxSize:    500,                 // 500 megabytes per files
 		MaxBackups: 3,                   // 3 files before rotate
 		MaxAge:     15,                  // 15 days

@@ -5,6 +5,7 @@
 package utils
 
 import (
+	"reflect"
 	"testing"
 
 	"fyne.io/fyne/v2/data/binding"
@@ -269,4 +270,22 @@ func TestFindIndex(t *testing.T) {
 			t.Errorf("Test case failed with result: %d - expected: %d", index, testCase.expected)
 		}
 	}
+}
+
+func TestFilePath(t *testing.T) {
+	tests := map[string]interface{}{
+		"GetAppDataPath":  GetAppDataPath,
+		"GetLogsFile":     GetLogsFile,
+		"GetHistoryFile":  GetHistoryFile,
+		"GetSettingsFile": GetSettingsFile,
+	}
+
+	for _, method := range tests {
+		callMethodByName(method) // Using reflexion to call method
+	}
+}
+
+func callMethodByName(name interface{}) {
+	method := reflect.ValueOf(name)
+	method.Call(nil)
 }
