@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
@@ -45,16 +46,30 @@ func (controller *GUIController) prepare() {
 	controller.setAppSettings()
 
 	controller.View.EntryIncome.OnChanged = func(input string) {
-		controller.calculate()
+		if controller.canCalculate() {
+			controller.calculate()
+		}
 	}
 	controller.View.RadioStatus.OnChanged = func(input string) {
-		controller.calculate()
+		if controller.canCalculate() {
+			controller.calculate()
+		}
 	}
 	controller.View.SelectChildren.OnChanged = func(input string) {
-		controller.calculate()
+		if controller.canCalculate() {
+			controller.calculate()
+		}
 	}
 	controller.View.EntryRemainder.OnChanged = func(input string) {
 		controller.reverseCalculate()
+	}
+	controller.View.SaveButton.OnTapped = func() {
+		controller.save()
+		dialog.ShowInformation(
+			controller.Model.Language.SavePopup.ConfirmedTitle,
+			controller.Model.Language.SavePopup.ConfirmedMessage,
+			controller.View.Window,
+		)
 	}
 
 	// Handle tabs selections
@@ -87,13 +102,20 @@ func (controller *GUIController) setAppSettings() {
 	controller.Model.Reload()
 }
 
+// Verify if we can calculate
+func (controller *GUIController) canCalculate() bool {
+	if controller.getIncome() < 10000 {
+		controller.View.SaveButton.Disable()
+		return false
+	}
+	controller.View.SaveButton.Enable()
+	return true
+}
+
 // calculate Get values of gui to calculate tax
 func (controller *GUIController) calculate() {
 	controller.Model.User.Income = controller.getIncome()
 	// If income to low no need to calculate
-	if controller.Model.User.Income < 10000 {
-		return
-	}
 	controller.Model.User.IsInCouple = controller.IsCoupleSelected()
 	controller.Model.User.Children = controller.getChildren()
 
@@ -110,9 +132,6 @@ func (controller *GUIController) calculate() {
 		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[index].Tax))
 		controller.Model.LabelsTrancheTaxes.SetValue(index, taxTranche)
 	}
-
-	// TODO ce sera que dans le bouton save qu'on fait la sauvegarde
-	controller.save()
 }
 
 // reverseCalculate Get values of gui to calculate income with taxes

@@ -28,4 +28,5 @@ type MainLayout struct {
 	RadioStatus    *widget.RadioGroup  // Input Radio buttons to get status
 	SelectChildren *widget.SelectEntry // Input Select to know how children
 	EntryRemainder *widget.Entry       // Input Entry to set remainder wished
+	SaveButton     *widget.Button      // Button to save in history tax results
 }

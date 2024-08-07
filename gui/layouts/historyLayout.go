@@ -126,7 +126,10 @@ func (view HistoryLayout) setLeftLayout() *fyne.Container {
 			}
 
 			children[10].(*widget.Button).OnTapped = func() {
-				fmt.Printf("SEND MAIL") // TODO
+				fmt.Printf("SEND MAIL")
+				// TODO send mail
+				// https://www.youtube.com/watch?v=MEs3FP9kSTw
+				// https://www.youtube.com/watch?v=42vNsryto_4
 			}
 		})
 
