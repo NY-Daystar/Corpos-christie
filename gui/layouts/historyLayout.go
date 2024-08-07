@@ -28,14 +28,14 @@ type HistoryLayout struct {
 }
 
 // Set layout for history tab
-func (view HistoryLayout) SetLayout() *fyne.Container {
+func (view *HistoryLayout) SetLayout() *fyne.Container {
 	return container.New(layout.NewStackLayout(),
 		view.setLeftLayout(),
 	)
 }
 
 // Create list for history
-func (view HistoryLayout) setLeftLayout() *fyne.Container {
+func (view *HistoryLayout) setLeftLayout() *fyne.Container {
 	view.list = widget.NewList(
 		func() int { return len(view.Model.Histories) },
 		func() fyne.CanvasObject {
@@ -158,7 +158,7 @@ func (view HistoryLayout) setLeftLayout() *fyne.Container {
 }
 
 // Go into tab taxes to recalculate
-func (view HistoryLayout) recalculate(income string, couple bool, children string) {
+func (view *HistoryLayout) recalculate(income string, couple bool, children string) {
 	view.Tabs.SelectIndex(0)
 
 	view.EntryIncome.SetText(income)
@@ -172,7 +172,7 @@ func (view HistoryLayout) recalculate(income string, couple bool, children strin
 }
 
 // Recalculate data in history to get tax
-func (view HistoryLayout) ExportCsv(filePath string, income string, couple bool, children string) {
+func (view *HistoryLayout) ExportCsv(filePath string, income string, couple bool, children string) error {
 	incomeInt, _ := utils.ConvertStringToInt(income)
 	childrenInt, _ := utils.ConvertStringToInt(children)
 	view.Model.User = &user.User{
@@ -203,7 +203,6 @@ func (view HistoryLayout) ExportCsv(filePath string, income string, couple bool,
 
 	var data = [][]string{headers, {year, income, tax, remainder, coupleStr, children}}
 	file, _ := os.Create(filePath)
-	defer file.Close()
 
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
@@ -211,11 +210,11 @@ func (view HistoryLayout) ExportCsv(filePath string, income string, couple bool,
 	for _, value := range data {
 		writer.Write(value)
 	}
-
+	return file.Sync()
 }
 
 // Button to delete history file and refresh list
-func (view HistoryLayout) purgeHistory() {
+func (view *HistoryLayout) purgeHistory() {
 	dialog.NewConfirm(
 		view.Model.Language.PurgeHistory.ConfirmTitle,
 		view.Model.Language.PurgeHistory.Confirm,
@@ -236,7 +235,7 @@ func (view HistoryLayout) purgeHistory() {
 }
 
 // TODO A COMMENTER
-func (view HistoryLayout) SendMail(income string, couple bool, children string) {
+func (view *HistoryLayout) SendMail(income string, couple bool, children string) {
 	view.Tabs.SelectIndex(0)
 
 	view.EntryIncome.SetText(income)
@@ -251,6 +250,6 @@ func (view HistoryLayout) SendMail(income string, couple bool, children string) 
 }
 
 // No use for this layout
-func (view HistoryLayout) setRightLayout() *fyne.Container {
+func (view *HistoryLayout) setRightLayout() *fyne.Container {
 	return nil
 }

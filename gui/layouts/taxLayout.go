@@ -15,7 +15,7 @@ type TaxLayout struct {
 }
 
 // Set layout for tax tab
-func (view TaxLayout) SetLayout() *fyne.Container {
+func (view *TaxLayout) SetLayout() *fyne.Container {
 	return container.New(layout.NewGridLayout(2),
 		view.setLeftLayout(),
 		view.setRightLayout(),
@@ -23,7 +23,7 @@ func (view TaxLayout) SetLayout() *fyne.Container {
 }
 
 // Load form for tax tab
-func (view TaxLayout) setLeftLayout() *fyne.Container {
+func (view *TaxLayout) setLeftLayout() *fyne.Container {
 	return container.New(layout.NewVBoxLayout(),
 		view.createLayoutIncome(),
 		view.createLayoutStatus(),
@@ -33,7 +33,7 @@ func (view TaxLayout) setLeftLayout() *fyne.Container {
 }
 
 // Load result for tax tab
-func (view TaxLayout) setRightLayout() *fyne.Container {
+func (view *TaxLayout) setRightLayout() *fyne.Container {
 	return container.New(layout.NewVBoxLayout(),
 		view.createLayoutTaxYear(),
 		view.createLayoutTaxResult(),
