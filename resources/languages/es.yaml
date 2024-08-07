@@ -26,6 +26,11 @@ history_headers:
     header_3: "Pareja"
     header_4: "Numero de niños"
     header_5: "Comportamiento"
+purge_history:
+    confirmTitle: "Confirmar"
+    confirm: "¿ Está seguro de que desea purgar el historial ?"
+    confirmedTitle: "Purgado"
+    confirmed: "Historial purgado"
 export:
     export_title: "Exportación exitosa"
     export_message: "Su exportación está en esta ubicación"

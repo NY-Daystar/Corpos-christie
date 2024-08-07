@@ -24,6 +24,7 @@ type Yaml struct {
 	TaxHeaders     TaxHeadersYaml     `yaml:"tax_headers"`
 	MaritalStatus  MaritalStatusYaml  `yaml:"status_list"`
 	HistoryHeaders HistoryHeadersYaml `yaml:"history_headers"`
+	PurgeHistory   PurgeHistoryYaml   `yaml:"purge_history"`
 	Export         ExportYaml         `yaml:"export"`
 	Year           string             `yaml:"year"`
 	Yes            string             `yaml:"yes"`
@@ -94,6 +95,14 @@ type HistoryHeadersYaml struct {
 	Actions  string `yaml:"header_5"`
 }
 
+// Dialog to purge data
+type PurgeHistoryYaml struct {
+	ConfirmTitle   string `yaml:"confirmTitle"`
+	Confirm        string `yaml:"confirm"`
+	ConfirmedTitle string `yaml:"confirmedTitle"`
+	Confirmed      string `yaml:"confirmed"`
+}
+
 // Data for export dialog box
 type ExportYaml struct {
 	ExportTitle   string `yaml:"export_title"`
@@ -159,11 +168,11 @@ func (yaml *Yaml) GetAbouts() []string {
 // GetTaxHeaders parse TaxHeadersYaml struct to get value of each field
 func (yaml *Yaml) GetTaxHeaders() []string {
 	v := reflect.ValueOf(yaml.TaxHeaders)
-	taxHeaders := make([]string, v.NumField())
+	headers := make([]string, v.NumField())
 	for i := 0; i < v.NumField(); i++ {
-		taxHeaders[i] = v.Field(i).String()
+		headers[i] = v.Field(i).String()
 	}
-	return taxHeaders
+	return headers
 }
 
 // GetMaritalStatus parse MaritalStatusYaml struct to get value of each field
@@ -174,4 +183,14 @@ func (yaml *Yaml) GetMaritalStatus() []string {
 		status[i] = v.Field(i).String()
 	}
 	return status
+}
+
+// GetHistoryHeaders parse HistoryHeaders struct to get value of each field
+func (yaml *Yaml) GetHistoryHeaders() []string {
+	v := reflect.ValueOf(yaml.HistoryHeaders)
+	headers := make([]string, v.NumField())
+	for i := 0; i < v.NumField(); i++ {
+		headers[i] = v.Field(i).String()
+	}
+	return headers
 }

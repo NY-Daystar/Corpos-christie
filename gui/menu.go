@@ -40,7 +40,6 @@ func (menu *GUIMenu) Start() {
 	menu.MainMenu = fyne.NewMainMenu(
 		menu.createFileMenu(),
 		menu.createHelpMenu(),
-		menu.createExportMenu(),
 	)
 	menu.Window.SetMainMenu(menu.MainMenu)
 }
@@ -64,16 +63,6 @@ func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 		menu.Controller.Model.Language.Help,
 		fyne.NewMenuItem(menu.Controller.Model.Language.About, menu.showAboutItem),
 		fyne.NewMenuItem(menu.Controller.Model.Language.Update, menu.showUpdateItem),
-	)
-	return helpMenu
-}
-
-// createExportMenu create export item in toolbar to handle export functions
-func (menu *GUIMenu) createExportMenu() *fyne.Menu {
-	helpMenu := fyne.NewMenu(
-		"Export", // TODO language
-		fyne.NewMenuItem("Tout exporter", menu.exportAllHistory),   // TODO language
-		fyne.NewMenuItem("Purger l'historique", menu.purgeHistory), // TODO language
 	)
 	return helpMenu
 }
@@ -357,28 +346,4 @@ func (menu *GUIMenu) action1() {
 // TODO mettre dans un test
 func (menu *GUIMenu) action2() {
 	fmt.Printf("Un pour sauvegarder les logs dans un fichier \n")
-}
-
-// Show dialog box to export all history
-func (menu *GUIMenu) exportAllHistory() {
-	// TODO a faire
-	fmt.Printf("Export All history\n")
-	dialog.ShowCustom(
-		menu.Controller.Model.Language.About,
-		menu.Controller.Model.Language.Close,
-		menu.createAboutDialog(),
-		menu.Window,
-	)
-}
-
-// Show dialog box to purge history
-func (menu *GUIMenu) purgeHistory() {
-	// TODO a faire
-	fmt.Printf("Purge history\n")
-	dialog.ShowCustom(
-		menu.Controller.Model.Language.About,
-		menu.Controller.Model.Language.Close,
-		menu.createAboutDialog(),
-		menu.Window,
-	)
 }

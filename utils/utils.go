@@ -219,6 +219,11 @@ func GetSettingsFile() string {
 	return settingsPath
 }
 
+// delete file with his path
+func DeleteFile(filePath string) {
+	os.Remove(filePath)
+}
+
 // DownloadFile from url to destination return int and error
 // If success then return 0 and no error
 func DownloadFile(url, dest string) (int, error) {

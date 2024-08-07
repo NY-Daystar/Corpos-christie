@@ -40,23 +40,24 @@ type GUIModel struct {
 	// buttonSave *widget.Button // Label for save button
 
 	// Bindings
-	Income             binding.String     // Bind for income value
-	Tax                binding.String     // Bind for tax value
-	Remainder          binding.String     // Bind for remainder value
-	Shares             binding.String     // Bind for shares value
-	LabelShares        binding.String     // Bind for shares label
-	LabelYear          binding.String     // Bind for year label
-	LabelIncome        binding.String     // Bind for income label
-	LabelStatus        binding.String     // Bind for status label
-	LabelChildren      binding.String     // Bind for children label
-	LabelTax           binding.String     // Bind for tax label
-	LabelRemainder     binding.String     // Bind for remainder label
-	LabelsAbout        binding.StringList // List of label in about modal
-	LabelsTaxHeaders   binding.StringList // List of label for tax details headers
-	LabelsMinTranche   binding.StringList // List of labels for min tranche in grid
-	LabelsMaxTranche   binding.StringList // List of labels for max tranche in grid
-	LabelsRateTranche  binding.StringList // List of labels for rate tranche in grid
-	LabelsTrancheTaxes binding.StringList // List of tranches tax label results
+	Income               binding.String     // Bind for income value
+	Tax                  binding.String     // Bind for tax value
+	Remainder            binding.String     // Bind for remainder value
+	Shares               binding.String     // Bind for shares value
+	LabelShares          binding.String     // Bind for shares label
+	LabelYear            binding.String     // Bind for year label
+	LabelIncome          binding.String     // Bind for income label
+	LabelStatus          binding.String     // Bind for status label
+	LabelChildren        binding.String     // Bind for children label
+	LabelTax             binding.String     // Bind for tax label
+	LabelRemainder       binding.String     // Bind for remainder label
+	LabelsAbout          binding.StringList // List of label in about modal
+	LabelsTaxHeaders     binding.StringList // List of label for tax details headers
+	LabelsMinTranche     binding.StringList // List of labels for min tranche in grid
+	LabelsMaxTranche     binding.StringList // List of labels for max tranche in grid
+	LabelsRateTranche    binding.StringList // List of labels for rate tranche in grid
+	LabelsTrancheTaxes   binding.StringList // List of tranches tax label results
+	LabelsHistoryHeaders binding.StringList // List of labels for history
 }
 
 // NewModel: instantiate data for the application
@@ -109,6 +110,7 @@ func (model *GUIModel) prepare() {
 	model.Shares = binding.NewString()
 	model.LabelsAbout = binding.NewStringList()
 	model.LabelsTaxHeaders = binding.NewStringList()
+	model.LabelsHistoryHeaders = binding.NewStringList()
 
 	// Setup binding for min, max and taxes columns
 	model.LabelsMinTranche = binding.BindStringList(model.createTrancheLabels(MIN))
@@ -168,11 +170,10 @@ func (model *GUIModel) Reload() {
 	// Handle widget
 	// gui.buttonSave.SetText(gui.Language.Save) // TODO saveExcel
 
-	// Reload about content
+	// Reload List Binding string
 	model.LabelsAbout.Set(model.Language.GetAbouts())
-
-	// Reload header tax details
 	model.LabelsTaxHeaders.Set(model.Language.GetTaxHeaders())
+	model.LabelsHistoryHeaders.Set(model.Language.GetHistoryHeaders())
 
 	// Reload grid min tranches
 	var minList []string

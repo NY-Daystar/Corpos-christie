@@ -26,6 +26,11 @@ history_headers:
     header_3: "Coppia"
     header_4: "Numero di bambini"
     header_5: "Azioni"
+purge_history:
+    confirmTitle: "Conferma"
+    confirm: "Sei sicuro di voler eliminare la cronologia ?"
+    confirmedTitle: "Eliminato"
+    confirmed: "Cronologia eliminata"
 export:
     export_title: "Esportazione riuscita"
     export_message: "La tua esportazione si trova in questa posizione"
