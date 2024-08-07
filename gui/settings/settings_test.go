@@ -169,9 +169,9 @@ func TestGetAboutsLanguage(t *testing.T) {
 
 func TestGetTaxHeadersLanguage(t *testing.T) {
 	var expected = 5
-	taxHeaders := yaml.GetTaxHeaders()
+	headers := yaml.GetTaxHeaders()
 
-	if len(taxHeaders) != expected {
+	if len(headers) != expected {
 		t.Error("Themes are not load")
 	}
 }
@@ -181,6 +181,15 @@ func TestGetMaritalStatusLanguage(t *testing.T) {
 	maritalStatus := yaml.GetMaritalStatus()
 
 	if len(maritalStatus) != expected {
+		t.Error("Themes are not load")
+	}
+}
+
+func TestGetHistoryHeadersLanguage(t *testing.T) {
+	var expected = 5
+	headers := yaml.GetHistoryHeaders()
+
+	if len(headers) != expected {
 		t.Error("Themes are not load")
 	}
 }

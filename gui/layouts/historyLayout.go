@@ -10,10 +10,12 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/tax"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
@@ -22,6 +24,7 @@ import (
 // Layout to display history tab
 type HistoryLayout struct {
 	MainLayout
+	list *widget.List // items in history
 }
 
 // Set layout for history tab
@@ -33,7 +36,7 @@ func (view HistoryLayout) SetLayout() *fyne.Container {
 
 // Create list for history
 func (view HistoryLayout) setLeftLayout() *fyne.Container {
-	list := widget.NewList(
+	view.list = widget.NewList(
 		func() int { return len(view.Model.Histories) },
 		func() fyne.CanvasObject {
 			dateLabel := widget.NewLabel("")
@@ -127,21 +130,27 @@ func (view HistoryLayout) setLeftLayout() *fyne.Container {
 			}
 		})
 
-	headers := container.NewHBox(
-		widget.NewLabel(view.Model.Language.HistoryHeaders.Date),
-		layout.NewSpacer(),
-		widget.NewLabel(view.Model.Language.HistoryHeaders.Income),
-		layout.NewSpacer(),
-		widget.NewLabel(view.Model.Language.HistoryHeaders.Couple),
-		layout.NewSpacer(),
-		widget.NewLabel(view.Model.Language.HistoryHeaders.Children),
-		layout.NewSpacer(),
-		widget.NewLabel(view.Model.Language.HistoryHeaders.Actions),
-		layout.NewSpacer(),
+	headers := container.NewHBox()
+
+	for index, header := range view.Model.Language.GetHistoryHeaders() {
+		view.Model.LabelsHistoryHeaders.Append(header)
+		headerItem, _ := view.Model.LabelsHistoryHeaders.GetItem(index)
+		var headerBind = binding.NewSprintf("%s", headerItem)
+		headers.Add(widget.NewLabelWithData(headerBind))
+		headers.Add(layout.NewSpacer())
+	}
+
+	globalsAction := container.NewHBox(
+		widget.NewButtonWithIcon("", theme.DeleteIcon(), view.purgeHistory),
+		widget.NewButtonWithIcon("", theme.FileImageIcon(), func() { fmt.Printf("POPUP POUR EXPORTER") }),
+	)
+
+	historyTable := container.NewBorder(
+		headers, nil, nil, nil, view.list,
 	)
 
 	return container.NewBorder(
-		headers, nil, nil, nil, list,
+		globalsAction, nil, nil, nil, historyTable,
 	)
 }
 
@@ -200,6 +209,27 @@ func (view HistoryLayout) ExportCsv(filePath string, income string, couple bool,
 		writer.Write(value)
 	}
 
+}
+
+// Button to delete history file and refresh list
+func (view HistoryLayout) purgeHistory() {
+	dialog.NewConfirm(
+		view.Model.Language.PurgeHistory.ConfirmTitle,
+		view.Model.Language.PurgeHistory.Confirm,
+		func(response bool) {
+			if response {
+				utils.DeleteFile(utils.GetHistoryFile())
+				view.Model.Histories = []model.History{}
+				view.list.Refresh()
+				dialog.ShowInformation(
+					view.Model.Language.PurgeHistory.ConfirmedTitle,
+					view.Model.Language.PurgeHistory.Confirmed,
+					view.Window,
+				)
+			}
+		},
+		view.Window,
+	).Show()
 }
 
 // TODO A COMMENTER
