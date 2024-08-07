@@ -37,9 +37,9 @@ require (
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/image v0.18.0 // indirect
 	golang.org/x/mobile v0.0.0-20230531173138-3c911d8e3eda // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	honnef.co/go/js/dom v0.0.0-20210725211120-f030747120f2 // indirect
 )
