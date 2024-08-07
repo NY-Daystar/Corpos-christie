@@ -281,6 +281,7 @@ func TestFilePath(t *testing.T) {
 	}
 
 	for _, method := range tests {
+		t.Logf("Méthod called %v", method)
 		callMethodByName(method) // Using reflexion to call method
 	}
 }

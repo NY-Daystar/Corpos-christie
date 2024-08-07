@@ -15,7 +15,7 @@ type ReverseTaxLayout struct {
 }
 
 // Set layout for tax tab
-func (view ReverseTaxLayout) SetLayout() *fyne.Container {
+func (view *ReverseTaxLayout) SetLayout() *fyne.Container {
 	return container.New(layout.NewGridLayout(2),
 		view.setLeftLayout(),
 		view.setRightLayout(),
@@ -23,7 +23,7 @@ func (view ReverseTaxLayout) SetLayout() *fyne.Container {
 }
 
 // Load form for tax tab
-func (view ReverseTaxLayout) setLeftLayout() *fyne.Container {
+func (view *ReverseTaxLayout) setLeftLayout() *fyne.Container {
 	return container.New(layout.NewVBoxLayout(),
 		view.createLayoutRemainder(),
 		view.createLayoutStatus(),
@@ -32,7 +32,7 @@ func (view ReverseTaxLayout) setLeftLayout() *fyne.Container {
 }
 
 // Load result for tax tab
-func (view ReverseTaxLayout) setRightLayout() *fyne.Container {
+func (view *ReverseTaxLayout) setRightLayout() *fyne.Container {
 	return container.New(layout.NewVBoxLayout(),
 		view.createLayoutTaxYear(),
 		view.createLayoutTaxResult(),
