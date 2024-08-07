@@ -14,6 +14,9 @@ abouts:
     text_4: "is open-source"
     text_5: "Developped in Go with Fyne framework."
     text_6: "Author"
+save_popup:
+    confirmed_title: "Saved"
+    confirmed_message: "Saved in history"
 tax_headers:
     header_1: "TRANCHE"
     header_2: "MIN"
@@ -27,9 +30,9 @@ history_headers:
     header_4: "Children"
     header_5: "Actions"
 purge_history:
-    confirmTitle: "Confirm"
+    confirm_title: "Confirm"
     confirm: "Are you sure you want to purge history ?"
-    confirmedTitle: "Purged"
+    confirmed_title: "Purged"
     confirmed: "History purged"
 export:
     export_title: "Export successful"

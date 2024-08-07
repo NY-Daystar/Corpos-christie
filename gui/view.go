@@ -34,6 +34,7 @@ type GUIView struct {
 	RadioStatus    *widget.RadioGroup  // Input Radio buttons to get status
 	SelectChildren *widget.SelectEntry // Input Select to know how children
 	EntryRemainder *widget.Entry       // Input Entry to set remainder wished
+	SaveButton     *widget.Button      // Input button to save excel
 }
 
 // NewView instantiate view with existing model (data)
@@ -58,6 +59,7 @@ func (view *GUIView) prepare() {
 	view.RadioStatus = widgets.CreateStatusRadio()
 	view.SelectChildren = widgets.CreateChildrenSelect()
 	view.SelectChildren.SetText("0")
+	view.SaveButton = widgets.CreateSaveButton(view.Model.Language.Save)
 
 	// Setup Fyne window
 	view.Window = view.App.NewWindow(config.APP_NAME)
@@ -131,18 +133,6 @@ func (view *GUIView) createAppTabs() *container.AppTabs {
 	return view.Tabs
 }
 
-// TODO saveExcel
-//
-//	createLayoutSave Setup layouts and widget for save button layout
-// func (view *GUIView) createLayoutSave() *fyne.Container {
-// 	gui.Model.buttonSave = widget.NewButton(gui.Model.Language.Save, func() {
-// 		gui.Model.Calculate()
-// 		gui.Logger.Info("Save Taxes")
-// 		// TODO Export taxes data in csv and/or pdf
-// 	})
-// 	return container.NewHBox(gui.buttonSave)
-// }
-
 // clone create a copy of data in view for every layouts
 func (view *GUIView) clone() layouts.MainLayout {
 	return layouts.MainLayout{
@@ -155,5 +145,6 @@ func (view *GUIView) clone() layouts.MainLayout {
 		RadioStatus:    view.RadioStatus,
 		SelectChildren: view.SelectChildren,
 		EntryRemainder: view.EntryRemainder,
+		SaveButton:     view.SaveButton,
 	}
 }

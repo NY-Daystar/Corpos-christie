@@ -167,8 +167,6 @@ func (model *GUIModel) Reload() {
 	model.LabelYear.Set(model.Language.Year)
 	model.LabelRemainder.Set(model.Language.Remainder)
 	model.LabelShares.Set(model.Language.Share)
-	// Handle widget
-	// gui.buttonSave.SetText(gui.Language.Save) // TODO saveExcel
 
 	// Reload List Binding string
 	model.LabelsAbout.Set(model.Language.GetAbouts())

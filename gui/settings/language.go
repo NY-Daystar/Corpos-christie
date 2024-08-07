@@ -21,6 +21,7 @@ type Yaml struct {
 	Theme          ThemeYaml          `yaml:"themes"`
 	Languages      LanguageYaml       `yaml:"languages"`
 	Abouts         AboutYaml          `yaml:"abouts"`
+	SavePopup      SavePopupYaml      `yaml:"save_popup"`
 	TaxHeaders     TaxHeadersYaml     `yaml:"tax_headers"`
 	MaritalStatus  MaritalStatusYaml  `yaml:"status_list"`
 	HistoryHeaders HistoryHeadersYaml `yaml:"history_headers"`
@@ -71,6 +72,12 @@ type AboutYaml struct {
 	Text6 string `yaml:"text_6"`
 }
 
+// data for popup save
+type SavePopupYaml struct {
+	ConfirmedTitle   string `yaml:"confirmed_title"`
+	ConfirmedMessage string `yaml:"confirmed_message"`
+}
+
 // Headers yaml for tax detail
 type TaxHeadersYaml struct {
 	Header1 string `yaml:"header_1"`
@@ -97,9 +104,9 @@ type HistoryHeadersYaml struct {
 
 // Dialog to purge data
 type PurgeHistoryYaml struct {
-	ConfirmTitle   string `yaml:"confirmTitle"`
+	ConfirmTitle   string `yaml:"confirm_title"`
 	Confirm        string `yaml:"confirm"`
-	ConfirmedTitle string `yaml:"confirmedTitle"`
+	ConfirmedTitle string `yaml:"confirmed_title"`
 	Confirmed      string `yaml:"confirmed"`
 }
 

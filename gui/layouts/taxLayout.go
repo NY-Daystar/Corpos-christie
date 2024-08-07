@@ -28,6 +28,7 @@ func (view TaxLayout) setLeftLayout() *fyne.Container {
 		view.createLayoutIncome(),
 		view.createLayoutStatus(),
 		view.createLayoutChildren(),
+		view.createLayoutSave(),
 	)
 }
 
@@ -51,11 +52,12 @@ func (view *TaxLayout) createLayoutIncome() *fyne.Container {
 	)
 }
 
-// createLayoutStatus Setup layouts and widget for income layout
+// createLayoutStatus Setup layouts and widget for marital status
 func (view *TaxLayout) createLayoutStatus() *fyne.Container {
 	view.Model.LabelStatus = binding.BindString(&view.Model.Language.Status)
-	return container.NewHBox(
-		widget.NewLabelWithData(view.Model.LabelStatus),
+	return container.New(
+		layout.NewFormLayout(),
+		widget.NewLabelWithData(binding.NewSprintf("%s", view.Model.LabelStatus)),
 		container.New(
 			layout.NewVBoxLayout(),
 			view.RadioStatus,
@@ -63,7 +65,7 @@ func (view *TaxLayout) createLayoutStatus() *fyne.Container {
 	)
 }
 
-// createLayoutChildren Setup layouts and widget for income layout
+// createLayoutChildren Setup layouts and widget for selecting children
 func (view *TaxLayout) createLayoutChildren() *fyne.Container {
 	view.Model.LabelChildren = binding.BindString(&view.Model.Language.Children)
 	return container.NewHBox(
@@ -72,6 +74,15 @@ func (view *TaxLayout) createLayoutChildren() *fyne.Container {
 			layout.NewVBoxLayout(),
 			view.SelectChildren,
 		),
+	)
+}
+
+// createLayoutSave Setup layouts and widget for saving in history
+func (view *TaxLayout) createLayoutSave() *fyne.Container {
+	view.SaveButton.Importance = widget.HighImportance
+	view.SaveButton.Disable()
+	return container.NewHBox(
+		view.SaveButton,
 	)
 }
 

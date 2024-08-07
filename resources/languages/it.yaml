@@ -14,6 +14,9 @@ abouts:
     text_4: "è open source"
     text_5: "Sviluppato nel framework Go with Fyne."
     text_6: "Autore"
+save_popup:
+    confirmed_title: "Salvato"
+    confirmed_message: "Salvato nella cronologia"
 tax_headers:
     header_1: "TRANCHE"
     header_2: "MIN"
@@ -27,9 +30,9 @@ history_headers:
     header_4: "Numero di bambini"
     header_5: "Azioni"
 purge_history:
-    confirmTitle: "Conferma"
+    confirm_title: "Conferma"
     confirm: "Sei sicuro di voler eliminare la cronologia ?"
-    confirmedTitle: "Eliminato"
+    confirmed_title: "Eliminato"
     confirmed: "Cronologia eliminata"
 export:
     export_title: "Esportazione riuscita"
