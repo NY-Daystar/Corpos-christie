@@ -66,7 +66,7 @@ func (view *GUIView) prepare() {
 	view.EntryIncome = widgets.CreateEntry(placeholder)
 	view.EntryRemainder = widgets.CreateEntry(placeholder)
 	view.RadioStatus = widgets.CreateStatusRadio()
-	view.SelectChildren = widgets.CreateChildrenSelectEntry()
+	view.SelectChildren = widgets.CreateChildrenSelectEntry("0")
 	view.SaveButton = widgets.CreateButtonLabel(view.Model.Language.Save)
 
 	year, _ := view.Model.Year.Get()
