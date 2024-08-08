@@ -25,9 +25,17 @@ func TestWidgetCreateStatusRadio(t *testing.T) {
 }
 
 func TestWidgetCreateChildrenSelect(t *testing.T) {
-	var entry = CreateChildrenSelectEntry()
+	var selectEntry = CreateChildrenSelectEntry("")
 
-	if entry == nil {
+	if selectEntry == nil {
+		t.Errorf("No entry widget created")
+	}
+}
+
+func TestWidgetCreateYearSelect(t *testing.T) {
+	var selectEntry = CreateYearSelect([]string{"2022", "2023", "2024"}, "")
+
+	if selectEntry == nil {
 		t.Errorf("No entry widget created")
 	}
 }
