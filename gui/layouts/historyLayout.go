@@ -15,124 +15,120 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/tax"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
+	"go.uber.org/zap"
 )
 
 // Layout to display history tab
 type HistoryLayout struct {
 	MainLayout
-	list *widget.List // items in history
 }
 
 // Set layout for history tab
 func (view *HistoryLayout) SetLayout() *fyne.Container {
 	return container.New(layout.NewStackLayout(),
 		view.setLeftLayout(),
+		view.setRightLayout(),
 	)
 }
 
 // Create list for history
 func (view *HistoryLayout) setLeftLayout() *fyne.Container {
-	view.list = widget.NewList(
+
+	var initStructList = func() fyne.CanvasObject {
+		return container.NewVBox(
+			container.NewHBox(
+				widget.NewLabel(""),
+				layout.NewSpacer(),
+				widget.NewLabel(""),
+				layout.NewSpacer(),
+				widget.NewLabel(""),
+				layout.NewSpacer(),
+				widget.NewLabel(""),
+				layout.NewSpacer(),
+				widget.NewButtonWithIcon("", nil, func() {}),
+				widget.NewButtonWithIcon("", nil, func() {}),
+				widget.NewButtonWithIcon("", nil, func() {}),
+				layout.NewSpacer(),
+			),
+		)
+	}
+
+	var updateList = func(i widget.ListItemID, o fyne.CanvasObject) {
+		line := o.(*fyne.Container).Objects[0].(*fyne.Container)
+		children := line.Objects
+
+		var history = view.Model.Histories[i]
+		var date = history.Date
+		var income = utils.ConvertIntToString(history.Income)
+		var couple = history.Couple
+		var coupleText = history.IsInCouple
+		var childrenNumber = utils.ConvertIntToString(history.Children)
+		var iconDoc = theme.DocumentIcon()
+		var iconFile = theme.FileIcon()
+		var iconMail = theme.MailSendIcon()
+
+		children[0].(*widget.Label).SetText(date)
+		children[2].(*widget.Label).SetText(income)
+		children[4].(*widget.Label).SetText(coupleText)
+		children[6].(*widget.Label).SetText(childrenNumber)
+		children[8].(*widget.Button).SetIcon(iconDoc)
+		children[9].(*widget.Button).SetIcon(iconFile)
+		children[10].(*widget.Button).SetIcon(iconMail)
+
+		children[8].(*widget.Button).OnTapped = func() {
+			view.recalculate(income, couple, childrenNumber)
+		}
+
+		children[9].(*widget.Button).OnTapped = func() {
+			folderChan := make(chan string)
+
+			dialog.NewFolderOpen(func(folder fyne.ListableURI, err error) {
+				if err != nil {
+					dialog.ShowError(err, view.Window)
+					view.Logger.Error("Dialog show folder error: %v", zap.String("error", err.Error()))
+					return
+				}
+				if folder != nil {
+					folderChan <- folder.Path()
+				}
+			}, view.Window).Show()
+
+			go func() {
+				for {
+					var folderPath = <-folderChan
+					var filename = "result.csv"
+					var filePath = path.Join(folderPath, filename)
+
+					view.exportCsv(filePath, income, couple, childrenNumber)
+
+					dialog.ShowCustom(
+						view.Model.Language.Export.ExportMessage,
+						view.Model.Language.Close,
+						container.NewHBox(
+							widget.NewLabel(fmt.Sprintf("%s: ", view.Model.Language.Export.ExportMessage)),
+							canvas.NewText(filePath, color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
+						),
+						view.Window,
+					)
+				}
+			}()
+		}
+
+		children[10].(*widget.Button).OnTapped = func() {
+			view.sendMail(income, couple, childrenNumber)
+		}
+	}
+
+	view.HistoryList = widget.NewList(
 		func() int { return len(view.Model.Histories) },
-		func() fyne.CanvasObject {
-			dateLabel := widget.NewLabel("")
-			incomeLabel := widget.NewLabel("")
-			coupleLabel := widget.NewLabel("")
-			childrenLabel := widget.NewLabel("")
-			iconButtonDoc := widget.NewButtonWithIcon("", nil, func() {})
-			iconButtonFile := widget.NewButtonWithIcon("", nil, func() {})
-			iconButtonMail := widget.NewButtonWithIcon("", nil, func() {})
+		initStructList,
+		updateList,
+	)
 
-			return container.NewVBox(
-				container.NewHBox(
-					dateLabel,
-					layout.NewSpacer(),
-					incomeLabel,
-					layout.NewSpacer(),
-					coupleLabel,
-					layout.NewSpacer(),
-					childrenLabel,
-					layout.NewSpacer(),
-					iconButtonDoc,
-					iconButtonFile,
-					iconButtonMail,
-					layout.NewSpacer(),
-				),
-			)
-		},
-		func(i widget.ListItemID, o fyne.CanvasObject) {
-			line := o.(*fyne.Container).Objects[0].(*fyne.Container)
-			children := line.Objects
-
-			var history = view.Model.Histories[i]
-			var date = history.Date
-			var income = utils.ConvertIntToString(history.Income)
-			var couple = history.Couple
-			var coupleText = history.IsInCouple
-			var childrenNumber = utils.ConvertIntToString(history.Children)
-			var iconDoc = theme.DocumentIcon()
-			var iconFile = theme.FileIcon()
-			var iconMail = theme.MailSendIcon()
-
-			children[0].(*widget.Label).SetText(date)
-			children[2].(*widget.Label).SetText(income)
-			children[4].(*widget.Label).SetText(coupleText)
-			children[6].(*widget.Label).SetText(childrenNumber)
-			children[8].(*widget.Button).SetIcon(iconDoc)
-			children[9].(*widget.Button).SetIcon(iconFile)
-			children[10].(*widget.Button).SetIcon(iconMail)
-
-			children[8].(*widget.Button).OnTapped = func() {
-				view.recalculate(income, couple, childrenNumber)
-			}
-
-			children[9].(*widget.Button).OnTapped = func() {
-				folderChan := make(chan string)
-
-				dialog.NewFolderOpen(func(folder fyne.ListableURI, err error) {
-					if err != nil {
-						dialog.ShowError(err, view.Window)
-						fmt.Printf("Dialog error: %v", err)
-						return
-					}
-					if folder != nil {
-						folderChan <- folder.Path()
-					}
-				}, view.Window).Show()
-
-				go func() {
-					for {
-						var folderPath = <-folderChan
-						var filename = "result.csv"
-						var filePath = path.Join(folderPath, filename)
-
-						view.ExportCsv(filePath, income, couple, childrenNumber)
-
-						dialog.ShowCustom(
-							view.Model.Language.Export.ExportMessage,
-							view.Model.Language.Close,
-							container.NewHBox(
-								widget.NewLabel(fmt.Sprintf("%s: ", view.Model.Language.Export.ExportMessage)),
-								canvas.NewText(filePath, color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
-							),
-							view.Window,
-						)
-					}
-				}()
-			}
-
-			children[10].(*widget.Button).OnTapped = func() {
-				fmt.Printf("SEND MAIL")
-				// TODO send mail
-				// https://www.youtube.com/watch?v=MEs3FP9kSTw
-				// https://www.youtube.com/watch?v=42vNsryto_4
-			}
-		})
-
+	// TODO test with grid layout to align with list
 	headers := container.NewHBox()
 
 	for index, header := range view.Model.Language.GetHistoryHeaders() {
@@ -143,17 +139,17 @@ func (view *HistoryLayout) setLeftLayout() *fyne.Container {
 		headers.Add(layout.NewSpacer())
 	}
 
-	globalsAction := container.NewHBox(
-		widget.NewButtonWithIcon("", theme.DeleteIcon(), view.purgeHistory),
-		widget.NewButtonWithIcon("", theme.FileImageIcon(), func() { fmt.Printf("POPUP POUR EXPORTER") }),
+	globalActions := container.NewHBox(
+		view.PurgeHistoryButton,
+		view.ExportHistoryButton,
 	)
 
 	historyTable := container.NewBorder(
-		headers, nil, nil, nil, view.list,
+		headers, nil, nil, nil, view.HistoryList,
 	)
 
 	return container.NewBorder(
-		globalsAction, nil, nil, nil, historyTable,
+		globalActions, nil, nil, nil, historyTable,
 	)
 }
 
@@ -172,7 +168,7 @@ func (view *HistoryLayout) recalculate(income string, couple bool, children stri
 }
 
 // Recalculate data in history to get tax
-func (view *HistoryLayout) ExportCsv(filePath string, income string, couple bool, children string) error {
+func (view *HistoryLayout) exportCsv(filePath string, income string, couple bool, children string) error {
 	incomeInt, _ := utils.ConvertStringToInt(income)
 	childrenInt, _ := utils.ConvertStringToInt(children)
 	view.Model.User = &user.User{
@@ -213,43 +209,15 @@ func (view *HistoryLayout) ExportCsv(filePath string, income string, couple bool
 	return file.Sync()
 }
 
-// Button to delete history file and refresh list
-func (view *HistoryLayout) purgeHistory() {
-	dialog.NewConfirm(
-		view.Model.Language.PurgeHistory.ConfirmTitle,
-		view.Model.Language.PurgeHistory.Confirm,
-		func(response bool) {
-			if response {
-				utils.DeleteFile(utils.GetHistoryFile())
-				view.Model.Histories = []model.History{}
-				view.list.Refresh()
-				dialog.ShowInformation(
-					view.Model.Language.PurgeHistory.ConfirmedTitle,
-					view.Model.Language.PurgeHistory.Confirmed,
-					view.Window,
-				)
-			}
-		},
-		view.Window,
-	).Show()
-}
-
 // TODO A COMMENTER
-func (view *HistoryLayout) SendMail(income string, couple bool, children string) {
-	view.Tabs.SelectIndex(0)
-
-	view.EntryIncome.SetText(income)
-	view.SelectChildren.SetText(children)
-
-	var option = 0
-	if couple {
-		option = 1
-	}
-	view.RadioStatus.SetSelected(view.RadioStatus.Options[option])
-
+func (view *HistoryLayout) sendMail(income string, couple bool, children string) {
+	fmt.Printf("SEND MAIL\n")
+	// TODO formatter le mail comme l'affichage que j'ai sur la console avec le détail etc...
+	// https://www.youtube.com/watch?v=MEs3FP9kSTw
+	// https://www.youtube.com/watch?v=42vNsryto_4
 }
 
 // No use for this layout
 func (view *HistoryLayout) setRightLayout() *fyne.Container {
-	return nil
+	return container.NewStack()
 }

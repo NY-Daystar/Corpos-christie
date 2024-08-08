@@ -7,8 +7,17 @@ import (
 
 // CreateChildrenSelect Create widget select for children
 // Returns select in fyne object
-func CreateChildrenSelect() *widget.SelectEntry {
-	var sel = widget.NewSelectEntry([]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"})
-	sel.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number")
-	return sel
+func CreateChildrenSelectEntry() *widget.SelectEntry {
+	var selector = widget.NewSelectEntry([]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"})
+	selector.Validator = validation.NewRegexp("^[0-9]{1,}$", "Not a number")
+	selector.SetText("0")
+	return selector
+}
+
+// CreateYearSelect Create widget select for year
+// Returns select in fyne object
+func CreateYearSelect(options []string, selected string) *widget.Select {
+	var selector = widget.NewSelect(options, nil)
+	selector.SetSelected(selected)
+	return selector
 }

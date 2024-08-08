@@ -27,6 +27,12 @@ type MainLayout struct {
 	EntryIncome    *widget.Entry       // Input Entry to set income
 	RadioStatus    *widget.RadioGroup  // Input Radio buttons to get status
 	SelectChildren *widget.SelectEntry // Input Select to know how children
-	EntryRemainder *widget.Entry       // Input Entry to set remainder wished
 	SaveButton     *widget.Button      // Button to save in history tax results
+	SelectYear     *widget.Select      // Select to choose tax year
+
+	EntryRemainder *widget.Entry // Input Entry to set remainder wished
+
+	HistoryList         *widget.List   // items list in history
+	PurgeHistoryButton  *widget.Button // Input button to purge history
+	ExportHistoryButton *widget.Button // Input button to export all history
 }

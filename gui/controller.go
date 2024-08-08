@@ -1,18 +1,25 @@
 package gui
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"image/color"
 	"os"
+	"path"
 	"sort"
 	"time"
 
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
 	"github.com/NY-Daystar/corpos-christie/tax"
+	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 )
@@ -44,6 +51,7 @@ func NewController(model *model.GUIModel, view *GUIView, logger *zap.Logger) *GU
 func (controller *GUIController) prepare() {
 	controller.Menu = NewMenu(controller)
 	controller.setAppSettings()
+	controller.LoadHistory()
 
 	controller.View.EntryIncome.OnChanged = func(input string) {
 		if controller.canCalculate() {
@@ -72,8 +80,15 @@ func (controller *GUIController) prepare() {
 		)
 	}
 
+	controller.View.SelectYear.OnChanged = func(year string) {
+		controller.SetYear(year)
+	}
+
+	controller.View.PurgeHistoryButton.OnTapped = controller.purgeHistory
+	controller.View.ExportHistoryButton.OnTapped = controller.exportAllHistory
+
 	// Handle tabs selections
-	// READ:  https://github.com/fyne-io/fyne/issues/3466
+	// READ: https://github.com/fyne-io/fyne/issues/3466
 	controller.View.Tabs.OnSelected = func(item *container.TabItem) {
 		var index = controller.View.Tabs.SelectedIndex()
 		controller.LoadHistory()
@@ -153,6 +168,113 @@ func (controller *GUIController) reverseCalculate() {
 		var taxTranche string = utils.ConvertIntToString(int(result.TaxTranches[index].Tax))
 		controller.Model.LabelsTrancheTaxes.SetValue(index, taxTranche)
 	}
+}
+
+// Delete history file and refresh list
+func (controller *GUIController) purgeHistory() {
+	dialog.NewConfirm(
+		controller.View.Model.Language.PurgeHistory.ConfirmTitle,
+		controller.View.Model.Language.PurgeHistory.Confirm,
+		func(response bool) {
+			if response {
+				utils.DeleteFile(utils.GetHistoryFile())
+				controller.Model.Histories = []model.History{}
+				controller.View.HistoryList.Refresh()
+				dialog.ShowInformation(
+					controller.View.Model.Language.PurgeHistory.ConfirmedTitle,
+					controller.View.Model.Language.PurgeHistory.Confirmed,
+					controller.View.Window,
+				)
+			}
+		},
+		controller.View.Window,
+	).Show()
+}
+
+// Button to delete history file and refresh list
+func (controller *GUIController) exportAllHistory() {
+	folderChan := make(chan string)
+
+	dialog.NewFolderOpen(func(folder fyne.ListableURI, err error) {
+		if err != nil {
+			dialog.ShowError(err, controller.View.Window)
+			controller.Logger.Error("Dialog error: %v", zap.String("error", err.Error()))
+			return
+		}
+		if folder != nil {
+			folderChan <- folder.Path()
+		}
+	}, controller.View.Window).Show()
+
+	go func() error {
+		for {
+			var folderPath = <-folderChan
+			var filename = "result.csv"
+			var filePath = path.Join(folderPath, filename)
+
+			var headers = []string{
+				controller.Model.Language.Year,
+				controller.Model.Language.HistoryHeaders.Income,
+				controller.Model.Language.Tax,
+				controller.Model.Language.Remainder,
+				controller.Model.Language.HistoryHeaders.Couple,
+				controller.Model.Language.HistoryHeaders.Children,
+			}
+
+			var data = [][]string{headers}
+
+			for _, history := range controller.Model.Histories {
+
+				var user = &user.User{
+					Income:     history.Income,
+					IsInCouple: history.Couple,
+					Children:   history.Children,
+				}
+				result := tax.CalculateTax(user, controller.Model.Config)
+
+				var year = utils.ConvertIntToString(controller.Model.Config.Tax.Year)
+				var tax = utils.ConvertInt64ToString(int64(result.Tax))
+				var remainder = utils.ConvertInt64ToString(int64(result.Remainder))
+				var coupleStr = ""
+				if history.Couple {
+					coupleStr = controller.Model.Language.Yes
+				} else {
+					coupleStr = controller.Model.Language.No
+				}
+
+				var row = []string{
+					year,
+					utils.ConvertIntToString(history.Income),
+					tax,
+					remainder,
+					coupleStr,
+					utils.ConvertIntToString(history.Children),
+				}
+				data = append(data, row)
+
+			}
+
+			file, _ := os.Create(filePath)
+
+			writer := csv.NewWriter(file)
+
+			for _, value := range data {
+				writer.Write(value)
+			}
+
+			dialog.ShowCustom(
+				controller.Model.Language.Export.ExportMessage,
+				controller.Model.Language.Close,
+				container.NewHBox(
+					widget.NewLabel(fmt.Sprintf("%s: ", controller.Model.Language.Export.ExportMessage)),
+					canvas.NewText(filePath, color.NRGBA{R: 218, G: 20, B: 51, A: 255}),
+				),
+				controller.View.Window,
+			)
+			writer.Flush()
+			file.Sync()
+		}
+	}()
 }
 
 // getIncome Get value of widget entry of income
@@ -251,7 +373,7 @@ func (controller *GUIController) save() {
 
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		fmt.Println(err)
+		controller.Logger.Error("Dialog save error: %v", zap.String("error", err.Error()))
 		return
 	}
 	defer f.Close()
@@ -268,7 +390,7 @@ func (controller *GUIController) save() {
 
 	// Saving data
 	if _, err := fmt.Fprintf(f, "%s\n", byteArray); err != nil {
-		fmt.Println(err)
+		controller.Logger.Error("save error file: %v", zap.String("error", err.Error()))
 	}
 }
 

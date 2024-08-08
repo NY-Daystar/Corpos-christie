@@ -86,21 +86,17 @@ func (view *TaxLayout) createLayoutSave() *fyne.Container {
 	)
 }
 
-// createLayoutTaxResult Setup right top side of window
+// createLayoutTaxYear Setup right top side of window
 func (view *TaxLayout) createLayoutTaxYear() *fyne.Container {
-	return container.New(layout.NewGridLayout(8),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
-		widget.NewLabel(""),
+	box := container.NewHBox(
 		widget.NewLabelWithData(view.Model.LabelYear),
-		widget.NewLabelWithData(view.Model.Year),
+		view.SelectYear,
 	)
+
+	return container.NewBorder(nil, nil, nil, box, nil)
 }
 
-// createLayoutTaxResult Setup right top side of window
+// createLayoutTaxResult Setup top side of window
 func (view *TaxLayout) createLayoutTaxResult() *fyne.Container {
 	var taxBind = binding.NewSprintf("%s (%s)", view.Model.Tax, view.Model.Currency)
 	var remainderBind = binding.NewSprintf("%s (%s)", view.Model.Remainder, view.Model.Currency)
@@ -108,15 +104,15 @@ func (view *TaxLayout) createLayoutTaxResult() *fyne.Container {
 	return container.New(layout.NewGridLayout(3),
 		widget.NewLabelWithData(view.Model.LabelTax),
 		widget.NewLabelWithData(taxBind),
-		widget.NewLabel(""),
+		layout.NewSpacer(),
 
 		widget.NewLabelWithData(view.Model.LabelRemainder),
 		widget.NewLabelWithData(remainderBind),
-		widget.NewLabel(""),
+		layout.NewSpacer(),
 
 		widget.NewLabelWithData(view.Model.LabelShares),
 		widget.NewLabelWithData(view.Model.Shares),
-		widget.NewLabel(""),
+		layout.NewSpacer(),
 	)
 }
 
