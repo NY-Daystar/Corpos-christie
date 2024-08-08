@@ -9,7 +9,7 @@ import (
 // $ go test -v
 
 func TestWidgetCreateEntry(t *testing.T) {
-	var entry = CreateEntry()
+	var entry = CreateEntry("10000")
 
 	if entry == nil {
 		t.Errorf("No entry widget created")
@@ -25,7 +25,7 @@ func TestWidgetCreateStatusRadio(t *testing.T) {
 }
 
 func TestWidgetCreateChildrenSelect(t *testing.T) {
-	var entry = CreateChildrenSelect()
+	var entry = CreateChildrenSelectEntry()
 
 	if entry == nil {
 		t.Errorf("No entry widget created")

@@ -29,12 +29,22 @@ type GUIView struct {
 	Logger *zap.Logger
 
 	// Widgets
-	Tabs           *container.AppTabs  // Tabs to handle layout
+	Tabs *container.AppTabs // Tabs to handle layout
+
+	// Tab tax
 	EntryIncome    *widget.Entry       // Input Entry to set income
 	RadioStatus    *widget.RadioGroup  // Input Radio buttons to get status
 	SelectChildren *widget.SelectEntry // Input Select to know how children
-	EntryRemainder *widget.Entry       // Input Entry to set remainder wished
 	SaveButton     *widget.Button      // Input button to save excel
+	SelectYear     *widget.Select      // Select to choose tax year
+
+	// Tab reverse tax
+	EntryRemainder *widget.Entry // Input Entry to set remainder wished
+
+	// Tab history
+	HistoryList         *widget.List   // items list in history
+	PurgeHistoryButton  *widget.Button // Input button to purge history
+	ExportHistoryButton *widget.Button // Input button to export all history
 }
 
 // NewView instantiate view with existing model (data)
@@ -52,14 +62,19 @@ func NewView(model *model.GUIModel, logger *zap.Logger) *GUIView {
 // prepare initialize Fyne application and components to avoid error
 func (view *GUIView) prepare() {
 	view.App = app.New() // Launch Fyne App
-	view.EntryIncome = widgets.CreateEntry()
-	view.EntryIncome.SetPlaceHolder("30000")
-	view.EntryRemainder = widgets.CreateEntry()
-	view.EntryRemainder.SetPlaceHolder("30000")
+	var placeholder = "30000"
+	view.EntryIncome = widgets.CreateEntry(placeholder)
+	view.EntryRemainder = widgets.CreateEntry(placeholder)
 	view.RadioStatus = widgets.CreateStatusRadio()
-	view.SelectChildren = widgets.CreateChildrenSelect()
-	view.SelectChildren.SetText("0")
-	view.SaveButton = widgets.CreateSaveButton(view.Model.Language.Save)
+	view.SelectChildren = widgets.CreateChildrenSelectEntry()
+	view.SaveButton = widgets.CreateButtonLabel(view.Model.Language.Save)
+
+	year, _ := view.Model.Year.Get()
+	view.SelectYear = widgets.CreateYearSelect(settings.GetYears(view.Model.Config), year)
+
+	view.PurgeHistoryButton = widgets.CreateButtonIcon(theme.DeleteIcon())
+	view.ExportHistoryButton = widgets.CreateButtonIcon(theme.FileImageIcon())
+	view.HistoryList = &widget.List{}
 
 	// Setup Fyne window
 	view.Window = view.App.NewWindow(config.APP_NAME)
@@ -144,7 +159,13 @@ func (view *GUIView) clone() layouts.MainLayout {
 		EntryIncome:    view.EntryIncome,
 		RadioStatus:    view.RadioStatus,
 		SelectChildren: view.SelectChildren,
-		EntryRemainder: view.EntryRemainder,
 		SaveButton:     view.SaveButton,
+		SelectYear:     view.SelectYear,
+
+		EntryRemainder: view.EntryRemainder,
+
+		HistoryList:         view.HistoryList,
+		PurgeHistoryButton:  view.PurgeHistoryButton,
+		ExportHistoryButton: view.ExportHistoryButton,
 	}
 }
