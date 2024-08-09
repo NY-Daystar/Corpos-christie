@@ -7,8 +7,8 @@ import (
 
 	"fyne.io/fyne/v2/data/binding"
 	"github.com/NY-Daystar/corpos-christie/config"
-	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
+	"github.com/NY-Daystar/corpos-christie/settings"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"

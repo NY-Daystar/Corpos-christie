@@ -8,37 +8,52 @@ languages:
     german: Allemand
     italian: Italien
 abouts:
-    text_1: "Bienvenue sur"
-    text_2: "une application de bureau pour estimer vos impôts en France"
-    text_3: "Ce"
-    text_4: "est open-source"
-    text_5: "Développé en Go avec le framework Fyne."
-    text_6: "Auteur"
+    text_1: Bienvenue sur
+    text_2: une application de bureau pour estimer vos impôts en France
+    text_3: Ce
+    text_4: est open-source
+    text_5: Développé en Go avec le framework Fyne.
+    text_6: Auteur
 save_popup:
-    confirmed_title: "Sauvegardé"
-    confirmed_message: "Sauvegardé dans l'historique"
+    confirmed_title: Sauvegardé
+    confirmed_message: Sauvegardé dans l'historique
+mail_popup:
+    form_title: Envoi par mail des résultats
+    submit_form: Envoi par mail
+    close_form: Annuler l'envoi
+    mail_form: Saisir votre addresse email
+    subject_form: Objet
+    body_form: Message
+    confirm: Confirmation
+    confirm_message: Êtes vous sure de vouloir envoyer cet email ?
 tax_headers:
-    header_1: "TRANCHE"
-    header_2: "MIN"
-    header_3: "MAX"
-    header_4: "RATIO"
-    header_5: "IMPÔT"
+    header_1: TRANCHE
+    header_2: MIN
+    header_3: MAX
+    header_4: RATIO
+    header_5: IMPÔT
 history_headers:
-    header_1: "Date"
-    header_2: "Revenus"
-    header_3: "Couple"
-    header_4: "Nombre d'enfants"
-    header_5: "Actions"
+    header_1: Date
+    header_2: Revenus
+    header_3: Couple
+    header_4: Nombre d'enfants
+    header_5: Actions
 purge_history:
-    confirm_title: "Confirmation"
-    confirm: "Êtes vous sûr de vouloir supprimer l'historique ?"
-    confirmed_title: "Purge effectué"
-    confirmed: "L'historique a été effacé"
+    confirm_title: Confirmation
+    confirm: Êtes vous sûr de vouloir supprimer l'historique ?
+    confirmed_title: Purge effectué
+    confirmed: L'historique a été effacé
 export:
-    export_title: "Export réussi"
-    export_message: "Votre export se trouve à cet emplacement"
-yes: "Oui"
-no: "Non"
+    export_title: Export réussi
+    export_message: Votre export se trouve à cet emplacement
+errors_validation:
+    nan: La saisie n'est pas un nombre
+    not_enough: Le montant n'est pas suffisant
+    invalid_mail: L'adresse mail est invalide
+    invalid_subject: Le sujet ne doit pas être vide
+    invalid_body: Le message ne doit pas être vide
+yes: Oui
+no: Non
 file: Fichier
 settings: Paramètres
 update: Vérifier les mises à jour

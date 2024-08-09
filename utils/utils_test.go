@@ -272,6 +272,50 @@ func TestFindIndex(t *testing.T) {
 	}
 }
 
+func TestValidationMail(t *testing.T) {
+	tests := []struct {
+		mail     string
+		expected bool
+	}{
+		{
+			mail:     "123@gmail.com",
+			expected: true,
+		},
+		{
+			mail:     "mymail@gmail.com",
+			expected: true,
+		},
+		{
+			mail:     "my.mail@gmail.com",
+			expected: true,
+		},
+		{
+			mail:     "my_mail@gmail.com",
+			expected: true,
+		},
+		{
+			mail:     "my.mailgmail.com",
+			expected: false,
+		},
+		{
+			mail:     "my.mail@gmailcom",
+			expected: false,
+		},
+		{
+			mail:     "my.mailgmailcom",
+			expected: false,
+		},
+	}
+
+	for _, testCase := range tests {
+		var check = IsValidEmail(testCase.mail)
+
+		if testCase.expected != check {
+			t.Errorf("Test case failed with mail: %s - expected: %v", testCase.mail, testCase.expected)
+		}
+	}
+}
+
 func TestFilePath(t *testing.T) {
 	tests := map[string]interface{}{
 		"GetAppDataPath":  GetAppDataPath,
@@ -286,6 +330,7 @@ func TestFilePath(t *testing.T) {
 	}
 }
 
+// use reflexion to call method
 func callMethodByName(name interface{}) {
 	method := reflect.ValueOf(name)
 	method.Call(nil)

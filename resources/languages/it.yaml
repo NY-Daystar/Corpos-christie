@@ -8,37 +8,52 @@ languages:
     german: Tedesco
     italian: Italiano
 abouts:
-    text_1: "Benvenuto a"
-    text_2: "Un'app desktop per calcolare le tasse in Francia."
-    text_3: "Questo"
-    text_4: "è open source"
-    text_5: "Sviluppato nel framework Go with Fyne."
-    text_6: "Autore"
+    text_1: Benvenuto a
+    text_2: Un'app desktop per calcolare le tasse in Francia.
+    text_3: Questo
+    text_4: è open source
+    text_5: Sviluppato nel framework Go with Fyne.
+    text_6: Autore
 save_popup:
-    confirmed_title: "Salvato"
-    confirmed_message: "Salvato nella cronologia"
+    confirmed_title: Salvato
+    confirmed_message: Salvato nella cronologia
+mail_popup:
+    form_title: Invio dei risultati tramite posta
+    submit_form: Invia email
+    close_form: Annulla email
+    mail_form: Inserisci la tua email
+    subject_form: Oggetto
+    body_form: Messaggio
+    confirm: Conferma
+    confirm_message: Sei sicuro di voler inviare questa email ?
 tax_headers:
-    header_1: "TRANCHE"
-    header_2: "MIN"
-    header_3: "MAX"
-    header_4: "TARIFFA"
-    header_5: "IMPOSTA"
+    header_1: TRANCHE
+    header_2: MIN
+    header_3: MAX
+    header_4: TARIFFA
+    header_5: IMPOSTA
 history_headers:
-    header_1: "Data"
-    header_2: "Reddito"
-    header_3: "Coppia"
-    header_4: "Numero di bambini"
-    header_5: "Azioni"
+    header_1: Data
+    header_2: Reddito
+    header_3: Coppia
+    header_4: Numero di bambini
+    header_5: Azioni
 purge_history:
-    confirm_title: "Conferma"
-    confirm: "Sei sicuro di voler eliminare la cronologia ?"
-    confirmed_title: "Eliminato"
-    confirmed: "Cronologia eliminata"
+    confirm_title: Conferma
+    confirm: Sei sicuro di voler eliminare la cronologia ?
+    confirmed_title: Eliminato
+    confirmed: Cronologia eliminata
 export:
-    export_title: "Esportazione riuscita"
-    export_message: "La tua esportazione si trova in questa posizione"
-yes: "Si"
-no: "No"
+    export_title: Esportazione riuscita
+    export_message: La tua esportazione si trova in questa posizione
+errors_validation:
+    nan: L'input non è un numero
+    not_enough: L'importo non è sufficiente
+    invalid_mail: Indirizzo email non valido
+    invalid_subject: L'oggetto non può essere vuoto
+    invalid_body: Il corpo del messaggio non può essere vuoto
+yes: Si
+no: No
 file: Dossier
 settings: Impostazioni
 update: controlla l'aggiornamento

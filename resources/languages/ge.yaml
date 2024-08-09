@@ -13,10 +13,19 @@ abouts:
     text_3: Dies
     text_4: ist Open-Source
     text_5: Entwickelt im Go mit Fyne-Framework.
-    text_6: "Autor"
+    text_6: Autor
 save_popup:
-    confirmed_title: "Gespeichert"
-    confirmed_message: "Im Verlauf gespeichert"
+    confirmed_title: Gespeichert
+    confirmed_message: Im Verlauf gespeichert
+mail_popup:
+    form_title: Ergebnisse per Mail senden
+    submit_form: E-Mail senden
+    close_form: Mail abbrechen
+    mail_form: Geben Sie Ihre E-Mail ein
+    subject_form: Betreff
+    body_form: Nachricht
+    confirm: Bestätigung
+    confirm_message: Möchten Sie diese E-Mail wirklich senden ?
 tax_headers:
     header_1: TRANCHE
     header_2: MIN
@@ -24,21 +33,27 @@ tax_headers:
     header_4: RATE
     header_5: STEUER
 history_headers:
-    header_1: "Datum"
-    header_2: "Einkommen"
-    header_3: "Paar"
-    header_4: "Anzahl der Kinder"
-    header_5: "Aktionen"
+    header_1: Datum
+    header_2: Einkommen
+    header_3: Paar
+    header_4: Anzahl der Kinder
+    header_5: Aktionen
 purge_history:
-    confirm_title: "Bestätigen"
-    confirm: "Möchten Sie den Verlauf wirklich löschen ?"
-    confirmed_title: "Gelöscht"
-    confirmed: "Verlauf gelöscht"
+    confirm_title: Bestätigen
+    confirm: Möchten Sie den Verlauf wirklich löschen ?
+    confirmed_title: Gelöscht
+    confirmed: Verlauf gelöscht
 export:
-    export_title: "Export erfolgreich"
-    export_message: "Ihr Export befindet sich an diesem Ort"
-yes: "Ja"
-no: "Nein"
+    export_title: Export erfolgreich
+    export_message: Ihr Export befindet sich an diesem Ort
+errors_validation:
+    nan: Die Eingabe ist keine Zahl
+    not_enough: Der Betrag ist nicht ausreichend
+    invalid_mail: Ungültige E-Mail-Adresse
+    invalid_subject: Der Betreff darf nicht leer sein
+    invalid_body: Der Nachrichtentext darf nicht leer sein
+yes: Ja
+no: Nein
 file: Datei
 settings: Einstellungen
 update: Update prüfen

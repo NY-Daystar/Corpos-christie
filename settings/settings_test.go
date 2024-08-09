@@ -42,7 +42,7 @@ func TestGetAllCurrency(t *testing.T) {
 }
 
 func TestGetIcon(t *testing.T) {
-	iconPath, _ := filepath.Abs("../../resources/assets/logo.ico")
+	iconPath, _ := filepath.Abs("../resources/assets/logo.ico")
 	icon := GetIcon(iconPath)
 
 	if icon == nil {

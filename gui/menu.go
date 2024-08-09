@@ -14,7 +14,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/config"
-	"github.com/NY-Daystar/corpos-christie/gui/settings"
+	"github.com/NY-Daystar/corpos-christie/settings"
 	"github.com/NY-Daystar/corpos-christie/updater"
 	"github.com/NY-Daystar/corpos-christie/utils"
 )
