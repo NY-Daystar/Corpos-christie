@@ -5,6 +5,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
+	"github.com/NY-Daystar/corpos-christie/gui/widgets"
 	"go.uber.org/zap"
 )
 
@@ -35,4 +36,6 @@ type MainLayout struct {
 	HistoryList         *widget.List   // items list in history
 	PurgeHistoryButton  *widget.Button // Input button to purge history
 	ExportHistoryButton *widget.Button // Input button to export all history
+
+	MailPopup *widgets.MailPopup // Handle mail popup
 }

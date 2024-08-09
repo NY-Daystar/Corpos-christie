@@ -9,8 +9,9 @@ import (
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/layouts"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
-	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/widgets"
+	"github.com/NY-Daystar/corpos-christie/settings"
+	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 
 	"fyne.io/fyne/v2/container"
@@ -45,6 +46,8 @@ type GUIView struct {
 	HistoryList         *widget.List   // items list in history
 	PurgeHistoryButton  *widget.Button // Input button to purge history
 	ExportHistoryButton *widget.Button // Input button to export all history
+
+	MailPopup *widgets.MailPopup // Handle mail popup
 }
 
 // NewView instantiate view with existing model (data)
@@ -62,9 +65,9 @@ func NewView(model *model.GUIModel, logger *zap.Logger) *GUIView {
 // prepare initialize Fyne application and components to avoid error
 func (view *GUIView) prepare() {
 	view.App = app.New() // Launch Fyne App
-	var placeholder = "30000"
-	view.EntryIncome = widgets.CreateEntry(placeholder)
-	view.EntryRemainder = widgets.CreateEntry(placeholder)
+
+	view.EntryIncome = widgets.CreateEntry(utils.ConvertIntToString(config.MIN_INCOME), view.Model.Language.ErrorsValidation)
+	view.EntryRemainder = widgets.CreateEntry(utils.ConvertIntToString(config.MIN_INCOME), view.Model.Language.ErrorsValidation)
 	view.RadioStatus = widgets.CreateStatusRadio()
 	view.SelectChildren = widgets.CreateChildrenSelectEntry("0")
 	view.SaveButton = widgets.CreateButtonLabel(view.Model.Language.Save)
@@ -74,7 +77,11 @@ func (view *GUIView) prepare() {
 
 	view.PurgeHistoryButton = widgets.CreateButtonIcon(theme.DeleteIcon())
 	view.ExportHistoryButton = widgets.CreateButtonIcon(theme.FileImageIcon())
+
+	// TODO method to init list and handle action in controller instead of historyLayout
 	view.HistoryList = &widget.List{}
+
+	view.MailPopup = widgets.CreateMailPopup(view.Model.Language)
 
 	// Setup Fyne window
 	view.Window = view.App.NewWindow(config.APP_NAME)
@@ -148,6 +155,39 @@ func (view *GUIView) createAppTabs() *container.AppTabs {
 	return view.Tabs
 }
 
+// getIncome Get value of widget entry of income
+func (view *GUIView) GetIncome() int {
+	intVal, err := utils.ConvertStringToInt(view.EntryIncome.Text)
+	if err != nil {
+		return 0
+	}
+	return intVal
+}
+
+// IsCoupleSelected Get value of widget radioGroup
+// returns 1 if it's couple, 0 if single
+func (view *GUIView) IsCoupleSelected() bool {
+	return utils.FindIndex(view.RadioStatus.Options, view.RadioStatus.Selected) == 1
+}
+
+// getChildren get value of widget select
+func (view *GUIView) GetChildren() int {
+	children, err := utils.ConvertStringToInt(view.SelectChildren.Entry.Text)
+	if err != nil {
+		return 0
+	}
+	return children
+}
+
+// getRemainder Get value of widget entry of taxes
+func (view *GUIView) GetRemainder() float64 {
+	intVal, err := utils.ConvertStringToFloat64(view.EntryRemainder.Text)
+	if err != nil {
+		return 0
+	}
+	return intVal
+}
+
 // clone create a copy of data in view for every layouts
 func (view *GUIView) clone() layouts.MainLayout {
 	return layouts.MainLayout{
@@ -167,5 +207,7 @@ func (view *GUIView) clone() layouts.MainLayout {
 		HistoryList:         view.HistoryList,
 		PurgeHistoryButton:  view.PurgeHistoryButton,
 		ExportHistoryButton: view.ExportHistoryButton,
+
+		MailPopup: view.MailPopup,
 	}
 }

@@ -17,40 +17,42 @@ const (
 
 // Handle all data about language data
 type Yaml struct {
-	Code           string             // code of the language (fr, en, etc...)
-	Theme          ThemeYaml          `yaml:"themes"`
-	Languages      LanguageYaml       `yaml:"languages"`
-	Abouts         AboutYaml          `yaml:"abouts"`
-	SavePopup      SavePopupYaml      `yaml:"save_popup"`
-	TaxHeaders     TaxHeadersYaml     `yaml:"tax_headers"`
-	MaritalStatus  MaritalStatusYaml  `yaml:"status_list"`
-	HistoryHeaders HistoryHeadersYaml `yaml:"history_headers"`
-	PurgeHistory   PurgeHistoryYaml   `yaml:"purge_history"`
-	Export         ExportYaml         `yaml:"export"`
-	Year           string             `yaml:"year"`
-	Yes            string             `yaml:"yes"`
-	No             string             `yaml:"no"`
-	File           string             `yaml:"file"`
-	Settings       string             `yaml:"settings"`
-	Update         string             `yaml:"update"`
-	Income         string             `yaml:"income"`
-	Status         string             `yaml:"status"`
-	Children       string             `yaml:"children"`
-	Tax            string             `yaml:"tax"`
-	ReverseTax     string             `yaml:"reverse_tax"`
-	Remainder      string             `yaml:"remainder"`
-	Share          string             `yaml:"share"`
-	History        string             `yaml:"history"`
-	Save           string             `yaml:"save"`
-	ThemeCode      string             `yaml:"theme"`
-	LanguageCode   string             `yaml:"language"`
-	Currency       string             `yaml:"currency"`
-	Logs           string             `yaml:"logs"`
-	Help           string             `yaml:"help"`
-	About          string             `yaml:"about"`
-	Author         string             `yaml:"author"`
-	Close          string             `yaml:"close"`
-	Quit           string             `yaml:"quit"`
+	Code             string               // code of the language (fr, en, etc...)
+	Theme            ThemeYaml            `yaml:"themes"`
+	Languages        LanguageYaml         `yaml:"languages"`
+	Abouts           AboutYaml            `yaml:"abouts"`
+	SavePopup        SavePopupYaml        `yaml:"save_popup"`
+	TaxHeaders       TaxHeadersYaml       `yaml:"tax_headers"`
+	MaritalStatus    MaritalStatusYaml    `yaml:"status_list"`
+	HistoryHeaders   HistoryHeadersYaml   `yaml:"history_headers"`
+	PurgeHistory     PurgeHistoryYaml     `yaml:"purge_history"`
+	Export           ExportYaml           `yaml:"export"`
+	MailPopup        MailPopupYaml        `yaml:"mail_popup"`
+	ErrorsValidation ErrorsValidationYaml `yaml:"errors_validation"`
+	Year             string               `yaml:"year"`
+	Yes              string               `yaml:"yes"`
+	No               string               `yaml:"no"`
+	File             string               `yaml:"file"`
+	Settings         string               `yaml:"settings"`
+	Update           string               `yaml:"update"`
+	Income           string               `yaml:"income"`
+	Status           string               `yaml:"status"`
+	Children         string               `yaml:"children"`
+	Tax              string               `yaml:"tax"`
+	ReverseTax       string               `yaml:"reverse_tax"`
+	Remainder        string               `yaml:"remainder"`
+	Share            string               `yaml:"share"`
+	History          string               `yaml:"history"`
+	Save             string               `yaml:"save"`
+	ThemeCode        string               `yaml:"theme"`
+	LanguageCode     string               `yaml:"language"`
+	Currency         string               `yaml:"currency"`
+	Logs             string               `yaml:"logs"`
+	Help             string               `yaml:"help"`
+	About            string               `yaml:"about"`
+	Author           string               `yaml:"author"`
+	Close            string               `yaml:"close"`
+	Quit             string               `yaml:"quit"`
 }
 
 // Languages yaml struct for theme's app
@@ -76,6 +78,18 @@ type AboutYaml struct {
 type SavePopupYaml struct {
 	ConfirmedTitle   string `yaml:"confirmed_title"`
 	ConfirmedMessage string `yaml:"confirmed_message"`
+}
+
+// data for mail popup
+type MailPopupYaml struct {
+	FormTitle      string `yaml:"form_title"`
+	SubmitForm     string `yaml:"submit_form"`
+	CloseForm      string `yaml:"close_form"`
+	MailForm       string `yaml:"mail_form"`
+	SubjectForm    string `yaml:"subject_form"`
+	BodyForm       string `yaml:"body_form"`
+	Confirm        string `yaml:"confirm"`
+	ConfirmMessage string `yaml:"confirm_message"`
 }
 
 // Headers yaml for tax detail
@@ -114,6 +128,15 @@ type PurgeHistoryYaml struct {
 type ExportYaml struct {
 	ExportTitle   string `yaml:"export_title"`
 	ExportMessage string `yaml:"export_message"`
+}
+
+// errors list
+type ErrorsValidationYaml struct {
+	NaN            string `yaml:"nan"`
+	NotEnough      string `yaml:"not_enough"`
+	InvalidMail    string `yaml:"invalid_mail"`
+	InvalidBody    string `yaml:"invalid_body"`
+	InvalidSubject string `yaml:"invalid_subject"`
 }
 
 // getLanguages return all languages

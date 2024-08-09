@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2"
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
-	"github.com/NY-Daystar/corpos-christie/gui/settings"
+	"github.com/NY-Daystar/corpos-christie/settings"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils/colors"
 	"go.uber.org/zap"

@@ -12,11 +12,20 @@ abouts:
     text_2: una aplicación de escritorio para calcular tus impuestos en Francia.
     text_3: Esto
     text_4: es de código abierto
-    text_5: "Desarrollado en Go con el marco Fyne"
-    text_6: "Autor"
+    text_5: Desarrollado en Go con el marco Fyne
+    text_6: Autor
 save_popup:
-    confirmed_title: "Guardado"
-    confirmed_message: "Guardado en el historial"
+    confirmed_title: Guardado
+    confirmed_message: Guardado en el historial
+mail_popup:
+    form_title: Enviando resultados por correo
+    submit_form: Enviar correo
+    close_form: Cancelar correo
+    mail_form: Ingresa tu correo
+    subject_form: Asunto
+    body_form: Mensaje
+    confirm: Confirmación
+    confirm_message: ¿Estás seguro que deseas enviar este correo ?
 tax_headers:
     header_1: TRAMO
     header_2: MIN
@@ -24,21 +33,27 @@ tax_headers:
     header_4: TASA
     header_5: IMPUESTO
 history_headers:
-    header_1: "Fecha"
-    header_2: "Ingreso"
-    header_3: "Pareja"
-    header_4: "Numero de niños"
-    header_5: "Comportamiento"
+    header_1: Fecha
+    header_2: Ingreso
+    header_3: Pareja
+    header_4: Numero de niños
+    header_5: Comportamiento
 purge_history:
-    confirm_title: "Confirmar"
-    confirm: "¿ Está seguro de que desea purgar el historial ?"
-    confirmed_title: "Purgado"
-    confirmed: "Historial purgado"
+    confirm_title: Confirmar
+    confirm: ¿ Está seguro de que desea purgar el historial ?
+    confirmed_title: Purgado
+    confirmed: Historial purgado
 export:
-    export_title: "Exportación exitosa"
-    export_message: "Su exportación está en esta ubicación"
-yes: "Si"
-no: "No"
+    export_title: Exportación exitosa
+    export_message: Su exportación está en esta ubicación
+errors_validation:
+    nan: La entrada no es un número
+    not_enough: La cantidad no es suficiente
+    invalid_mail: Dirección de correo electrónico no válida
+    invalid_subject: El asunto no puede estar vacío
+    invalid_body: El cuerpo del mensaje no puede estar vacío
+yes: Si
+no: No
 file: Archivo
 settings: Configuración
 update: comprobar actualización

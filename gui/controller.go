@@ -15,9 +15,11 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
-	"github.com/NY-Daystar/corpos-christie/gui/settings"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
+	"github.com/NY-Daystar/corpos-christie/helper"
+	"github.com/NY-Daystar/corpos-christie/settings"
 	"github.com/NY-Daystar/corpos-christie/tax"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
@@ -51,7 +53,7 @@ func NewController(model *model.GUIModel, view *GUIView, logger *zap.Logger) *GU
 func (controller *GUIController) prepare() {
 	controller.Menu = NewMenu(controller)
 	controller.setAppSettings()
-	controller.LoadHistory()
+	controller.loadHistory()
 
 	controller.View.EntryIncome.OnChanged = func(input string) {
 		if controller.canCalculate() {
@@ -87,11 +89,13 @@ func (controller *GUIController) prepare() {
 	controller.View.PurgeHistoryButton.OnTapped = controller.purgeHistory
 	controller.View.ExportHistoryButton.OnTapped = controller.exportAllHistory
 
+	controller.View.MailPopup.SubmitButton.OnTapped = controller.prepareMail
+
 	// Handle tabs selections
 	// READ: https://github.com/fyne-io/fyne/issues/3466
 	controller.View.Tabs.OnSelected = func(item *container.TabItem) {
 		var index = controller.View.Tabs.SelectedIndex()
-		controller.LoadHistory()
+		controller.loadHistory()
 		controller.Logger.Sugar().Infof("Change tab index: %v - %v", "value", index, item.Text)
 	}
 
@@ -119,7 +123,7 @@ func (controller *GUIController) setAppSettings() {
 
 // Verify if we can calculate
 func (controller *GUIController) canCalculate() bool {
-	if controller.getIncome() < 10000 {
+	if controller.View.GetIncome() < config.MIN_INCOME {
 		controller.View.SaveButton.Disable()
 		return false
 	}
@@ -129,10 +133,9 @@ func (controller *GUIController) canCalculate() bool {
 
 // calculate Get values of gui to calculate tax
 func (controller *GUIController) calculate() {
-	controller.Model.User.Income = controller.getIncome()
-	// If income to low no need to calculate
-	controller.Model.User.IsInCouple = controller.IsCoupleSelected()
-	controller.Model.User.Children = controller.getChildren()
+	controller.Model.User.Income = controller.View.GetIncome()
+	controller.Model.User.IsInCouple = controller.View.IsCoupleSelected()
+	controller.Model.User.Children = controller.View.GetChildren()
 
 	result := tax.CalculateTax(controller.Model.User, controller.Model.Config)
 	controller.Logger.Sugar().Debugf("Result taxes %#v", result)
@@ -151,7 +154,7 @@ func (controller *GUIController) calculate() {
 
 // reverseCalculate Get values of gui to calculate income with taxes
 func (controller *GUIController) reverseCalculate() {
-	controller.Model.User.Remainder = controller.getRemainder()
+	controller.Model.User.Remainder = controller.View.GetRemainder()
 
 	result := tax.CalculateReverseTax(controller.Model.User, controller.Model.Config)
 	controller.Logger.Sugar().Debugf("Reverse taxes %#v", result)
@@ -277,37 +280,58 @@ func (controller *GUIController) exportAllHistory() {
 	}()
 }
 
-// getIncome Get value of widget entry of income
-func (controller *GUIController) getIncome() int {
-	intVal, err := utils.ConvertStringToInt(controller.View.EntryIncome.Text)
-	if err != nil {
-		return 0
+// verify data to send mail
+func (controller *GUIController) prepareMail() {
+	if err := controller.View.MailPopup.EmailEntry.Validate(); err != nil {
+		dialog.ShowError(err, controller.View.Window)
+		return
 	}
-	return intVal
+
+	if err := controller.View.MailPopup.SubjectEntry.Validate(); err != nil {
+		dialog.ShowError(err, controller.View.Window)
+		return
+	}
+
+	if err := controller.View.MailPopup.BodyEntry.Validate(); err != nil {
+		dialog.ShowError(err, controller.View.Window)
+		return
+	}
+
+	// Confirmation Popup
+	dialog.ShowConfirm(controller.Model.Language.MailPopup.Confirm,
+		controller.Model.Language.MailPopup.ConfirmMessage,
+		func(confirm bool) {
+			if confirm {
+				// TODO Recuperer l'income, l'entry etc...
+				// TODO faire une methode pour formatter les résultats et creer un body et l'envoyer en parametres
+				controller.sendMail()
+			} else {
+				controller.Logger.Info("Email sending canceled")
+			}
+		}, controller.View.Window)
 }
 
-// IsCoupleSelected Get value of widget radioGroup
-// returns 1 if it's couple, 0 if single
-func (controller *GUIController) IsCoupleSelected() bool {
-	return utils.FindIndex(controller.View.RadioStatus.Options, controller.View.RadioStatus.Selected) == 1
-}
+// send mail of history
+func (controller *GUIController) sendMail() {
+	var from = controller.Model.Settings.Smtp.User
+	var to = controller.View.MailPopup.EmailEntry.Text
+	var subject = controller.View.MailPopup.SubjectEntry.Text
+	var body = controller.View.MailPopup.BodyEntry.Text
+	controller.Logger.Info("Send mail", zap.String("From", from), zap.String("To", to), zap.String("subject", subject), zap.String("body", body))
 
-// getChildren get value of widget select
-func (controller *GUIController) getChildren() int {
-	children, err := utils.ConvertStringToInt(controller.View.SelectChildren.Entry.Text)
-	if err != nil {
-		return 0
-	}
-	return children
-}
+	var mail = helper.NewMail(from, to, subject, body)
 
-// getRemainder Get value of widget entry of taxes
-func (controller *GUIController) getRemainder() float64 {
-	intVal, err := utils.ConvertStringToFloat64(controller.View.EntryRemainder.Text)
+	var smtpConfig = controller.Model.Settings.Smtp
+
+	controller.Logger.Info("SMTP Server", zap.String("host", smtpConfig.Host), zap.Int("Port", smtpConfig.Port), zap.String("User", smtpConfig.User), zap.String("Password", smtpConfig.Password))
+
+	var smtpClient = helper.NewSMTP(smtpConfig)
+	var err = smtpClient.DialAndSend(mail)
 	if err != nil {
-		return 0
+		fmt.Println(err)
+	} else {
+		fmt.Println("MAIL sent successfully")
 	}
-	return intVal
 }
 
 // SetTheme change theme of the application
@@ -395,7 +419,7 @@ func (controller *GUIController) save() {
 }
 
 // Load history from file
-func (controller *GUIController) LoadHistory() {
+func (controller *GUIController) loadHistory() {
 	var lines = utils.GetHistory(utils.GetHistoryFile())
 
 	var histories = make([]model.History, 0, len(lines))

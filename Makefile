@@ -63,6 +63,16 @@ run:
 run-console:
 	go run . --console
 
+# get test coverage
+coverage:
+	go mod download golang.org/x/tools
+	go test ./... -coverprofile cover.out
+	go tool cover -html=cover.out
+
+# run sca analysis
+check_cve:
+	govulncheck ./...
+
 # Run test all
 test:
 	go test ./...

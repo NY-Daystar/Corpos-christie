@@ -8,37 +8,52 @@ languages:
     german: German
     italian: Italian
 abouts:
-    text_1: "Welcome to"
-    text_2: "a Desktop app to calculate your taxes in France."
-    text_3: "This"
-    text_4: "is open-source"
-    text_5: "Developped in Go with Fyne framework."
-    text_6: "Author"
+    text_1: Welcome to
+    text_2: a Desktop app to calculate your taxes in France.
+    text_3: This
+    text_4: is open-source
+    text_5: Developped in Go with Fyne framework.
+    text_6: Author
 save_popup:
-    confirmed_title: "Saved"
-    confirmed_message: "Saved in history"
+    confirmed_title: Saved
+    confirmed_message: Saved in history
+mail_popup:
+    form_title: Sending results by mail
+    submit_form: Send email
+    close_form: Cancel mail
+    mail_form: Enter your email
+    subject_form: Subject
+    body_form: Message
+    confirm: Confirmation
+    confirm_message: Are you sure you want to send this email ?
 tax_headers:
-    header_1: "TRANCHE"
-    header_2: "MIN"
-    header_3: "MAX"
-    header_4: "RATE"
-    header_5: "TAX"
+    header_1: TRANCHE
+    header_2: MIN
+    header_3: MAX
+    header_4: RATE
+    header_5: TAX
 history_headers:
-    header_1: "Date"
-    header_2: "Income"
-    header_3: "Couple"
-    header_4: "Children"
-    header_5: "Actions"
+    header_1: Date
+    header_2: Income
+    header_3: Couple
+    header_4: Children
+    header_5: Actions
 purge_history:
-    confirm_title: "Confirm"
-    confirm: "Are you sure you want to purge history ?"
-    confirmed_title: "Purged"
-    confirmed: "History purged"
+    confirm_title: Confirm
+    confirm: Are you sure you want to purge history ?
+    confirmed_title: Purged
+    confirmed: History purged
 export:
-    export_title: "Export successful"
-    export_message: "Your export is located at this location"
-yes: "Yes"
-no: "No"
+    export_title: Export successful
+    export_message: Your export is located at this location
+errors_validation:
+    nan: The input is not a number
+    not_enough: Amount is not enough
+    invalid_mail: Invalid email address
+    invalid_subject: Subject cannot be empty
+    invalid_body: Message body cannot be empty
+yes: Yes
+no: No
 file: File
 settings: Settings
 update: Check for Updates...

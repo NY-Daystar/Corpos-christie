@@ -1,6 +1,8 @@
 package layouts
 
 import (
+	"fmt"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
@@ -44,12 +46,15 @@ func (view *TaxLayout) setRightLayout() *fyne.Container {
 
 // createLayoutIncome Setup layouts and widget for income layout
 func (view *TaxLayout) createLayoutIncome() *fyne.Container {
+	// TODO placer le formulaire dans le model et le controller
 	view.Model.LabelIncome = binding.BindString(&view.Model.Language.Income)
-	return container.New(
-		layout.NewFormLayout(),
-		widget.NewLabelWithData(binding.NewSprintf("%s (%s)", view.Model.LabelIncome, view.Model.Currency)),
-		view.EntryIncome,
-	)
+	inc, _ := view.Model.LabelIncome.Get()
+	cur, _ := view.Model.Currency.Get()
+	var incomeForm = widget.NewFormItem(fmt.Sprintf("%s (%s)", inc, cur), view.EntryIncome)
+
+	form := widget.NewForm(incomeForm)
+
+	return container.NewStack(form)
 }
 
 // createLayoutStatus Setup layouts and widget for marital status

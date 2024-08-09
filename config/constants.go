@@ -18,3 +18,8 @@ const (
 	LANGUAGES_PATH string = "resources/languages" // Path to languages folder
 	ASSETS_PATH    string = "resources/assets"    // Path to assets folder
 )
+
+// App Value
+const (
+	MIN_INCOME int = 10000 // minimal value seized by the user
+)

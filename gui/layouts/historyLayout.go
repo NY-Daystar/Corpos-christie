@@ -128,7 +128,7 @@ func (view *HistoryLayout) setLeftLayout() *fyne.Container {
 		updateList,
 	)
 
-	// TODO test with grid layout to align with list
+	// TODO tester avec un layout de type grid pour aligner avec la liste
 	headers := container.NewHBox()
 
 	for index, header := range view.Model.Language.GetHistoryHeaders() {
@@ -209,12 +209,32 @@ func (view *HistoryLayout) exportCsv(filePath string, income string, couple bool
 	return file.Sync()
 }
 
-// TODO A COMMENTER
+// Create popup with form to send mail
 func (view *HistoryLayout) sendMail(income string, couple bool, children string) {
-	fmt.Printf("SEND MAIL\n")
-	// TODO formatter le mail comme l'affichage que j'ai sur la console avec le détail etc...
-	// https://www.youtube.com/watch?v=MEs3FP9kSTw
-	// https://www.youtube.com/watch?v=42vNsryto_4
+	// TODO detecter si une configuration mail est renseigné
+	// TODO sinon faire une popup pour la générer
+
+	view.MailPopup.EmailEntry.Text = "luc4snoga@gmail.com" // TODO a retirer
+	view.MailPopup.SubjectEntry.Text = "MY subject"        // TODO a retirer
+	view.MailPopup.BodyEntry.Text = "MY BODY"              // TODO a retirer
+
+	var form = widget.NewForm(
+		widget.NewFormItem(view.Model.Language.MailPopup.MailForm, view.MailPopup.EmailEntry),
+		widget.NewFormItem(view.Model.Language.MailPopup.SubjectForm, view.MailPopup.SubjectEntry),
+		widget.NewFormItem(view.Model.Language.MailPopup.BodyForm, view.MailPopup.BodyEntry),
+	)
+
+	var confirmationDialog = dialog.NewCustom(
+		view.Model.Language.MailPopup.FormTitle,
+		view.Model.Language.MailPopup.CloseForm,
+		container.NewVBox(form,
+			layout.NewSpacer(),
+			view.MailPopup.SubmitButton,
+		),
+		view.Window,
+	)
+	confirmationDialog.Resize(fyne.NewSize(400, 400))
+	confirmationDialog.Show()
 }
 
 // No use for this layout

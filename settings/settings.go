@@ -16,6 +16,15 @@ type Settings struct {
 	Language *string `json:"language"`
 	Currency *string `json:"currency"`
 	Year     *string `json:"year"`
+	Smtp     *Smtp   `json:"smtp"`
+}
+
+// outgoing mail server to send mail
+type Smtp struct {
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
 }
 
 // Load gui settings from settings file
