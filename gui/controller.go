@@ -328,8 +328,9 @@ func (controller *GUIController) sendMail() {
 	var smtpClient = helper.NewSMTP(smtpConfig)
 	var err = smtpClient.DialAndSend(mail)
 	if err != nil {
-		fmt.Println(err)
+		dialog.ShowError(fmt.Errorf("sending mail: %w", err), controller.View.Window) // TODO LANGUAGE
 	} else {
+		dialog.ShowInformation("Succès", "Opération réussie avec succès !", controller.View.Window) // TODO LANGUAGE
 		fmt.Println("MAIL sent successfully")
 	}
 }
