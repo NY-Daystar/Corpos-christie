@@ -219,7 +219,14 @@ func TestLoadSettings(t *testing.T) {
 	if err != nil {
 		t.Error("Should not have an error")
 	}
-	if *settings.Currency == "" {
+
+	var curr, lang = "$", "fr"
+
+	settings.Currency = &curr
+	settings.Language = &lang
+	settings.Smtp = &Smtp{}
+
+	if err := settings.isValid(); err != nil {
 		t.Error("Should have settings")
 	}
 }
@@ -273,4 +280,23 @@ func TestSetSettings(t *testing.T) {
 	if *settings.Year != expectedYear {
 		t.Error("Year not set")
 	}
+}
+
+func TestCypherData(t *testing.T) {
+	key := []byte("lGHQWZH2XwrOLhGkcQxwJNDMQHyvO41H")
+	rawData := "encrypt_text"
+
+	// Cyphering
+	cypherText, err := encrypt(key, rawData)
+	if err != nil {
+		t.Error("encrypt")
+	}
+	t.Logf("cypher text : %v\n", cypherText)
+
+	// Decrypting
+	decryptText, err := decrypt(key, cypherText)
+	if err != nil {
+		t.Error("decrypt")
+	}
+	t.Logf("Text decrypt : %v\n", decryptText)
 }

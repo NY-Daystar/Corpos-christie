@@ -2,8 +2,10 @@ package settings
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
@@ -47,9 +49,16 @@ func Load(logger *zap.Logger, filePath string) (Settings, error) {
 	}
 
 	jsonParser := json.NewDecoder(settingsFile)
+
 	if err := jsonParser.Decode(&settings); err != nil {
 		settings.logger.Fatal("Can't decode json : ", zap.String("error", err.Error()))
 	}
+
+	if err := settings.isValid(); err != nil {
+		settings.logger.Error("Settings invalid : ", zap.String("error", err.Error()))
+		return createDefaultSettings(), nil
+	}
+
 	return settings, settingsFile.Close()
 }
 
@@ -60,10 +69,32 @@ func createDefaultSettings() Settings {
 		Language: GetDefaultLanguage(),
 		Currency: GetDefaultCurrency(),
 		Year:     GetDefaultYear(),
+		Smtp:     GetDefaultSmtp(),
 	}
 	file, _ := json.MarshalIndent(settingsDefault, "", " ")
 	_ = os.WriteFile(utils.GetSettingsFile(), file, 0644)
 	return settingsDefault
+}
+
+// isConform verify is settings parse from file is valid
+func (s *Settings) isValid() error {
+	var errors = make([]string, 0)
+
+	if s.Language == nil {
+		errors = append(errors, "La langue est introuvable dans la configuration")
+	}
+	if s.Currency == nil {
+		errors = append(errors, "La devise monnétaire est introuvable dans la configuration")
+	}
+	if s.Smtp == nil {
+		errors = append(errors, "La connexion SMTP de la configuration est introuvable")
+	}
+
+	if len(errors) > 0 {
+		return fmt.Errorf(strings.Join(errors, "\n"))
+	}
+
+	return nil
 }
 
 // Set change value of data and write file with settings data
