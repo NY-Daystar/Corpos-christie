@@ -5,11 +5,8 @@
 package config
 
 import (
-	"fmt"
 	"math"
 	"time"
-
-	"github.com/NY-Daystar/corpos-christie/utils/colors"
 )
 
 // Config represents the configuration of the program with the tax metrics
@@ -142,6 +139,4 @@ func (cfg *Config) ChangeTax(year int) {
 			return
 		}
 	}
-	fmt.Printf(colors.Red("%d is not on the list\n"), year)
-	fmt.Printf(colors.Red("Get default tax year: %d\n"), cfg.GetTax().Year)
 }
