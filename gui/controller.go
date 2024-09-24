@@ -297,14 +297,20 @@ func (controller *GUIController) prepareMail() {
 		return
 	}
 
+	controller.Model.User = &user.User{
+		Income:     controller.View.MailPopup.Income,
+		IsInCouple: controller.View.MailPopup.IsInCouple,
+		Children:   controller.View.MailPopup.Children,
+	}
+
 	// Confirmation Popup
 	dialog.ShowConfirm(controller.Model.Language.MailPopup.Confirm,
 		controller.Model.Language.MailPopup.ConfirmMessage,
 		func(confirm bool) {
 			if confirm {
-				// TODO Recuperer l'income, l'entry etc...
-				// TODO faire une methode pour formatter les résultats et creer un body et l'envoyer en parametres
-				controller.sendMail()
+				var body = helper.FormatMail(controller.Model.User, controller.Model.Config, controller.Model.Settings, controller.View.MailPopup)
+				var subject = controller.View.MailPopup.SubjectEntry.Text
+				controller.sendMail(subject, body)
 			} else {
 				controller.Logger.Info("Email sending canceled")
 			}
@@ -312,11 +318,10 @@ func (controller *GUIController) prepareMail() {
 }
 
 // send mail of history
-func (controller *GUIController) sendMail() {
+func (controller *GUIController) sendMail(subject, body string) {
 	var from = controller.Model.Settings.Smtp.User
 	var to = controller.View.MailPopup.EmailEntry.Text
-	var subject = controller.View.MailPopup.SubjectEntry.Text
-	var body = controller.View.MailPopup.BodyEntry.Text
+
 	controller.Logger.Info("Send mail", zap.String("From", from), zap.String("To", to), zap.String("subject", subject), zap.String("body", body))
 
 	var mail = helper.NewMail(from, to, subject, body)

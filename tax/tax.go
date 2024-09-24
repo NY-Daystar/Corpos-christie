@@ -33,7 +33,7 @@ type Result struct {
 // TaxTranche represent the tax calculating for each tranch when we calculate tax
 type TaxTranche struct {
 	Tax     float64        // Tax in € on a tranche for the user
-	tranche config.Tranche // Param of the tranche calculated (Min, Max, Rate)
+	Tranche config.Tranche // Param of the tranche calculated (Min, Max, Rate)
 }
 
 // StartTaxCalculator calculate taxes from income seized by user
@@ -197,6 +197,7 @@ func CalculateTax(user *user.User, cfg *config.Config) Result {
 	// Add data into the user
 	user.Tax = result.Tax
 	user.Remainder = result.Remainder
+	user.Shares = result.Shares
 
 	return result
 }
@@ -261,7 +262,7 @@ func CalculateReverseTax(user *user.User, cfg *config.Config) Result {
 // returns TaxTranche which amount to pay for the specific tranche
 func calculateTranche(taxable int, tranche config.Tranche) TaxTranche {
 	var taxTranche = TaxTranche{
-		tranche: tranche,
+		Tranche: tranche,
 	}
 
 	// convert rate in percentage
@@ -327,9 +328,9 @@ func showTaxTrancheResult(result Result, year int) {
 		index := i + 1
 
 		var trancheNumber = fmt.Sprintf("Tranche %d", index)
-		var min = fmt.Sprintf("%d €", val.tranche.Min)
-		var max = fmt.Sprintf("%d €", val.tranche.Max)
-		var rate = fmt.Sprintf("%d %%", val.tranche.Rate)
+		var min = fmt.Sprintf("%d €", val.Tranche.Min)
+		var max = fmt.Sprintf("%d €", val.Tranche.Max)
+		var rate = fmt.Sprintf("%d %%", val.Tranche.Rate)
 		var tax = fmt.Sprintf("%d €", int(val.Tax))
 
 		var line = make([]string, 5)

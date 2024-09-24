@@ -216,7 +216,12 @@ func (view *HistoryLayout) sendMail(income string, couple bool, children string)
 
 	view.MailPopup.EmailEntry.Text = "luc4snoga@gmail.com" // TODO a retirer
 	view.MailPopup.SubjectEntry.Text = "MY subject"        // TODO a retirer
-	view.MailPopup.BodyEntry.Text = "MY BODY"              // TODO a retirer
+	// TODO ajouter un nom d'utilisateur depuis l'interface, sinon adresse mail
+	view.MailPopup.Username = "Lucas" // TODO a retirer
+
+	view.MailPopup.Income, _ = utils.ConvertStringToInt(income)
+	view.MailPopup.IsInCouple = couple
+	view.MailPopup.Children, _ = utils.ConvertStringToInt(children)
 
 	var form = widget.NewForm(
 		widget.NewFormItem(view.Model.Language.MailPopup.MailForm, view.MailPopup.EmailEntry),
