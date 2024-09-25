@@ -20,7 +20,7 @@ type MailPopup struct {
 }
 
 // CreateMailPopup Create widgets for mail popup
-func CreateMailPopup(language settings.Yaml) *MailPopup {
+func CreateMailPopup(language *settings.Yaml) *MailPopup {
 	var emailEntry = widget.NewEntry()
 	emailEntry.Validator = func(input string) error {
 		return checkEmail(input, language.ErrorsValidation)

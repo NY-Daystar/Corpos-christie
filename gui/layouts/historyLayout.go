@@ -169,7 +169,7 @@ func (view *HistoryLayout) recalculate(income string, couple bool, children stri
 }
 
 // Recalculate data in history to get tax
-func (view *HistoryLayout) exportCsv(filePath string, income string, couple bool, children string) error {
+func (view *HistoryLayout) exportCsv(filePath, income string, couple bool, children string) error {
 	incomeInt, _ := utils.ConvertStringToInt(income)
 	childrenInt, _ := utils.ConvertStringToInt(children)
 	view.Model.User = &user.User{
