@@ -10,6 +10,7 @@ import (
 )
 
 // ViewLayout interface to define Tabs layouts in fyne
+// TODO a voir go:generate mockgen -source=mainLayout.go -destination=mock/mainLayout_mock.go -package=mock
 type ViewLayout interface {
 	SetLayout() *fyne.Container
 	setLeftLayout() *fyne.Container

@@ -24,8 +24,9 @@ mail_popup:
     mail_form: Ingresa tu correo
     subject_form: Asunto
     body_form: Mensaje
-    confirm: Confirmación
-    confirm_message: ¿Estás seguro que deseas enviar este correo ?
+    error: enviando correo
+    success: exito
+    success_details: ¡Operación completada exitosamente!
 tax_headers:
     header_1: TRAMO
     header_2: MIN
@@ -66,6 +67,8 @@ children: Seleccione el número de niños
 tax: Impuestos
 reverse_tax: Impuestos Inversos
 remainder: Resto
+result: Resultado
+total_tax: Impuesto total
 share: acciones
 history: Historial
 save: Guardar

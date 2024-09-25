@@ -303,18 +303,9 @@ func (controller *GUIController) prepareMail() {
 		Children:   controller.View.MailPopup.Children,
 	}
 
-	// Confirmation Popup
-	dialog.ShowConfirm(controller.Model.Language.MailPopup.Confirm,
-		controller.Model.Language.MailPopup.ConfirmMessage,
-		func(confirm bool) {
-			if confirm {
-				var body = helper.FormatMail(controller.Model.User, controller.Model.Config, controller.Model.Settings, controller.View.MailPopup)
-				var subject = controller.View.MailPopup.SubjectEntry.Text
-				controller.sendMail(subject, body)
-			} else {
-				controller.Logger.Info("Email sending canceled")
-			}
-		}, controller.View.Window)
+	var body = helper.FormatMail(controller.Model.User, controller.Model.Config, controller.Model.Settings, controller.Model.Language, controller.View.MailPopup)
+	var subject = controller.View.MailPopup.SubjectEntry.Text
+	controller.sendMail(subject, body)
 }
 
 // send mail of history
@@ -333,10 +324,9 @@ func (controller *GUIController) sendMail(subject, body string) {
 	var smtpClient = helper.NewSMTP(smtpConfig)
 	var err = smtpClient.DialAndSend(mail)
 	if err != nil {
-		dialog.ShowError(fmt.Errorf("sending mail: %w", err), controller.View.Window) // TODO LANGUAGE
+		dialog.ShowError(fmt.Errorf("%s: %w", controller.Model.Language.MailPopup.Error, err), controller.View.Window)
 	} else {
-		dialog.ShowInformation("Succès", "Opération réussie avec succès !", controller.View.Window) // TODO LANGUAGE
-		fmt.Println("MAIL sent successfully")
+		dialog.ShowInformation(controller.Model.Language.MailPopup.Success, controller.Model.Language.MailPopup.SuccessDetails, controller.View.Window)
 	}
 }
 

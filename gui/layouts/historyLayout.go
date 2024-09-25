@@ -15,6 +15,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/tax"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
@@ -118,7 +119,7 @@ func (view *HistoryLayout) setLeftLayout() *fyne.Container {
 		}
 
 		children[10].(*widget.Button).OnTapped = func() {
-			view.sendMail(income, couple, childrenNumber)
+			view.showPopupMail(income, couple, childrenNumber)
 		}
 	}
 
@@ -210,14 +211,12 @@ func (view *HistoryLayout) exportCsv(filePath string, income string, couple bool
 }
 
 // Create popup with form to send mail
-func (view *HistoryLayout) sendMail(income string, couple bool, children string) {
-	// TODO detecter si une configuration mail est renseigné
-	// TODO sinon faire une popup pour la générer
+func (view *HistoryLayout) showPopupMail(income string, couple bool, children string) {
 
-	view.MailPopup.EmailEntry.Text = "luc4snoga@gmail.com" // TODO a retirer
-	view.MailPopup.SubjectEntry.Text = "MY subject"        // TODO a retirer
-	// TODO ajouter un nom d'utilisateur depuis l'interface, sinon adresse mail
-	view.MailPopup.Username = "Lucas" // TODO a retirer
+	view.MailPopup.EmailEntry.Text = "luc4snoga@gmail.com" // TODO a retirer pour tester
+
+	view.MailPopup.SubjectEntry.Text = config.APP_NAME
+	view.MailPopup.BodyEntry.Text = fmt.Sprintf("Hi, Here's your result for <em>%d</em>", view.Model.Config.Tax.Year)
 
 	view.MailPopup.Income, _ = utils.ConvertStringToInt(income)
 	view.MailPopup.IsInCouple = couple
@@ -238,7 +237,7 @@ func (view *HistoryLayout) sendMail(income string, couple bool, children string)
 		),
 		view.Window,
 	)
-	confirmationDialog.Resize(fyne.NewSize(400, 400))
+	confirmationDialog.Resize(fyne.NewSize(600, 400))
 	confirmationDialog.Show()
 }
 

@@ -14,7 +14,6 @@ type MailPopup struct {
 	SubjectEntry *widget.Entry  // Subject of mail
 	BodyEntry    *widget.Entry  // Body of the mail
 	SubmitButton *widget.Button // Button to confirm the sending
-	Username     string         // Username to receive the mail
 	Income       int            // Income get in history
 	IsInCouple   bool           // Couple or no in history
 	Children     int            // Children get in history
