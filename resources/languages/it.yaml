@@ -24,8 +24,9 @@ mail_popup:
     mail_form: Inserisci la tua email
     subject_form: Oggetto
     body_form: Messaggio
-    confirm: Conferma
-    confirm_message: Sei sicuro di voler inviare questa email ?
+    error: invio posta
+    success: successo
+    success_details: Operazione completata con successo!
 tax_headers:
     header_1: TRANCHE
     header_2: MIN
@@ -66,6 +67,8 @@ children: Selezionare il numero dei bambini
 tax: Tasse
 reverse_tax: Inverte le tasse
 remainder: Resto
+result: Risultato
+total_tax: Imposta totale
 share: azioni
 history: Storico
 save: Salvare

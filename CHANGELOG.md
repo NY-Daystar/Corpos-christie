@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 TODO changer la date
 
-## 3.0.0 - May, 16th 2024 - Remove console app
+## 3.0.0 - October, 25th 2024 - Remove console app
 
 ### Removed
 
@@ -18,7 +18,7 @@ TODO changer la date
 
 TODO changer la date
 
-## 2.2.0 - May, 16th 2024 - Long fixes
+## 2.2.0 - October, 25th 2024 - Long fixes
 
 ### Added
 

@@ -31,79 +31,81 @@ func NewSMTP(config *settings.Smtp) *gomail.Dialer {
 }
 
 // FormatMail - Get taxes data and format it into html content
-func FormatMail(user *user.User, cfg *config.Config, params settings.Settings, popup *widgets.MailPopup) string {
+func FormatMail(user *user.User, cfg *config.Config, params settings.Settings, language settings.Yaml, popup *widgets.MailPopup) string {
 	var result = tax.CalculateTax(user, cfg)
-	var tranches = getTaxTrancheResult(result, cfg.Tax.Year)
-
-	// TODO mettre dans une langue spécifique les labels
-	// TODO voir pour mettre du CSS surtout pour la partie tax et remainder a mettre en vert
-	// TODO css pour les bordures du tableau du détail
-	// TODO mettre des h2 ou h3 entre les parties
-
-	// TODO mettre le .Prelude en placeholder
-
-	// TODO faire une méthode pour ajouter une signature
+	var tranches = getTaxTrancheResult(result, *params.Currency, language)
 
 	var emailTmpl = `{{.Prelude}}
 	<br/>
-	Hi {{.Name}}, Here's your result for <em>{{.Year}}</em>
 	<hr>
-	<tbody>
-		<tr>
-		<td>Income</td>
-		<td>{{.Income}} {{.Currency}}</td>
-		</tr>
-		<tr>
-		<td>In couple</td>
-		<td>{{.InCouple}} </td>
-		</tr>
-		<tr>
-		<td>Children</td>
-		<td>{{.Children}}</td>
-		</tr>
-		<tr>
-		<td>Shares</td>
-		<td>{{.Shares}}</td>
-		</tr>
-		<tr>
-		<td>Tax</td>
-		<td>{{.Tax}} {{.Currency}}</td>
-		</tr>
-		<tr>
-		<td>Remainder</td>
-		<td>{{.Remainder}} {{.Currency}}</td>
-		</tr>
-	</tbody>
+	<h3 style="width: 70%;margin: auto;">{{.TaxResults}}</h3>
+	<table style="width: 70%;margin: auto;border: 1px solid black;border-collapse: collapse;">
+		<tbody>
+			<tr>
+				<td>Income</td>
+				<td>{{.Income}} {{.Currency}}</td>
+			</tr>
+			<tr>
+				<td>In couple</td>
+				<td>{{.InCouple}} </td>
+			</tr>
+			<tr>
+				<td>Children</td>
+				<td>{{.Children}}</td>
+			</tr>
+			<tr>
+				<td>Shares</td>
+				<td>{{.Shares}}</td>
+			</tr>
+			<tr>
+				<td>Tax</td>
+				<td><span style="color:green";>{{.Tax}}</span> {{.Currency}}</td>
+			</tr>
+			<tr>
+				<td>Remainder</td>
+				<td><span style="color:green";>{{.Remainder}}</span> {{.Currency}}</td>
+			</tr>
+		</tbody>
 	</table>
+
 	<hr>
-	<ul>
+	
+	<h3 style="width: 70%;margin: auto;">{{.TaxDetails}}</h3>
+	<table style="width: 70%;margin: auto;border: 1px solid black;border-collapse: collapse;">
 		{{ range .Tranches }}
 		 	<tr>
 				{{ range . }}
-					<td>{{.}}</td>
+					<td style="border: 1px solid black;">{{.}}</td>
 				{{end}}
 			</tr>
 		{{ end }}
-	</ul>`
+	</table>
+	
+	<br/>
+	<br/>
 
-	// TODO language
-	var isInCouple = "No"
+	<span style="font-size:1.2em;">Mail sent by : <a href="https://github.com/NY-Daystar">NY-Daystar</a></span>
+	<img width="50" height="50" src="https://avatars.githubusercontent.com/u/123415822"/> 
+	`
+
+	var isInCouple = language.No
 	if user.IsInCouple {
-		isInCouple = "Yes"
+		isInCouple = language.Yes
 	}
 
 	data := map[string]interface{}{
-		"Prelude":   popup.BodyEntry.Text,
-		"Year":      cfg.Tax.Year,
-		"Name":      popup.Username,
-		"Currency":  params.Currency,
-		"Income":    user.Income,
-		"InCouple":  isInCouple,
-		"Children":  user.Children,
-		"Shares":    user.Shares,
-		"Tax":       user.Tax,
-		"Remainder": user.Remainder,
-		"Tranches":  tranches,
+		"Prelude":    popup.BodyEntry.Text,
+		"Year":       cfg.Tax.Year,
+		"Currency":   params.Currency,
+		"Income":     user.Income,
+		"InCouple":   isInCouple,
+		"Children":   user.Children,
+		"Shares":     user.Shares,
+		"Tax":        user.Tax,
+		"Remainder":  user.Remainder,
+		"Tranches":   tranches,
+		"TaxResults": fmt.Sprintf("%s %s", language.Tax, language.Result),
+		"TaxDetails": "Details",
 	}
 
 	t := template.Must(template.New("email").Parse(emailTmpl))
@@ -116,9 +118,14 @@ func FormatMail(user *user.User, cfg *config.Config, params settings.Settings, p
 }
 
 // getTaxTrancheResult get details of each tranche
-func getTaxTrancheResult(result tax.Result, year int) [][]string {
-	// Setting header
-	var header = []string{"Tranche", "Min", "Max", "Rate", "Tax"} // TODO LANGUAGE
+func getTaxTrancheResult(result tax.Result, currency string, language settings.Yaml) [][]string {
+	var header = []string{
+		language.TaxHeaders.Header1,
+		language.TaxHeaders.Header2,
+		language.TaxHeaders.Header3,
+		language.TaxHeaders.Header4,
+		language.TaxHeaders.Header5,
+	}
 
 	// Create data to append on the table
 	var data [][]string
@@ -127,14 +134,14 @@ func getTaxTrancheResult(result tax.Result, year int) [][]string {
 		index := i + 1
 
 		var trancheNumber = fmt.Sprintf("Tranche %d", index)
-		var min = fmt.Sprintf("%d €", val.Tranche.Min)
-		var max = fmt.Sprintf("%d €", val.Tranche.Max)
+		var min = fmt.Sprintf("%d %s", val.Tranche.Min, currency)
+		var max = fmt.Sprintf("%d %s", val.Tranche.Max, currency)
 		var rate = fmt.Sprintf("%d %%", val.Tranche.Rate)
-		var tax = fmt.Sprintf("%d €", int(val.Tax))
+		var tax = fmt.Sprintf("%d %s", int(val.Tax), currency)
 
 		// handle max number
 		if val.Tranche.Max > 1e10 {
-			max = fmt.Sprint("∞ €")
+			max = fmt.Sprintf("∞ %s", currency)
 		}
 
 		var line = make([]string, 5)
@@ -148,11 +155,11 @@ func getTaxTrancheResult(result tax.Result, year int) [][]string {
 
 	// Add footer
 	var footer = []string{
-		"Result",
-		"Remainder",
-		fmt.Sprintf("%s €", strconv.Itoa(int(result.Remainder))),
-		"Total Tax",
-		fmt.Sprintf("%s €", strconv.Itoa(int(result.Tax))),
+		language.Result,
+		language.Remainder,
+		fmt.Sprintf("%s %s", strconv.Itoa(int(result.Remainder)), currency),
+		language.TotalTax,
+		fmt.Sprintf("%s %s", strconv.Itoa(int(result.Tax)), currency),
 	}
 
 	data = append(data, footer)

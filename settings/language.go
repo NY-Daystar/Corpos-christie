@@ -41,6 +41,8 @@ type Yaml struct {
 	Tax              string               `yaml:"tax"`
 	ReverseTax       string               `yaml:"reverse_tax"`
 	Remainder        string               `yaml:"remainder"`
+	Result           string               `yaml:"result"`
+	TotalTax         string               `yaml:"total_tax"`
 	Share            string               `yaml:"share"`
 	History          string               `yaml:"history"`
 	Save             string               `yaml:"save"`
@@ -88,8 +90,9 @@ type MailPopupYaml struct {
 	MailForm       string `yaml:"mail_form"`
 	SubjectForm    string `yaml:"subject_form"`
 	BodyForm       string `yaml:"body_form"`
-	Confirm        string `yaml:"confirm"`
-	ConfirmMessage string `yaml:"confirm_message"`
+	Error          string `yaml:"error"`
+	Success        string `yaml:"success"`
+	SuccessDetails string `yaml:"success_details"`
 }
 
 // Headers yaml for tax detail
