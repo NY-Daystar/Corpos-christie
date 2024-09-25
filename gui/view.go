@@ -81,7 +81,7 @@ func (view *GUIView) prepare() {
 	// TODO method to init list and handle action in controller instead of historyLayout
 	view.HistoryList = &widget.List{}
 
-	view.MailPopup = widgets.CreateMailPopup(view.Model.Language)
+	view.MailPopup = widgets.CreateMailPopup(&view.Model.Language)
 
 	// Setup Fyne window
 	view.Window = view.App.NewWindow(config.APP_NAME)

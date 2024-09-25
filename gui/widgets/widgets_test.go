@@ -43,7 +43,7 @@ func TestWidgetCreateYearSelect(t *testing.T) {
 }
 
 func TestWidgetCreateMailPopup(t *testing.T) {
-	var selectPopup = CreateMailPopup(settings.Yaml{})
+	var selectPopup = CreateMailPopup(&settings.Yaml{})
 
 	if selectPopup == nil {
 		t.Errorf("No entry widget created")
