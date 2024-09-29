@@ -5,12 +5,14 @@
 package utils
 
 import (
+	"archive/zip"
 	"bufio"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -250,4 +252,133 @@ func DownloadFile(url, dest string) (int, error) {
 	}
 	resp.Body.Close()
 	return 0, out.Sync()
+}
+
+// src [string] : zip path
+// dest [string] : folder path to unzip
+//
+// Unzipped zip file to a folder
+func Unzip(src, dest string) error {
+	r, err := zip.OpenReader(src)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	for _, f := range r.File {
+		fpath := filepath.Join(dest, f.Name)
+
+		// Si c'est un dossier, crée-le
+		if f.FileInfo().IsDir() {
+			os.MkdirAll(fpath, os.ModePerm)
+			continue
+		}
+
+		// Si c'est un fichier, extrait-le
+		if err := os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
+			return err
+		}
+
+		outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			return err
+		}
+
+		rc, err := f.Open()
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(outFile, rc)
+
+		// Fermer les fichiers ouverts
+		outFile.Close()
+		rc.Close()
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// CopyFolder: copy all files into destDir
+func CopyFolder(srcDir, destDir string) error {
+	err := filepath.Walk(srcDir, func(srcPath string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		relPath, err := filepath.Rel(srcDir, srcPath)
+		if err != nil {
+			return err
+		}
+
+		destPath := filepath.Join(destDir, relPath)
+
+		if info.IsDir() {
+			if err := os.MkdirAll(destPath, info.Mode()); err != nil {
+				return err
+			}
+		} else {
+			if _, err := os.Stat(destPath); err == nil {
+				if err := os.Remove(destPath); err != nil {
+					return err
+				}
+			}
+
+			if err := copyFile(srcPath, destPath); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	return err
+}
+
+// copyFile: copy on file to dest folder
+func copyFile(src, dest string) error {
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		return err
+	}
+
+	info, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+	return os.Chmod(dest, info.Mode())
+}
+
+// copyFile: Get absolute path of executable
+func GetExecutablePath() (string, error) {
+	execPath, err := os.Executable()
+	if err != nil {
+		return "", fmt.Errorf("path of executable not found: %v", err)
+	}
+
+	execPath, err = filepath.EvalSymlinks(execPath)
+	if err != nil {
+		return "", fmt.Errorf("symbolic link not resolved: %v", err)
+	}
+
+	execDir := filepath.Dir(execPath)
+	// fmt.Println("Chemin complet de l'exécutable :", execPath)
+	// fmt.Println("Répertoire de l'exécutable :", execDir)
+
+	return execDir, nil
 }

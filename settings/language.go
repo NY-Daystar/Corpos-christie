@@ -29,6 +29,7 @@ type Yaml struct {
 	LogsActions      LogsActionsYaml      `yaml:"logs_actions"`
 	Export           ExportYaml           `yaml:"export"`
 	MailPopup        MailPopupYaml        `yaml:"mail_popup"`
+	UpdatePopup      UpdatePopupYaml      `yaml:"update_popup"`
 	ErrorsValidation ErrorsValidationYaml `yaml:"errors_validation"`
 	Year             string               `yaml:"year"`
 	Yes              string               `yaml:"yes"`
@@ -94,6 +95,17 @@ type MailPopupYaml struct {
 	Error          string `yaml:"error"`
 	Success        string `yaml:"success"`
 	SuccessDetails string `yaml:"success_details"`
+}
+
+// data for popup updater
+type UpdatePopupYaml struct {
+	Title string `yaml:"title"`
+	Text1 string `yaml:"text_1"`
+	Text2 string `yaml:"text_2"`
+	Text3 string `yaml:"text_3"`
+	Text4 string `yaml:"text_4"`
+	Text5 string `yaml:"text_5"`
+	Text6 string `yaml:"text_6"`
 }
 
 // Headers yaml for tax detail

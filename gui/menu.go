@@ -129,6 +129,7 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 	}
 
 	// Lancement de l'update avec progression
+	// TODO a revoir le processus
 	fmt.Printf("Demarrage de l'update\n")
 	updater.StartUpdater(menu.Controller.Logger)
 
@@ -151,7 +152,6 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 		if infinite.Hidden {
 			fmt.Printf("Fin du check\n")
 		}
-
 	}()
 
 	return container.NewVBox(

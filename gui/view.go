@@ -5,6 +5,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/layouts"
@@ -97,8 +98,9 @@ func (view *GUIView) prepare() {
 }
 
 // Start display view of the application layout and menu
-func (view *GUIView) Start(controller *GUIController) {
+func (view *GUIView) Start(controller *GUIController, path string) {
 	view.Model.Reload()
+	view.showNewVersion(path)
 	view.Window.ShowAndRun()
 }
 
@@ -152,6 +154,44 @@ func (view *GUIView) createAppTabs() *container.AppTabs {
 
 	view.Tabs.SetTabLocation(container.TabLocationTop)
 	return view.Tabs
+}
+
+// showNewVersion display popup to show new version
+func (view *GUIView) showNewVersion(path string) {
+	execPath, err := utils.GetExecutablePath()
+	if err != nil {
+		view.Logger.Warn("%v", zap.Error(err))
+	}
+
+	if path != "" {
+		updateDialog := dialog.NewCustom(
+			view.Model.Language.UpdatePopup.Title,
+			view.Model.Language.Close,
+			widget.NewLabel(
+				fmt.Sprintf(
+					`%v '%v' %v
+%v: %v
+
+1. %v
+2. %v : %v
+3. %v
+`,
+					view.Model.Language.UpdatePopup.Text1,
+					config.APP_NAME,
+					view.Model.Language.UpdatePopup.Text2,
+					view.Model.Language.UpdatePopup.Text3,
+					path,
+					view.Model.Language.UpdatePopup.Text4,
+					view.Model.Language.UpdatePopup.Text5,
+					execPath,
+					view.Model.Language.UpdatePopup.Text6,
+				),
+			),
+			view.Window,
+		)
+		updateDialog.Resize(fyne.NewSize(400, 300))
+		updateDialog.Show()
+	}
 }
 
 // getIncome Get value of widget entry of income

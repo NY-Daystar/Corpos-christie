@@ -27,6 +27,14 @@ mail_popup:
     error: invio posta
     success: successo
     success_details: Operazione completata con successo!
+update_popup:
+    title: Aggiornamento
+    text_1: Una nuova versione di
+    text_2: è disponibile
+    text_3: Può essere trovato in questa posizione
+    text_4: Chiudi l'applicazione
+    text_5: Sposta il contenuto della cartella in questa
+    text_6: Riavviare l'applicazione
 tax_headers:
     header_1: TRANCHE
     header_2: MIN

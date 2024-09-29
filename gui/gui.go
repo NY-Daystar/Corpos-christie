@@ -15,13 +15,14 @@ type GUI struct {
 	Logger     *zap.Logger
 }
 
-//	config: Configuration with taxes data of each year
-//	user: The user with his data
-//	logger: zap logger to log inputs
-//	display: [optionnal] param to know If we have to display GUI (used for unit tests)
+//		config: Configuration with taxes data of each year
+//		user: The user with his data
+//		logger: zap logger to log inputs
+//	 	path: [string] path to new version of the project
+//		display: [optionnal] param to know If we have to display GUI (used for unit tests)
 //
 // Launch GUI application.
-func Start(config *config.Config, user *user.User, logger *zap.Logger, display ...bool) {
+func Start(config *config.Config, user *user.User, logger *zap.Logger, path string, display ...bool) {
 	logger.Info("Launch application")
 
 	var model = model.NewModel(config, user, logger)
@@ -34,6 +35,6 @@ func Start(config *config.Config, user *user.User, logger *zap.Logger, display .
 
 	// Launch GUI if bool ok
 	if len(display) == 0 {
-		gui.View.Start(controller)
+		gui.View.Start(controller, path)
 	}
 }
