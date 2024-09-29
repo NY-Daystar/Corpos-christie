@@ -44,6 +44,13 @@ purge_history:
     confirm: Sei sicuro di voler eliminare la cronologia ?
     confirmed_title: Eliminato
     confirmed: Cronologia eliminata
+logs_actions:
+    clipboard_action: Copia-incolla
+    clipboard_success: Copiato
+    save_action: Salva nel file
+    save_success: Salvato
+    delete_action: Elimina i registri
+    delete_success: Eliminato
 export:
     export_title: Esportazione riuscita
     export_message: La tua esportazione si trova in questa posizione

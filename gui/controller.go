@@ -303,7 +303,7 @@ func (controller *GUIController) prepareMail() {
 		Children:   controller.View.MailPopup.Children,
 	}
 
-	var body = helper.FormatMail(controller.Model.User, controller.Model.Config, controller.Model.Settings, controller.Model.Language, controller.View.MailPopup)
+	var body = helper.FormatMail(controller.Model.User, controller.Model.Config, controller.Model.Settings, &controller.Model.Language, controller.View.MailPopup)
 	var subject = controller.View.MailPopup.SubjectEntry.Text
 	controller.sendMail(subject, body)
 }

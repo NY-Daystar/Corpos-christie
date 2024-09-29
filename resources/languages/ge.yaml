@@ -44,6 +44,13 @@ purge_history:
     confirm: Möchten Sie den Verlauf wirklich löschen ?
     confirmed_title: Gelöscht
     confirmed: Verlauf gelöscht
+logs_actions:
+    clipboard_action: Kopieren und Einfügen
+    clipboard_success: Kopiert
+    save_action: In Datei speichern
+    save_success: Gespeichert
+    delete_action: Protokolle löschen
+    delete_success: Gelöscht
 export:
     export_title: Export erfolgreich
     export_message: Ihr Export befindet sich an diesem Ort

@@ -3,7 +3,10 @@ package gui
 import (
 	"fmt"
 	"image/color"
+	"io"
 	"net/url"
+	"os"
+	"path"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -12,19 +15,25 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/settings"
 	"github.com/NY-Daystar/corpos-christie/updater"
 	"github.com/NY-Daystar/corpos-christie/utils"
+	"go.uber.org/zap"
 )
 
 // GUIMenu represents menu of window application
 type GUIMenu struct {
-	Controller *GUIController
-	App        fyne.App       // Fyne application
-	Window     fyne.Window    // Fyne window
-	MainMenu   *fyne.MainMenu // Fyne menu
+	Controller          *GUIController
+	App                 fyne.App       // Fyne application
+	Window              fyne.Window    // Fyne window
+	MainMenu            *fyne.MainMenu // Fyne menu
+	entryLogs           *widget.Entry  // Multilines entry
+	copyClipboardButton *widget.Button // Button to copy logs
+	saveButton          *widget.Button // Button to save logs into file
+	deleteButton        *widget.Button // Button to delete logs
 }
 
 // NewMenu create main menu for window application
@@ -284,20 +293,21 @@ func (menu *GUIMenu) createLabelLogs() *fyne.Container {
 
 // Show dialog box for Logs to show them, copy them or save them
 func (menu *GUIMenu) showLogsDialog() {
-	copyPasteButton := widget.NewButton("Copier-coller", menu.action1) // TODO language
-	saveButton := widget.NewButton("Save in file", menu.action2)       // TODO language
+	menu.copyClipboardButton = widget.NewButton(menu.Controller.Model.Language.LogsActions.ClipboardAction, menu.copyClipboard)
+	menu.saveButton = widget.NewButton(menu.Controller.Model.Language.LogsActions.SaveAction, menu.saveLogs)
+	menu.deleteButton = widget.NewButton(menu.Controller.Model.Language.LogsActions.DeleteAction, menu.purgeLogs)
 
 	lines, err := utils.ReadFileLastNLines(utils.GetLogsFile(), 500)
 	if err != nil {
 		menu.Controller.View.Logger.Sugar().Errorf("Failed to read file: %v", err)
 	}
 
-	entry := widget.NewMultiLineEntry()
-	entry.SetText(string(lines))
-	scroll := container.NewScroll(entry)
+	menu.entryLogs = widget.NewMultiLineEntry()
+	menu.entryLogs.SetText(string(lines))
+	scroll := container.NewScroll(menu.entryLogs)
 
 	// NewSpacer push to the right buttons
-	buttonContainer := container.NewHBox(layout.NewSpacer(), copyPasteButton, saveButton)
+	buttonContainer := container.NewHBox(layout.NewSpacer(), menu.copyClipboardButton, menu.saveButton, menu.deleteButton)
 
 	// Init container
 	contentContainer := container.NewBorder(
@@ -318,16 +328,66 @@ func (menu *GUIMenu) showLogsDialog() {
 	customDialog.Show()
 }
 
-// TODO a faire
-// TODO a commenter
-// TODO mettre dans un test
-func (menu *GUIMenu) action1() {
-	fmt.Printf("un pour copier coller les logs \n")
+// Copy logs menu in clipBoard
+func (menu *GUIMenu) copyClipboard() {
+	var content = menu.entryLogs.Text
+	menu.Window.Clipboard().SetContent(content)
+
+	menu.copyClipboardButton.SetIcon(theme.ConfirmIcon())
+	menu.copyClipboardButton.SetText(menu.Controller.Model.Language.LogsActions.ClipboardSuccess)
+
 }
 
-// TODO a faire
-// TODO a commenter
-// TODO mettre dans un test
-func (menu *GUIMenu) action2() {
-	fmt.Printf("Un pour sauvegarder les logs dans un fichier \n")
+// Save logs into a file
+func (menu *GUIMenu) saveLogs() {
+	folderChan := make(chan string)
+
+	dialog.NewFolderOpen(func(folder fyne.ListableURI, err error) {
+		if err != nil {
+			dialog.ShowError(err, menu.Window)
+			menu.Controller.View.Logger.Error("Dialog show folder error: %v", zap.String("error", err.Error()))
+			return
+		}
+		if folder != nil {
+			folderChan <- folder.Path()
+		}
+	}, menu.Window).Show()
+
+	go func() {
+		for {
+			var folderPath = <-folderChan
+			var filename = "corpos-christie.json"
+			var filePath = path.Join(folderPath, filename)
+
+			in, err := os.Open(utils.GetLogsFile())
+			if err != nil {
+				return
+			}
+			defer in.Close()
+			out, err := os.Create(filePath)
+			if err != nil {
+				return
+			}
+			defer func() {
+				cerr := out.Close()
+				if err == nil {
+					err = cerr
+				}
+			}()
+			if _, err = io.Copy(out, in); err != nil {
+				return
+			}
+			err = out.Sync()
+
+			menu.saveButton.SetIcon(theme.ConfirmIcon())
+			menu.saveButton.SetText(menu.Controller.Model.Language.LogsActions.SaveSuccess)
+		}
+	}()
+}
+
+// Erase content of logs
+func (menu *GUIMenu) purgeLogs() {
+	os.Truncate(utils.GetLogsFile(), 0)
+	menu.deleteButton.SetIcon(theme.ConfirmIcon())
+	menu.deleteButton.SetText(menu.Controller.Model.Language.LogsActions.DeleteSuccess)
 }

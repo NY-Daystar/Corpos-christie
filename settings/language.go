@@ -26,6 +26,7 @@ type Yaml struct {
 	MaritalStatus    MaritalStatusYaml    `yaml:"status_list"`
 	HistoryHeaders   HistoryHeadersYaml   `yaml:"history_headers"`
 	PurgeHistory     PurgeHistoryYaml     `yaml:"purge_history"`
+	LogsActions      LogsActionsYaml      `yaml:"logs_actions"`
 	Export           ExportYaml           `yaml:"export"`
 	MailPopup        MailPopupYaml        `yaml:"mail_popup"`
 	ErrorsValidation ErrorsValidationYaml `yaml:"errors_validation"`
@@ -125,6 +126,16 @@ type PurgeHistoryYaml struct {
 	Confirm        string `yaml:"confirm"`
 	ConfirmedTitle string `yaml:"confirmed_title"`
 	Confirmed      string `yaml:"confirmed"`
+}
+
+// Dialog to control logs data
+type LogsActionsYaml struct {
+	ClipboardAction  string `yaml:"clipboard_action"`
+	ClipboardSuccess string `yaml:"clipboard_success"`
+	SaveAction       string `yaml:"save_action"`
+	SaveSuccess      string `yaml:"save_success"`
+	DeleteAction     string `yaml:"delete_action"`
+	DeleteSuccess    string `yaml:"delete_success"`
 }
 
 // Data for export dialog box
