@@ -31,7 +31,7 @@ func NewSMTP(config *settings.Smtp) *gomail.Dialer {
 }
 
 // FormatMail - Get taxes data and format it into html content
-func FormatMail(user *user.User, cfg *config.Config, params settings.Settings, language settings.Yaml, popup *widgets.MailPopup) string {
+func FormatMail(user *user.User, cfg *config.Config, params settings.Settings, language *settings.Yaml, popup *widgets.MailPopup) string {
 	var result = tax.CalculateTax(user, cfg)
 	var tranches = getTaxTrancheResult(result, *params.Currency, language)
 
@@ -118,7 +118,7 @@ func FormatMail(user *user.User, cfg *config.Config, params settings.Settings, l
 }
 
 // getTaxTrancheResult get details of each tranche
-func getTaxTrancheResult(result tax.Result, currency string, language settings.Yaml) [][]string {
+func getTaxTrancheResult(result tax.Result, currency string, language *settings.Yaml) [][]string {
 	var header = []string{
 		language.TaxHeaders.Header1,
 		language.TaxHeaders.Header2,

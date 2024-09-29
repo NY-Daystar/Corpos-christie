@@ -44,6 +44,13 @@ purge_history:
     confirm: Êtes vous sûr de vouloir supprimer l'historique ?
     confirmed_title: Purge effectué
     confirmed: L'historique a été effacé
+logs_actions:
+    clipboard_action: Copier-Coller
+    clipboard_success: Copié
+    save_action: Enregistrer
+    save_success: Enregistré
+    delete_action: Supprimer les logs
+    delete_success: Supprimé
 export:
     export_title: Export réussi
     export_message: Votre export se trouve à cet emplacement

@@ -129,7 +129,6 @@ func (view *HistoryLayout) setLeftLayout() *fyne.Container {
 		updateList,
 	)
 
-	// TODO tester avec un layout de type grid pour aligner avec la liste
 	headers := container.NewHBox()
 
 	for index, header := range view.Model.Language.GetHistoryHeaders() {
@@ -212,9 +211,6 @@ func (view *HistoryLayout) exportCsv(filePath, income string, couple bool, child
 
 // Create popup with form to send mail
 func (view *HistoryLayout) showPopupMail(income string, couple bool, children string) {
-
-	view.MailPopup.EmailEntry.Text = "luc4snoga@gmail.com" // TODO a retirer pour tester
-
 	view.MailPopup.SubjectEntry.Text = config.APP_NAME
 	view.MailPopup.BodyEntry.Text = fmt.Sprintf("Hi, Here's your result for <em>%d</em>", view.Model.Config.Tax.Year)
 

@@ -78,7 +78,6 @@ func (view *GUIView) prepare() {
 	view.PurgeHistoryButton = widgets.CreateButtonIcon(theme.DeleteIcon())
 	view.ExportHistoryButton = widgets.CreateButtonIcon(theme.FileImageIcon())
 
-	// TODO method to init list and handle action in controller instead of historyLayout
 	view.HistoryList = &widget.List{}
 
 	view.MailPopup = widgets.CreateMailPopup(&view.Model.Language)
