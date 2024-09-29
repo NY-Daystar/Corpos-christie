@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"path"
+	"path/filepath"
 	"regexp"
 	"runtime"
 
@@ -25,62 +28,26 @@ type GitHubRelease struct {
 }
 
 // StartUpdater check if update is available and install it
-func StartUpdater(logger *zap.Logger) {
+func StartUpdater(logger *zap.Logger) (string, error) {
 	release, err := checkForUpdate(config.APP_VERSION)
 	if err != nil {
-		logger.Sugar().Errorf("Error checking for update: %v", err)
+		return "", fmt.Errorf("error checking for update: %v", err)
+	}
+	if release == nil {
+		return "", fmt.Errorf("no update available")
 	}
 
-	if release != nil {
-		fmt.Println("New version available:", release.TagName)
-		for _, asset := range release.Assets {
-			fmt.Println("Found asset:", asset.Name)
-			// Adjust to find the correct binary for the OS
-			if (runtime.GOOS == "windows" && asset.Name == "windows-corpos-christie-2.0.0.zip") ||
-				(runtime.GOOS == "linux" && asset.Name == "app-linux") ||
-				(runtime.GOOS == "darwin" && asset.Name == "app-macos") {
-				fmt.Println("Downloading from:", asset.URL)
-
-				var dest string
-				if runtime.GOOS == "windows" {
-					dest = "./updater/output.zip" // TODO mettre le dossier de telechargement de l'OS
-				} else {
-					dest = "./updater/output" // TODO mettre le dossier de telechargement de l'OS
-				}
-
-				typee, err := utils.DownloadFile(asset.URL, dest)
-				if err != nil {
-					fmt.Printf("Type %d, Error downloading the update: %v\n", typee, err)
-					return
-				}
-
-				fmt.Println("Downloaded new version")
-
-				// TODO execute MSI
-
-				// Replace the old binary with the new one
-				// execPath, err := os.Executable()
-				// if err != nil {
-				// 	fmt.Println("Error finding executable path:", err)
-				// 	return
-				// }
-
-				// err = os.Rename(dest, execPath)
-				// if err != nil {
-				// 	fmt.Println("Error replacing the binary:", err)
-				// 	return
-				// }
-
-				// fmt.Println("Update successful, restarting application")
-				// cmd := exec.Command(execPath)
-				// cmd.Start()
-				// os.Exit(0)
-			}
-		}
-	} else {
-		// if no internet access
-		fmt.Println("No new version available")
+	zipPath, err := downloadRelease(release)
+	if err != nil {
+		return "", fmt.Errorf("error download release: %v", err)
 	}
+
+	appPath, err := installRelease(zipPath)
+	if err != nil {
+		return "", fmt.Errorf("error install release: %v", err)
+	}
+
+	return appPath, nil
 }
 
 //	version [string]: actual version of application and check if superior one exists
@@ -107,26 +74,76 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 		return nil, errors.New("rate limiter reached")
 	}
 
-	tag, err := go_version.NewVersion(releaseTag)
-	if err != nil {
-		fmt.Printf("3 %v", err)
-	}
-	versionCompared, err := go_version.NewVersion(version)
-	if err != nil {
-		fmt.Printf("4 %v", err)
-	}
+	tag, _ := go_version.NewVersion(releaseTag)
+	actualVersion, _ := go_version.NewVersion(version)
 
-	if tag.LessThan(versionCompared) {
-		fmt.Printf("Actual version (%s) is less than latest version (%s)\n", tag, versionCompared)
-		// return &release, nil
+	if tag.LessThan(actualVersion) {
+		fmt.Printf("Actual version (%s) is greater or equal than latest version (%s). No need to update\n", actualVersion, tag)
 	} else {
-		fmt.Printf("Actual version (%s) is greater or equal than latest version (%s)\n", tag, versionCompared)
+		fmt.Printf("Actual version (%s) is lower than latest version (%s)\n", actualVersion, tag)
 		return &release, nil
 	}
-	// if tag > version {
-	// 	return &release, nil
-	// }
 	return nil, resp.Body.Close()
+}
+
+//	release [GitHubRelease]: release of new version
+//	returns path to zip locally
+//
+// downloadRelease Download link of release and return path of zip
+func downloadRelease(release *GitHubRelease) (string, error) {
+	if release == nil {
+		return "", fmt.Errorf("No new version available")
+	}
+
+	fmt.Println("New version available:", release.TagName)
+
+	var arch = getArchitecture()
+	fmt.Printf("Arch : %v -> %v\n", runtime.GOOS, arch)
+
+	var delivery = fmt.Sprintf("%s-%s-%s.zip", arch, config.APP_NAME, GetTag(release.TagName))
+	fmt.Printf("Asset to download : %s\n", delivery)
+
+	var downloadLink = ""
+	for _, asset := range release.Assets {
+		fmt.Println("Found asset:", asset.Name)
+		if asset.Name == delivery {
+			downloadLink = asset.URL
+			break
+		}
+	}
+
+	if downloadLink == "" {
+		return "", fmt.Errorf("download link not found")
+	}
+
+	fmt.Println("Downloading from:", downloadLink)
+
+	downloadFolder, _ := getDownloadFolder()
+
+	var dest = path.Join(downloadFolder, fmt.Sprintf("%s-%s.zip", config.APP_NAME, release.TagName))
+
+	typee, err := utils.DownloadFile(downloadLink, dest)
+	if err != nil {
+		fmt.Printf("Type %d, Error downloading the update: %v\n", typee, err)
+		return "", err
+	}
+
+	fmt.Println("Downloaded new version")
+	return dest, nil
+}
+
+//	zipPath [string]: path to release downloaded
+//	returns path to folder unzipped
+//
+// installRelease unzip file and copy into
+func installRelease(zipPath string) (string, error) {
+	downloadFolder, err := getDownloadFolder()
+	if err != nil {
+		return "", err
+	}
+	var unzipPath = path.Join(downloadFolder, config.APP_NAME)
+	utils.Unzip(zipPath, unzipPath)
+	return unzipPath, nil
 }
 
 // Get version of release based on tag
@@ -152,4 +169,37 @@ func IsNewUpdateAvailable(version string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// Return good name with right architecture
+func getArchitecture() string {
+	switch a := runtime.GOOS; a {
+	case "windows":
+		return "windows"
+	case "linux":
+		return "linux"
+	case "darwin":
+		return "mac"
+	default:
+		return "windows"
+	}
+}
+
+// GetDownloadFolder returns path of folder "Download" from OS
+func getDownloadFolder() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	switch runtime.GOOS {
+	case "windows":
+		return filepath.Join(homeDir, "Downloads"), nil
+	case "darwin": // macOS
+		return filepath.Join(homeDir, "Downloads"), nil
+	case "linux":
+		return filepath.Join(homeDir, "Downloads"), nil
+	default:
+		return "", fmt.Errorf("OS unknown: %s", runtime.GOOS)
+	}
 }

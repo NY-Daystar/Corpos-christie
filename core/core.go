@@ -6,6 +6,7 @@ import (
 
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui"
+	"github.com/NY-Daystar/corpos-christie/updater"
 	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
@@ -31,20 +32,22 @@ func Start(cfg *config.Config, user *user.User, mode ...string) {
 		appSelected = mode[0]
 	}
 
-	// fmt.Printf("START UPDATER\n")
-	// updater.StartUpdater(logger)
-	// fmt.Printf("UPDATER TERMINE\n")
+	logger.Debug("Start Updater")
+	path, err := updater.StartUpdater(logger)
+	logger.Sugar().Debugf("Chemin: %v\n", path)
+	logger.Sugar().Errorf("Error: %v\n", err)
+	logger.Debug("End Updater")
 
 	// Launch program (Console or GUI)
 	switch m := appSelected; m {
 	case GUI:
-		gui.Start(cfg, user, logger)
+		gui.Start(cfg, user, logger, path)
 	case CONSOLE:
 		Console{Config: cfg, User: user}.Start()
 	case TEST_MODE:
 		return
 	default:
-		gui.Start(cfg, user, logger)
+		gui.Start(cfg, user, logger, path)
 	}
 }
 

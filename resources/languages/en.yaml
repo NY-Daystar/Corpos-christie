@@ -27,6 +27,14 @@ mail_popup:
     error: sending mail
     success: Success
     success_details: Operation successfully completed!
+update_popup:
+    title: Update
+    text_1: A new version of
+    text_2: is available
+    text_3: It can be found at this location
+    text_4: Close the application
+    text_5: Move the content of the folder into this one
+    text_6: Relaunch the application
 tax_headers:
     header_1: TRANCHE
     header_2: MIN

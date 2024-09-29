@@ -27,6 +27,14 @@ mail_popup:
     error: enviando correo
     success: exito
     success_details: ¡Operación completada exitosamente!
+update_popup:
+    title: Actualizar
+    text_1: Una nueva versión de
+    text_2: esta disponible
+    text_3: Se puede encontrar en esta ubicación.
+    text_4: Cerrar la aplicación
+    text_5: Mover el contenido de la carpeta a esta.
+    text_6: Reiniciar la aplicación
 tax_headers:
     header_1: TRAMO
     header_2: MIN
