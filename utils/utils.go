@@ -213,8 +213,7 @@ func Unzip(src, dest string) error {
 	defer r.Close()
 
 	for _, f := range r.File {
-		p, _ := filepath.Abs(f.Name)
-		if strings.Contains(p, "..") {
+		if strings.Contains(f.Name, "..") {
 			continue
 		}
 
