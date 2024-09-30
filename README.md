@@ -22,7 +22,7 @@
 ![Graphic user interface](./docs/graphicmode.png)  
 ![Settings](./docs/settings.png)
 
-Console mode
+Console mode (Available until v2.1.0)  
 ![CLI](./docs/consolemode.png)
 
 This project is an income taxes calculator
@@ -112,7 +112,7 @@ Import module for an other project
 go get github.com/NY-Daystar/corpos-christie
 ```
 
-Launch console application
+Launch console application (Available until v2.1.0)
 
 ```bash
 $ make run-console

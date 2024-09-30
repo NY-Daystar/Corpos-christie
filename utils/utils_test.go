@@ -195,7 +195,7 @@ func TestSetPadding(t *testing.T) {
 }
 
 func TestDownloadWithGoodUrl(t *testing.T) {
-	var url = "https://github.com/NY-Daystar/corpos-christie/releases/download/v2.1.0/windows-corpos-christie-2.0.0.zip"
+	var url = "https://github.com/NY-Daystar/corpos-christie/releases/download/v2.1.0/windows-corpos-christie-2.1.0.zip"
 	var destFile = "./release.zip"
 	var expected = 0
 

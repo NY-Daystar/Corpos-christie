@@ -33,7 +33,7 @@ func Start(cfg *config.Config, user *user.User, mode ...string) {
 	}
 
 	logger.Debug("Start Updater")
-	path, err := updater.StartUpdater(logger)
+	path, err := updater.StartUpdater()
 	logger.Sugar().Debugf("Chemin: %v\n", path)
 	logger.Sugar().Errorf("Error: %v\n", err)
 	logger.Debug("End Updater")

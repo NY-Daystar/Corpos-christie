@@ -14,8 +14,6 @@ import (
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	go_version "github.com/hashicorp/go-version"
-
-	"go.uber.org/zap"
 )
 
 // GitHubRelease data relative to release github
@@ -28,7 +26,7 @@ type GitHubRelease struct {
 }
 
 // StartUpdater check if update is available and install it
-func StartUpdater(logger *zap.Logger) (string, error) {
+func StartUpdater() (string, error) {
 	release, err := checkForUpdate(config.APP_VERSION)
 	if err != nil {
 		return "", fmt.Errorf("error checking for update: %v", err)
@@ -92,7 +90,7 @@ func checkForUpdate(version string) (*GitHubRelease, error) {
 // downloadRelease Download link of release and return path of zip
 func downloadRelease(release *GitHubRelease) (string, error) {
 	if release == nil {
-		return "", fmt.Errorf("No new version available")
+		return "", fmt.Errorf("no new version available")
 	}
 
 	fmt.Println("New version available:", release.TagName)

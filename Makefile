@@ -1,7 +1,7 @@
 
 APP_NAME="corpos-christie"
 APP_ID="lucasnoga.corpos-christie"
-APP_VERSION="2.2.0"
+APP_VERSION="3.0.0"
 APP_BUILD=2
 
 .PHONY: package build-setup build-linux build-windows build-mac
@@ -14,17 +14,10 @@ clean:
 	@rm -rf build/*
 
 # Package executables for all OS after built-in
-package: build-setup build-linux build-windows
+package: clean build-setup build-linux build-windows
 	@echo Building executable ${APP_NAME}...
 	@./package.sh ${APP_VERSION}
 	@echo "${APP_NAME} built"
-
-# Test package app
-package-test: package
-	@echo Unzip build ${APP_NAME}...
-	@unzip build/linux/linux-${APP_NAME}-${APP_VERSION}.zip -d build/test
-	@pwd
-	@./build/test/${APP_NAME}
 
 # Setup 
 build-setup:
@@ -36,7 +29,7 @@ build-setup:
 
 # Build executable for Linux
 build-linux: build-setup
-	@echo "Build for Linux"
+	@echo "Build for Linux & Mac"
 	@fyne-cross linux -arch=amd64 --app-id=${APP_ID} --app-build=${APP_BUILD} --app-version=${APP_VERSION}
 	@echo "Move executable into build folder"
 	cp fyne-cross/bin/linux-amd64/Corpos-Christie build/linux-${APP_NAME}

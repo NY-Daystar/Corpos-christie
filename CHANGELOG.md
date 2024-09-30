@@ -7,18 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project releases
 
-TODO changer la date
-
-## 3.0.0 - October, 25th 2024 - Remove console app
+## 3.1.0 - September, 30th 2024 - Remove console app
 
 ### Removed
 
 -   Console application
-    TODO mettre dans le README d'utiliser la version 2.2.0 pour avoir la console
 
-TODO changer la date
-
-## 2.2.0 - October, 25th 2024 - Long fixes
+## 3.0.0 - September, 30th 2024 - Long fixes
 
 ### Added
 
