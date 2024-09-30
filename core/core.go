@@ -6,31 +6,18 @@ import (
 
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/updater"
-	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-// Enum for launched mode
-const (
-	GUI       string = "gui"
-	CONSOLE   string = "console"
-	TEST_MODE string = "test"
-)
-
 // Start Core program
 // Get Options passed on program and launch appropriate system
-func Start(cfg *config.Config, user *user.User, mode ...string) {
+func Start(cfg *config.Config, user *model.User) {
 	var logger = initLogger()
-	var appSelected string
-	if len(mode) == 0 {
-		appSelected = selectMode(os.Args)
-	} else {
-		appSelected = mode[0]
-	}
 
 	logger.Debug("Start Updater")
 	path, err := updater.StartUpdater()
@@ -38,36 +25,7 @@ func Start(cfg *config.Config, user *user.User, mode ...string) {
 	logger.Sugar().Errorf("Error: %v\n", err)
 	logger.Debug("End Updater")
 
-	// Launch program (Console or GUI)
-	switch m := appSelected; m {
-	case GUI:
-		gui.Start(cfg, user, logger, path)
-	case CONSOLE:
-		Console{Config: cfg, User: user}.Start()
-	case TEST_MODE:
-		return
-	default:
-		gui.Start(cfg, user, logger, path)
-	}
-}
-
-// selectMode Check args passed in launch
-// returns which mode app to launch between GUI or console
-func selectMode(args []string) string {
-	// if no args specified launch GUI
-	if len(args) < 2 {
-		return GUI
-	} else {
-		var mode string = args[1]
-		switch m := mode; m {
-		case "--gui":
-			return GUI
-		case "--console":
-			return CONSOLE
-		default:
-			return GUI
-		}
-	}
+	gui.Start(cfg, user, logger, path)
 }
 
 // initLogger create logger with zap librairy

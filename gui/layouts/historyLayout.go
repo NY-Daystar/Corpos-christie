@@ -16,8 +16,8 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/tax"
-	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 )
@@ -171,7 +171,7 @@ func (view *HistoryLayout) recalculate(income string, couple bool, children stri
 func (view *HistoryLayout) exportCsv(filePath, income string, couple bool, children string) error {
 	incomeInt, _ := utils.ConvertStringToInt(income)
 	childrenInt, _ := utils.ConvertStringToInt(children)
-	view.Model.User = &user.User{
+	view.Model.User = &model.User{
 		Income:     incomeInt,
 		IsInCouple: couple,
 		Children:   childrenInt,

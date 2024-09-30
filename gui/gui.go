@@ -3,7 +3,6 @@ package gui
 import (
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
-	"github.com/NY-Daystar/corpos-christie/user"
 	"go.uber.org/zap"
 )
 
@@ -22,7 +21,7 @@ type GUI struct {
 //		display: [optionnal] param to know If we have to display GUI (used for unit tests)
 //
 // Launch GUI application.
-func Start(config *config.Config, user *user.User, logger *zap.Logger, path string, display ...bool) {
+func Start(config *config.Config, user *model.User, logger *zap.Logger, path string, display ...bool) {
 	logger.Info("Launch application")
 
 	var model = model.NewModel(config, user, logger)

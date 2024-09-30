@@ -9,7 +9,6 @@ import (
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/themes"
 	"github.com/NY-Daystar/corpos-christie/settings"
-	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
@@ -26,7 +25,7 @@ const (
 // GUIModel data of the application
 type GUIModel struct {
 	Config    *config.Config // Config to use correctly the program
-	User      *user.User     // User params to use program
+	User      *User          // User params to use program
 	Logger    *zap.Logger    // Logger
 	Histories []History      // List of tax history saved
 
@@ -61,7 +60,7 @@ type GUIModel struct {
 }
 
 // NewModel: instantiate data for the application
-func NewModel(config *config.Config, user *user.User, logger *zap.Logger) *GUIModel {
+func NewModel(config *config.Config, user *User, logger *zap.Logger) *GUIModel {
 	model := GUIModel{
 		Config: config,
 		User:   user,

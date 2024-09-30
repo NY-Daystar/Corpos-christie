@@ -8,8 +8,7 @@ import (
 	"testing"
 
 	"github.com/NY-Daystar/corpos-christie/config"
-	"github.com/NY-Daystar/corpos-christie/user"
-	"github.com/NY-Daystar/corpos-christie/utils/colors"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 )
 
 // For testing
@@ -29,27 +28,27 @@ func init() {
 func TestCalculateTax(t *testing.T) {
 
 	tests := []struct {
-		user     user.User
+		user     model.User
 		expected Result
 	}{
 		{
-			user:     user.User{Income: 30000},
+			user:     model.User{Income: 30000},
 			expected: Result{Income: 30000, Tax: 2922, Remainder: 27078},
 		},
 		{
-			user:     user.User{Income: 60000, IsInCouple: true, Children: 2},
+			user:     model.User{Income: 60000, IsInCouple: true, Children: 2},
 			expected: Result{Income: 60000, Tax: 3225, Remainder: 56775},
 		},
 		{
-			user:     user.User{Income: 100000, IsInCouple: true, Children: 3},
+			user:     model.User{Income: 100000, IsInCouple: true, Children: 3},
 			expected: Result{Income: 100000, Tax: 6501, Remainder: 93499},
 		},
 		{
-			user:     user.User{Income: 60000, IsInCouple: true, Children: 0},
+			user:     model.User{Income: 60000, IsInCouple: true, Children: 0},
 			expected: Result{Income: 60000, Tax: 5843, Remainder: 54157},
 		},
 		{
-			user:     user.User{Income: 30000, IsInCouple: false, Children: 2},
+			user:     model.User{Income: 30000, IsInCouple: false, Children: 2},
 			expected: Result{Income: 30000, Tax: 488, Remainder: 29512},
 		},
 	}
@@ -59,9 +58,9 @@ func TestCalculateTax(t *testing.T) {
 		t.Logf("Function result:\t%+v", result)
 
 		if result.Income != testCase.expected.Income || result.Tax != testCase.expected.Tax || result.Remainder != testCase.expected.Remainder {
-			t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(result.Income), colors.Red(testCase.expected.Income))
-			t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(result.Tax), colors.Red(testCase.expected.Tax))
-			t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(result.Remainder), colors.Red(testCase.expected.Remainder))
+			t.Errorf("Expected that the Income %d should be equal to %d", result.Income, testCase.expected.Income)
+			t.Errorf("Expected that the Tax %f should be equal to %f", result.Tax, testCase.expected.Tax)
+			t.Errorf("Expected that the Remainder %f should be equal to %f", result.Remainder, testCase.expected.Remainder)
 		}
 	}
 }
@@ -70,19 +69,19 @@ func TestCalculateTax(t *testing.T) {
 func TestCalculateReverseTax(t *testing.T) {
 
 	tests := []struct {
-		user     user.User
+		user     model.User
 		expected Result
 	}{
 		{
-			user:     user.User{Remainder: 28395},
+			user:     model.User{Remainder: 28395},
 			expected: Result{Income: 31880, Tax: 3485, Remainder: 28395},
 		},
 		{
-			user:     user.User{Remainder: 53124, IsInCouple: true, Children: 2},
+			user:     model.User{Remainder: 53124, IsInCouple: true, Children: 2},
 			expected: Result{Income: 55896, Tax: 2772, Remainder: 53124},
 		},
 		{
-			user:     user.User{Remainder: 93437, IsInCouple: true, Children: 3},
+			user:     model.User{Remainder: 93437, IsInCouple: true, Children: 3},
 			expected: Result{Income: 99929, Tax: 6492, Remainder: 93437},
 		},
 	}
@@ -92,9 +91,9 @@ func TestCalculateReverseTax(t *testing.T) {
 		t.Logf("Function result:\t%+v", result)
 
 		if result.Income != testCase.expected.Income || result.Tax != testCase.expected.Tax || result.Remainder != testCase.expected.Remainder {
-			t.Errorf("Expected that the Income %s should be equal to %s", colors.Red(result.Income), colors.Red(testCase.expected.Income))
-			t.Errorf("Expected that the Tax %s should be equal to %s", colors.Red(result.Tax), colors.Red(testCase.expected.Tax))
-			t.Errorf("Expected that the Remainder %s should be equal to %s", colors.Red(result.Remainder), colors.Red(testCase.expected.Remainder))
+			t.Errorf("Expected that the Income %d should be equal to %d", result.Income, testCase.expected.Income)
+			t.Errorf("Expected that the Tax %f should be equal to %f", result.Tax, testCase.expected.Tax)
+			t.Errorf("Expected that the Remainder %f should be equal to %f", result.Remainder, testCase.expected.Remainder)
 		}
 	}
 }
@@ -103,7 +102,7 @@ func TestCalculateReverseTax(t *testing.T) {
 func TestUserSingleOnlyIncome(t *testing.T) {
 	var sharesRef = 1.
 
-	var user = user.User{
+	var user = model.User{
 		IsInCouple: false,
 		Children:   0,
 	}
@@ -121,7 +120,7 @@ func TestUserSingleOnlyIncome(t *testing.T) {
 func TestUserInCoupleNoChildren(t *testing.T) {
 	var sharesRef = 2.
 
-	var user = user.User{
+	var user = model.User{
 		IsInCouple: true,
 		Children:   0,
 	}
@@ -139,7 +138,7 @@ func TestUserInCoupleNoChildren(t *testing.T) {
 func TestUserInCoupleWith3Children(t *testing.T) {
 	var sharesRef = 4.
 
-	var user = user.User{
+	var user = model.User{
 		IsInCouple: true,
 		Children:   3,
 	}
@@ -157,7 +156,7 @@ func TestUserInCoupleWith3Children(t *testing.T) {
 func TestUserInSingleWith4Children(t *testing.T) {
 	var sharesExpected = 4.5
 
-	var user = user.User{
+	var user = model.User{
 		IsInCouple: false,
 		Children:   4,
 	}
@@ -175,7 +174,7 @@ func TestUserInSingleWith4Children(t *testing.T) {
 func TestUserInCoupleWith4Children(t *testing.T) {
 	var sharesRef = 5.
 
-	var user = user.User{
+	var user = model.User{
 		IsInCouple: true,
 		Children:   4,
 	}
