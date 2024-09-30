@@ -6,12 +6,11 @@
 # [Version] : v1.1.0
 # [Author] : Lucas Noga
 # [Shell] : Bash v5.1.0
-# [Usage] : ./package.sh 1.1.0
+# [Usage] : ./package.sh v1.1.0
 #           make build
 # ------------------------------------------------------------------
 
 APP=corpos-christie
-DEFAULT_VERSION=2.2.0
 
 ###
 # Main body of script starts here
@@ -23,14 +22,14 @@ function main {
 
     # if no version
     if [ -z $version ]; then
-        log_color "Set default version: ${DEFAULT_VERSION}" "yellow"
-        version=${DEFAULT_VERSION}
+        log_color "No version is set. Use cmd: './package.sh v1.0.0'" "red"
+        exit 1
     fi
 
     cd build
 
     # Creating new builds
-    declare -a OS_LIST=("linux" "windows" "mac")
+    declare -a OS_LIST=("linux" "windows")
     for os in ${OS_LIST[@]}; do
         package_app $os $version
     done
@@ -38,7 +37,7 @@ function main {
 
 ###
 # Package Apps for specific os
-# $1 : [string] os built (ex: linux, windows, mac)
+# $1 : [string] os built (ex: linux, windows)
 # $2 : [string] version of the app
 ###
 function package_app {
@@ -56,8 +55,8 @@ function package_app {
 
     # Copy resources folder into os folder
     resources="resources"
-    cp -r ${resources} ${os}/${resources}
-    log_color "Copy resources folder:  cp -r ${resources} ${os}/${resources}" "yellow"
+    cp -r ${resources} ${os}
+    log_color "Copy resources folder:  cp -r ${resources} ${os}" "yellow"
 
     # Copy app and change its name into os folder
     app_old=${os}-${APP}${extension}

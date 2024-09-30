@@ -53,12 +53,12 @@ purge_history:
     confirmed_title: Purged
     confirmed: History purged
 logs_actions:
-  clipboard_action: Copy-Paste
-  clipboard_success: Copied
-  save_action: Save in file
-  save_success: Saved
-   delete_action: Delete logs
-  delete_success: Deleted
+    clipboard_action: Copy-Paste
+    clipboard_success: Copied
+    save_action: Save in file
+    save_success: Saved
+    delete_action: Delete logs
+    delete_success: Deleted
 export:
     export_title: Export successful
     export_message: Your export is located at this location

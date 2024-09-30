@@ -268,6 +268,10 @@ func Unzip(src, dest string) error {
 	for _, f := range r.File {
 		fpath := filepath.Join(dest, f.Name)
 
+		if strings.Contains(fpath, "..") {
+			continue
+		}
+
 		// Si c'est un dossier, crée-le
 		if f.FileInfo().IsDir() {
 			os.MkdirAll(fpath, os.ModePerm)
@@ -289,7 +293,7 @@ func Unzip(src, dest string) error {
 			return err
 		}
 
-		_, err = io.Copy(outFile, rc)
+		_, err = io.CopyN(outFile, rc, 1024)
 
 		// Fermer les fichiers ouverts
 		outFile.Close()
@@ -344,13 +348,11 @@ func copyFile(src, dest string) error {
 	if err != nil {
 		return err
 	}
-	defer sourceFile.Close()
 
 	destFile, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
-	defer destFile.Close()
 
 	_, err = io.Copy(destFile, sourceFile)
 	if err != nil {
@@ -361,6 +363,8 @@ func copyFile(src, dest string) error {
 	if err != nil {
 		return err
 	}
+	sourceFile.Close()
+	destFile.Close()
 	return os.Chmod(dest, info.Mode())
 }
 

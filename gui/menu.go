@@ -131,7 +131,7 @@ func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
 	// Lancement de l'update avec progression
 	// TODO a revoir le processus
 	fmt.Printf("Demarrage de l'update\n")
-	updater.StartUpdater(menu.Controller.Logger)
+	updater.StartUpdater()
 
 	progress := widget.NewProgressBar()
 	infinite := widget.NewProgressBarInfinite()
