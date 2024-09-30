@@ -7,10 +7,10 @@ import (
 	"text/template"
 
 	"github.com/NY-Daystar/corpos-christie/config"
+	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/gui/widgets"
 	"github.com/NY-Daystar/corpos-christie/settings"
 	"github.com/NY-Daystar/corpos-christie/tax"
-	"github.com/NY-Daystar/corpos-christie/user"
 	"gopkg.in/gomail.v2"
 )
 
@@ -31,7 +31,7 @@ func NewSMTP(config *settings.Smtp) *gomail.Dialer {
 }
 
 // FormatMail - Get taxes data and format it into html content
-func FormatMail(user *user.User, cfg *config.Config, params settings.Settings, language *settings.Yaml, popup *widgets.MailPopup) string {
+func FormatMail(user *model.User, cfg *config.Config, params settings.Settings, language *settings.Yaml, popup *widgets.MailPopup) string {
 	var result = tax.CalculateTax(user, cfg)
 	var tranches = getTaxTrancheResult(result, *params.Currency, language)
 

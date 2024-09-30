@@ -7,8 +7,6 @@ import (
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/gui/model"
 	"github.com/NY-Daystar/corpos-christie/settings"
-	"github.com/NY-Daystar/corpos-christie/user"
-	"github.com/NY-Daystar/corpos-christie/utils/colors"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zaptest"
 )
@@ -19,7 +17,7 @@ import (
 
 // Test GUI components (model, view, controller)
 func TestGUIComponents(t *testing.T) {
-	var user = &user.User{}
+	var user = &model.User{}
 	var logger *zap.Logger = zaptest.NewLogger(t)
 	var cfg *config.Config = config.New()
 
@@ -73,7 +71,7 @@ func TestIconAccess(t *testing.T) {
 	var icon fyne.Resource = settings.GetIcon(iconPath)
 
 	if icon == nil {
-		t.Errorf("Expected icon loaded with path '%v'", colors.Red(iconPath))
+		t.Errorf("Expected icon loaded with path '%v'", iconPath)
 	}
 }
 
@@ -86,7 +84,7 @@ func TestLoadLanguageData(t *testing.T) {
 	t.Logf("Function result:\t%+v", *language)
 
 	if *language != *expected {
-		t.Errorf("Expected that the Mode '%v' should be equal to %v", colors.Red(*expected), colors.Red(*language))
+		t.Errorf("Expected that the Mode '%v' should be equal to %v", *expected, *language)
 	}
 }
 
@@ -99,10 +97,10 @@ func TestLoadCurrencyData(t *testing.T) {
 	t.Logf("Function result:\t%+v", currencies)
 
 	if len(currencies) != expected {
-		t.Errorf("Expected that the currency number '%v' should be equal to %v", colors.Red(expected), colors.Red(len(currencies)))
+		t.Errorf("Expected that the currency number '%v' should be equal to %v", expected, len(currencies))
 	}
 
 	if currencies[1] != anotherExpected {
-		t.Errorf("Expected that the currency '%v' should be equal to %v", colors.Red(anotherExpected), colors.Red(currencies[1]))
+		t.Errorf("Expected that the currency '%v' should be equal to %v", anotherExpected, currencies[1])
 	}
 }

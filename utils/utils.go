@@ -22,18 +22,6 @@ import (
 	"github.com/NY-Daystar/corpos-christie/config"
 )
 
-const (
-	// Add default padding for function setPadding
-	DEFAULT_PADDING = 10
-)
-
-// ReadValue read input from terminal and returns its value
-func ReadValue() string {
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	return scanner.Text()
-}
-
 // ConvertStringToInt convert str string to an int and returns it
 // return an error if the string is not convertible into an int
 func ConvertStringToInt(str string) (int, error) {
@@ -65,11 +53,6 @@ func ConvertBindStringToInt(str binding.String) int {
 	return i
 }
 
-// ConvertFloat64ToString convert float64 to a string and returns it
-func ConvertFloat64ToString(v float64) string {
-	return fmt.Sprintf("%f", v)
-}
-
 // ConvertInt64ToString convert int64 to a string and returns it
 func ConvertInt64ToString(v int64) string {
 	return strconv.FormatInt(v, 10)
@@ -78,17 +61,6 @@ func ConvertInt64ToString(v int64) string {
 // ConvertIntToString convert int to a string and returns it
 func ConvertIntToString(v int) string {
 	return fmt.Sprintf("%d", v)
-}
-
-// ConvertPercentageToFloat64 convert str which is string percentage like 5% into 5
-func ConvertPercentageToFloat64(str string) (float64, error) {
-	var s = strings.TrimSuffix(str, " %")
-	i, err := strconv.Atoi(s)
-	f := float64(i)
-	if err != nil {
-		return 0, err
-	}
-	return f, nil
 }
 
 // FindIndex get index in slice of string if target is in
@@ -100,17 +72,6 @@ func FindIndex(slice []string, target string) int {
 		}
 	}
 	return -1
-}
-
-// GetMaxLength get max length string among the tab slice and returns its length
-func GetMaxLength(tab []string) int {
-	var maxIndexLength int
-	for _, v := range tab {
-		if maxIndexLength < len(v) {
-			maxIndexLength = len(v)
-		}
-	}
-	return maxIndexLength
 }
 
 // ReadFileLastNLines read the last N lines of the files
@@ -158,20 +119,6 @@ func GetHistory(filePath string) []string {
 	file.Sync()
 
 	return lines
-}
-
-// getPadding get padding necessary between values in tab for each of them to align items
-func getPadding(tab []string) int {
-	return GetMaxLength(tab)
-}
-
-// SetPadding get the padding of the tab slice and add the padding into the element v
-// returns v string including the padding
-func SetPadding(tab []string, v string) string {
-	var padding = getPadding(tab)
-	var gap = padding - len(v) + DEFAULT_PADDING
-	var space = strings.Repeat(" ", gap)
-	return space
 }
 
 // getAppDataPath returns the path to the AppData directory on Windows
@@ -266,11 +213,12 @@ func Unzip(src, dest string) error {
 	defer r.Close()
 
 	for _, f := range r.File {
-		fpath := filepath.Join(dest, f.Name)
-
-		if strings.Contains(fpath, "..") {
+		p, _ := filepath.Abs(f.Name)
+		if strings.Contains(p, "..") {
 			continue
 		}
+
+		fpath := filepath.Join(dest, f.Name)
 
 		// Si c'est un dossier, crée-le
 		if f.FileInfo().IsDir() {
@@ -381,8 +329,6 @@ func GetExecutablePath() (string, error) {
 	}
 
 	execDir := filepath.Dir(execPath)
-	// fmt.Println("Chemin complet de l'exécutable :", execPath)
-	// fmt.Println("Répertoire de l'exécutable :", execDir)
 
 	return execDir, nil
 }

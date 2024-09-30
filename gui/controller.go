@@ -21,7 +21,6 @@ import (
 	"github.com/NY-Daystar/corpos-christie/helper"
 	"github.com/NY-Daystar/corpos-christie/settings"
 	"github.com/NY-Daystar/corpos-christie/tax"
-	"github.com/NY-Daystar/corpos-christie/user"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 )
@@ -228,7 +227,7 @@ func (controller *GUIController) exportAllHistory() {
 
 			for _, history := range controller.Model.Histories {
 
-				var user = &user.User{
+				var user = &model.User{
 					Income:     history.Income,
 					IsInCouple: history.Couple,
 					Children:   history.Children,
@@ -297,7 +296,7 @@ func (controller *GUIController) prepareMail() {
 		return
 	}
 
-	controller.Model.User = &user.User{
+	controller.Model.User = &model.User{
 		Income:     controller.View.MailPopup.Income,
 		IsInCouple: controller.View.MailPopup.IsInCouple,
 		Children:   controller.View.MailPopup.Children,

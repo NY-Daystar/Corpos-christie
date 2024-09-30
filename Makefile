@@ -5,7 +5,7 @@ APP_VERSION="3.0.0"
 APP_BUILD=2
 
 .PHONY: package build-setup build-linux build-windows build-mac
-.PHONY: run run-console
+.PHONY: run
 
 all: clean package
 
@@ -51,10 +51,6 @@ build-mac:
 # Run app
 run:
 	go run .
-
-# Run app in console
-run-console:
-	go run . --console
 
 # get test coverage
 coverage:
