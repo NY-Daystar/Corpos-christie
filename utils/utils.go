@@ -5,7 +5,6 @@
 package utils
 
 import (
-	"archive/zip"
 	"bufio"
 	"fmt"
 	"io"
@@ -16,7 +15,6 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
-	"strings"
 
 	"fyne.io/fyne/v2/data/binding"
 	"github.com/NY-Daystar/corpos-christie/config"
@@ -201,121 +199,7 @@ func DownloadFile(url, dest string) (int, error) {
 	return 0, out.Sync()
 }
 
-// src [string] : zip path
-// dest [string] : folder path to unzip
-//
-// Unzipped zip file to a folder
-func Unzip(src, dest string) error {
-	r, err := zip.OpenReader(src)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-
-	for _, f := range r.File {
-		if strings.Contains(f.Name, "..") {
-			continue
-		}
-
-		fpath := filepath.Join(dest, f.Name)
-
-		// Si c'est un dossier, crée-le
-		if f.FileInfo().IsDir() {
-			os.MkdirAll(fpath, os.ModePerm)
-			continue
-		}
-
-		// Si c'est un fichier, extrait-le
-		if err := os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
-			return err
-		}
-
-		outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-		if err != nil {
-			return err
-		}
-
-		rc, err := f.Open()
-		if err != nil {
-			return err
-		}
-
-		_, err = io.CopyN(outFile, rc, 1024)
-
-		// Fermer les fichiers ouverts
-		outFile.Close()
-		rc.Close()
-
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// CopyFolder: copy all files into destDir
-func CopyFolder(srcDir, destDir string) error {
-	err := filepath.Walk(srcDir, func(srcPath string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		relPath, err := filepath.Rel(srcDir, srcPath)
-		if err != nil {
-			return err
-		}
-
-		destPath := filepath.Join(destDir, relPath)
-
-		if info.IsDir() {
-			if err := os.MkdirAll(destPath, info.Mode()); err != nil {
-				return err
-			}
-		} else {
-			if _, err := os.Stat(destPath); err == nil {
-				if err := os.Remove(destPath); err != nil {
-					return err
-				}
-			}
-
-			if err := copyFile(srcPath, destPath); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
-
-	return err
-}
-
-// copyFile: copy on file to dest folder
-func copyFile(src, dest string) error {
-	sourceFile, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-
-	destFile, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
-
-	_, err = io.Copy(destFile, sourceFile)
-	if err != nil {
-		return err
-	}
-
-	info, err := os.Stat(src)
-	if err != nil {
-		return err
-	}
-	sourceFile.Close()
-	destFile.Close()
-	return os.Chmod(dest, info.Mode())
-}
-
-// copyFile: Get absolute path of executable
+// GetExecutablePath: Get absolute path of executable
 func GetExecutablePath() (string, error) {
 	execPath, err := os.Executable()
 	if err != nil {

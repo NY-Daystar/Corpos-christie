@@ -45,7 +45,6 @@ func TestGUIComponents(t *testing.T) {
 	}
 	menu.showFileItem()
 	menu.showAboutItem()
-	menu.showUpdateItem()
 	menu.showLogsDialog()
 
 	var yaml = settings.Yaml{
