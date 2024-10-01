@@ -40,12 +40,7 @@ func StartUpdater() (string, error) {
 		return "", fmt.Errorf("error download release: %v", err)
 	}
 
-	appPath, err := installRelease(zipPath)
-	if err != nil {
-		return "", fmt.Errorf("error install release: %v", err)
-	}
-
-	return appPath, nil
+	return zipPath, nil
 }
 
 //	version [string]: actual version of application and check if superior one exists
@@ -115,7 +110,6 @@ func downloadRelease(release *GitHubRelease) (string, error) {
 	}
 
 	fmt.Println("Downloading from:", downloadLink)
-
 	downloadFolder, _ := getDownloadFolder()
 
 	var dest = path.Join(downloadFolder, fmt.Sprintf("%s-%s.zip", config.APP_NAME, release.TagName))
@@ -130,20 +124,6 @@ func downloadRelease(release *GitHubRelease) (string, error) {
 	return dest, nil
 }
 
-//	zipPath [string]: path to release downloaded
-//	returns path to folder unzipped
-//
-// installRelease unzip file and copy into
-func installRelease(zipPath string) (string, error) {
-	downloadFolder, err := getDownloadFolder()
-	if err != nil {
-		return "", err
-	}
-	var unzipPath = path.Join(downloadFolder, config.APP_NAME)
-	utils.Unzip(zipPath, unzipPath)
-	return unzipPath, nil
-}
-
 // Get version of release based on tag
 // If no matching return ""
 func GetTag(tag string) string {
@@ -153,20 +133,6 @@ func GetTag(tag string) string {
 		return ""
 	}
 	return result[1]
-}
-
-//	version [string]: actual version of application and check if superior one exists
-//	returns true if new version is available otherwise return false
-//
-// IsNewUpdateAvailable Check for GUI and return true if new update
-func IsNewUpdateAvailable(version string) (bool, error) {
-	release, err := checkForUpdate(version)
-
-	if err != nil || release == nil {
-		return false, err
-	}
-
-	return true, nil
 }
 
 // Return good name with right architecture

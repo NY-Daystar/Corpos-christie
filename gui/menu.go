@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"os"
 	"path"
-	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -19,7 +18,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/NY-Daystar/corpos-christie/config"
 	"github.com/NY-Daystar/corpos-christie/settings"
-	"github.com/NY-Daystar/corpos-christie/updater"
 	"github.com/NY-Daystar/corpos-christie/utils"
 	"go.uber.org/zap"
 )
@@ -71,7 +69,6 @@ func (menu *GUIMenu) createHelpMenu() *fyne.Menu {
 	helpMenu := fyne.NewMenu(
 		menu.Controller.Model.Language.Help,
 		fyne.NewMenuItem(menu.Controller.Model.Language.About, menu.showAboutItem),
-		fyne.NewMenuItem(menu.Controller.Model.Language.Update, menu.showUpdateItem),
 	)
 	return helpMenu
 }
@@ -117,50 +114,6 @@ func (menu *GUIMenu) createAboutDialog() *fyne.Container {
 	)
 }
 
-// createUpdateDialog create dialog box for updates
-func (menu *GUIMenu) createUpdateDialog() *fyne.Container {
-	check, _ := updater.IsNewUpdateAvailable(config.APP_VERSION)
-	if !check {
-		return container.NewVBox(
-			container.NewHBox(
-				widget.NewLabel("Pas de mise à jour"),
-			),
-		)
-	}
-
-	// Lancement de l'update avec progression
-	// TODO a revoir le processus
-	fmt.Printf("Demarrage de l'update\n")
-	updater.StartUpdater()
-
-	progress := widget.NewProgressBar()
-	infinite := widget.NewProgressBarInfinite()
-
-	// TODO mettre une popup dès le lancement de l'interface pour demander la mise à jour
-
-	// TODO make a circular progress simualate with 5sec latences
-	// TODO utiliser la demo : https://docs.fyne.io/started/demo.html
-	// TODO la mettre dans le readme
-	// TODO l'utiliser pour changer la barre de progression ou mettre un circular
-
-	go func() {
-		for i := 0.0; i <= 1.0; i += 0.1 {
-			time.Sleep(time.Millisecond * 250)
-			progress.SetValue(i)
-		}
-		infinite.Hide()
-		if infinite.Hidden {
-			fmt.Printf("Fin du check\n")
-		}
-	}()
-
-	return container.NewVBox(
-		container.NewHBox(widget.NewLabel("Vérification de mise à jour")),
-		container.NewHBox(widget.NewLabel("Vérification de mise à jour")),
-		container.NewVBox(progress, infinite),
-	)
-}
-
 // Show dialog box for settings like change language, year, currency, etc...
 func (menu *GUIMenu) showFileItem() {
 	dialog.ShowCustom(menu.Controller.Model.Language.Settings, menu.Controller.Model.Language.Close,
@@ -184,16 +137,6 @@ func (menu *GUIMenu) showAboutItem() {
 		menu.createAboutDialog(),
 		menu.Window,
 	)
-}
-
-// Show dialog box about update application
-func (menu *GUIMenu) showUpdateItem() {
-	fmt.Printf("Check update")
-	dialog.ShowCustom(
-		menu.Controller.Model.Language.Update,
-		menu.Controller.Model.Language.Close,
-		menu.createUpdateDialog(),
-		menu.Window)
 }
 
 // Refresh change for each option in menu old language for new in model
