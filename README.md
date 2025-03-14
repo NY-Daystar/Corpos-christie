@@ -57,19 +57,19 @@ Source code analysed with [DeepSource](https://deepsource.com/)
    1.1 Linux
 
     ```bash
-    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v1.1.0/linux-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    $ wget https://github.com/NY-Daystar/Corpos-christie/releases/download/v3.2.0/linux-corpos-christie-3.2.0.zip -O corpos-christie.zip
     ```
 
     1.2 Windows
 
     ```bash
-    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v1.1.0/windows-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    $ wget https://github.com/NY-Daystar/Corpos-christie/releases/download/v3.2.0/windows-corpos-christie-3.2.0.zip -O corpos-christie.zip
     ```
 
     1.3 Mac
 
     ```bash
-    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v1.1.0/mac-corpos-christie-1.1.0.zip -O corpos-christie.zip
+    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v3.2.0/mac-corpos-christie-3.2.0.zip -O corpos-christie.zip
     ```
 
 2. Unzip it

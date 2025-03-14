@@ -204,7 +204,7 @@ func TestGetDefaultTheme(t *testing.T) {
 }
 
 func TestGetDefaultYear(t *testing.T) {
-	var expected = "2024"
+	var expected = "2025"
 	year := GetDefaultYear()
 
 	if *year != expected {
