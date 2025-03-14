@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Project releases
 
+## 3.3.0 - March, 14th 2025 - 2025 update
+
+### Added
+
+-   Add tax metrics for 2025
+
+## 3.2.0 - October, 1st 2024 - Refactoring
+
+### Changed
+
+-   Remove obsolete code
+
 ## 3.1.0 - September, 30th 2024 - Remove console app
 
 ### Removed

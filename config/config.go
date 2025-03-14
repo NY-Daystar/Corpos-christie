@@ -38,6 +38,17 @@ func New() *Config {
 		Version: APP_VERSION,
 		TaxList: []Tax{
 			{
+				Year: 2025,
+				Tranches: []Tranche{
+
+					{Min: 0, Max: 11497, Rate: 0},
+					{Min: 11498, Max: 29315, Rate: 11},
+					{Min: 29316, Max: 83823, Rate: 30},
+					{Min: 83824, Max: 180294, Rate: 41},
+					{Min: 180295, Max: math.MaxInt64, Rate: 45},
+				},
+			},
+			{
 				Year: 2024,
 				Tranches: []Tranche{
 
