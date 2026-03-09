@@ -1,43 +1,29 @@
 #!/bin/bash
 
-APP_NAME="corpos-christie"
-APP_ID="lucasnoga.corpos-christie"
-APP_VERSION="2.2.0"
-APP_BUILD=2
-
 function main() {
-    ## Handle debug mode
-    if [ "$1" = "--debug" ]; then
-        DEBUG=true
-        log_verbose "Debug mode"
-    fi
+    check_version
+    check_empty_folder
+    check_big_files
 
-    ## Handle detailed mode
-    if [ "$1" = "--detailed" ] || [ "$2" = "--detailed" ]; then
-        DETAILED=true
-        DEBUG=true
-        log_verbose "Detailed mode" "yellow"
-    fi
-
-    log_color "Compiling" "blue"
-    compile $DETAILED
+    compile
     check 'compile' $?
-    log_color "Compiling DONE..." "blue"
+    log "[✔] Compiled"
 
-    log_color "Executing unit tests..." "green"
+    wails_doctor
+    check 'wails_doctor' $?
+    log "[✔] Check wails doctor"
+
     unittest
     check 'unittest' $?
-    log_color "Executing tests DONE..." "green"
+    log "[✔] Unit Tests"
 
-    log_color "Executing coverage tests" "yellow"
     coverage
-    log_color "Executing coverage tests DONE..." "yellow"
+    log "[✔] Coverage tests"
 
-    log_color "Executing sca analysis" "magenta"
     sca_analysis
-    log_color "Executing sca analysis DONE..." "magenta"
+    log "[✔] SCA"
 
-    log_color "Every controls are checked" "blue"
+    log_color "Every controls are checked" "green"
 }
 
 ###
@@ -54,14 +40,63 @@ function check() {
         [ $result_code != 0 ] && log_color "Unable to compile project. Cancel git push." "red" && exit 1
         ;;
 
+    'wails_doctor')
+        [ $result_code != 0 ] && log_color "Can't use wails. Cancel git push." "red" && exit 1
+        ;;
+
     'unittest')
         [ $result_code != 0 ] && log_color "Unit tests are not successful. Cancel git push." "red" && exit 1
         ;;
     esac
 }
 
+
+function check_version(){
+    last_tag=$(git tag | tail -n 1)
+    if [ -z ${last_tag} ];then
+        return 0
+    fi
+    last_version=$(echo "${last_tag}" | grep -oP "\K[0-9].[0-9].[0-9]")
+
+    file_version="./wails.json"
+
+    regex="\"productVersion\": \"\K([0-9].[0-9].[0-9])\""
+    current_version=$(grep -Po "${regex}" "${file_version}")
+
+    vercomp ${current_version} ${last_version}
+    result=$?
+    case ${result} in
+        0) op='=';;
+        1) op='>';;
+        2) op='<';;
+    esac
+    if [ ${op} == "=" ] || [ ${op} == "<" ];then 
+        log "$(log_color "Careful your version is downgraded current:" "yellow") $(log_color "${current_version}" "red") $(log_color "last:" "yellow") $(log_color "${last_version}" "red")"
+    fi
+}
+
+function check_empty_folder(){
+    folders=$(find . -type d -empty -not -path "./.git/*")
+    for folder in ${folders[@]};do
+        log_color "the folder \"${folder}\" is empty" "yellow"
+    done
+}
+
+function check_big_files() {
+    size=5M
+    files=$(find . -type f -size +${size} -not -path "./.git/*")
+    for file in ${files[@]};do
+        log_color "the file \"${file}\" > ${size}" "yellow"
+    done
+}
+
 function compile() {
-    [ "${DETAILED}" == "true" ] && go build || go build >/dev/null
+    make setup
+    return $?
+}
+
+function wails_doctor() {
+    wails doctor
     return $?
 }
 
@@ -77,10 +112,43 @@ function coverage() {
 }
 
 function sca_analysis() {
+    go install golang.org/x/vuln/cmd/govulncheck@latest
     govulncheck ./...
 }
 
 ################################################################### Utils functions ###################################################################
+
+###
+# Compare version semver
+# $1: [string], semver version compared (ex: 1.0.0)
+# $2: [string], semver version to compare (ex: 1.1.1)
+# returns: 0 if equal, 1 if $1 < $2, 2 if $1 > $2
+###
+vercomp () {
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if ((10#${ver1[i]:=0} > 10#${ver2[i]:=0}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
 
 ###
 # Display datetime (ex: 2022-01-10 23:20:35)

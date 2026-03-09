@@ -1,0 +1,24 @@
+package settings
+
+import (
+	"corpos-christie/go/config"
+	"corpos-christie/go/utils"
+)
+
+// GetYears get array of all tax year
+func GetYears(config *config.Config) []string {
+	var years []string
+	for _, tax := range config.TaxList {
+		year := utils.ConvertIntToString(tax.Year)
+		years = append(years, year)
+	}
+	return years
+}
+
+// GetDefaultYear get value of default year
+func GetDefaultYear() *string {
+	var config = config.New()
+	years := GetYears(config)
+	var year = years[0]
+	return &year
+}

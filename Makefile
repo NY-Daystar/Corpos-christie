@@ -1,56 +1,34 @@
 
 APP_NAME="corpos-christie"
 APP_ID="lucasnoga.corpos-christie"
-APP_VERSION="3.3.0"
-APP_BUILD=2
+APP_VERSION="4.0.0"
 
-.PHONY: package build-setup build-linux build-windows build-mac
 .PHONY: run
 
-all: clean package
+all: clean
 
 clean: 
 	@echo "Cleaning build/ folder"
 	@rm -rf build/*
 
-# Package executables for all OS after built-in
-package: clean build-setup build-linux build-windows
-	@echo Building executable ${APP_NAME}...
-	@./package.sh ${APP_VERSION}
-	@echo "${APP_NAME} built"
-
-# Setup 
-build-setup:
-	@echo "Creating build directory"
-	@rm -rf fyne-cross
-	@mkdir -p build/
-	cp -r resources build/resources
+setup: icon
+	@echo "Build ${APP_NAME} - ${APP_VERSION}"
+	@cp ./icon.png ./build/appicon.png
+	@cp ./icon.ico ./build/windows/icon.ico
+	@echo "[X] Icon generated"
+	@wails build
 	
-
-# Build executable for Linux
-build-linux: build-setup
-	@echo "Build for Linux & Mac"
-	@fyne-cross linux -arch=amd64 --app-id=${APP_ID} --app-build=${APP_BUILD} --app-version=${APP_VERSION}
-	@echo "Move executable into build folder"
-	cp fyne-cross/bin/linux-amd64/Corpos-Christie build/linux-${APP_NAME}
-	@chmod +x build/linux-${APP_NAME}
-
-# Build executable for Windows
-build-windows: build-setup
-	@echo "Build for Windows"
-	@fyne-cross windows -arch=amd64 --app-id=${APP_ID} --app-build=${APP_BUILD} --app-version=${APP_VERSION}
-	@echo "Move executable into build folder"
-	cp fyne-cross/bin/windows-amd64/Corpos-Christie.exe build/windows-${APP_NAME}.exe
-	
-	
-# Build executable for MacOS
-build-mac:
-	@echo "Build for MacOS"
-	@GOOS=darwin GOARCH=amd64 go build -o build/mac-${APP_NAME}
-
-# Run app
 run:
-	go run .
+	wails dev
+
+doctor:
+	wails doctor
+
+icon:
+	winicon g -sizes 16,32,48,64,128,256 ./icon.png
+
+icon-info:
+	winicon i ./build/windows/icon.ico
 
 # get test coverage
 coverage:

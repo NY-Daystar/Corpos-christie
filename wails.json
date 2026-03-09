@@ -1,0 +1,19 @@
+{
+	"$schema": "https://wails.io/schemas/config.v2.json",
+	"name": "corpos-christie",
+	"outputfilename": "corpos-christie",
+	"frontend:install": "npm install",
+	"frontend:build": "npm run build",
+	"frontend:dev:watcher": "npm run dev",
+	"frontend:dev:serverUrl": "auto",
+	"author": {
+		"name": "Lucas Noga",
+		"email": "luc4snoga@gmail.com"
+	},
+	"info": {
+		"companyName": "NY-DAYSTAR",
+		"productName": "Corpos-Christie",
+		"productVersion": "4.0.0",
+		"copyright": "GPL-3"
+	}
+}

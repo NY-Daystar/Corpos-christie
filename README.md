@@ -1,9 +1,11 @@
 # Corpos-Christie
 
+TODO changer les badges
+TODO mettre codacy et deepsource
+TODO retirer les fyne en wails
 [![ci](https://github.com/NY-Daystar/corpos-christie/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/NY-Daystar/corpos-christie/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Version](https://img.shields.io/github/tag/LucasNoga/corpos-christie.svg)](https://github.com/NY-Daystar/corpos-christie/releases)
-[![Total views](https://img.shields.io/sourcegraph/rrc/github.com/NY-Daystar/corpos-christie.svg)](https://sourcegraph.com/github.com/NY-Daystar/corpos-christie)
 [![Godoc](https://godoc.org/github.com/NY-Daystar/corpos-christie?status.svg)](https://godoc.org/github.com/NY-Daystar/corpos-christie)
 
 ![GitHub watchers](https://img.shields.io/github/watchers/ny-daystar/corpos-christie)
@@ -26,124 +28,101 @@ Console mode (Available until v2.1.0)
 ![CLI](./docs/consolemode.png)
 
 This project is an income taxes calculator
-which has been developped in Golang and fyne for GUI which allows to calculate your taxes in the current year.
+which has been developped in Golang and wails for GUI which allows to calculate your taxes in the current year.
 
 The government has created an explanatory sheet to understand the calculation of the tax rate but this calculation is relatively complex and we want to create a simpler interface to calculate things.  
 Here's the sheet: https://www.economie.gouv.fr/particuliers/tranches-imposition-impot-revenu#etapescalculir
 
-This project is a GUI developed with `fyne`
+This project is a GUI developed with [Wails](https://wails.io/)
 
-Source code analysed with [DeepSource](https://deepsource.com/)
+Source code analysed with [DeepSource](https://deepsource.com/) and [Codacy](app.codacy.com)
 
 ## Table of contents
 
--   [Requirements](#requirements)
--   [How to launch program](#how-to-launch-program)
--   [For Developpers](#for-developpers)
-    -   [Setup hook git](#setup-githooks)
--   [Packaging App](#packaging-app)
--   [Installing and Setup Golang](#installing-and-setup-golang)
--   [Cve analysis](#cve-analysis)
--   [Suggestions](#suggestions)
--   [Credits](#credits)
+TODO simplifier
+
+- [Requirements](#requirements)
+- [User Guide](#user-guide)
+- [Get Started](#get-started)
+    - [Setup hook git](#setup-githooks)
+    - [Tests](#testing)
+    - [Build application](#build-application)
+- [Cve analysis](#cve-analysis)
+- [Setup golang](#installing-and-setup-golang)
+- [Suggestions](#suggestions)
+- [Credits](#credits)
 
 ## Requirements
 
--   [Golang](https://golang.org/dl/) >= 1.22.3
+- [Golang](https://golang.org/dl/) >= 1.26.0
+- [NodeJs](https://nodejs.org/en) >= 25.0.0
 
-## How to launch program
+## User guide
+
+TODO a changer
 
 1. Get program  
    1.1 Linux
 
     ```bash
-    $ wget https://github.com/NY-Daystar/Corpos-christie/releases/download/v3.2.0/linux-corpos-christie-3.2.0.zip -O corpos-christie.zip
+    wget https://github.com/NY-Daystar/Corpos-christie/releases/download/v3.2.0/linux-corpos-christie.zip -O corpos-christie.zip
     ```
 
     1.2 Windows
 
     ```bash
-    $ wget https://github.com/NY-Daystar/Corpos-christie/releases/download/v3.2.0/windows-corpos-christie-3.2.0.zip -O corpos-christie.zip
+    wget https://github.com/NY-Daystar/Corpos-christie/releases/download/v3.2.0/windows-corpos-christie.zip -O corpos-christie.zip
     ```
 
     1.3 Mac
 
     ```bash
-    $ wget https://github.com/NY-Daystar/corpos-christie/releases/download/v3.2.0/mac-corpos-christie-3.2.0.zip -O corpos-christie.zip
+    wget https://github.com/NY-Daystar/corpos-christie/releases/download/v3.2.0/mac-corpos-christie.zip -O corpos-christie.zip
     ```
 
 2. Unzip it
 
 ```bash
-$ unzip corpos-christie.zip -d corpos-christie
+unzip corpos-christie.zip -d corpos-christie
 ```
 
 3. Start program
 
 ```bash
-$ cd corpos-christie
-$ ./corpos-christie
+cd corpos-christie
 ```
-
-## For Developpers
-
-Clone th repository
 
 ```bash
-$ git clone https://github.com/NY-Daystar/corpos-christie.git
+./corpos-christie
 ```
 
-Launch program basically
+## Get Started
+
+1. You need to install [golang](#installing-and-setup-golang)
+
+2. Clone the repository
 
 ```bash
-$ go run .
+git clone https://github.com/NY-Daystar/corpos-christie.git
 ```
 
-or
-
-```
-$ go build
-$ ./corpos-christie
-```
-
-Import module for an other project
+3. Install dependencies
 
 ```bash
-go get github.com/NY-Daystar/corpos-christie
+go get
 ```
 
-Launch console application (Available until v2.1.0)
+4. Launch program
 
 ```bash
-$ make run-console
-```
-
-To build program
-
-```bash
-$ make
-```
-
-To launch tests
-
-```bash
-$ make test
-```
-
-To import modules
-
-```bash
-$ go mod init corpos-christie
-$ go mod download
+wails dev
 ```
 
 To see go doc (ex: tax package)
 
 ```bash
-$ go doc github.com/NY-Daystar/corpos-christie/tax
+go doc github.com/NY-Daystar/corpos-christie/tax
 ```
-
-See [Project dependencies](https://deps.dev/go/github.com/NY-Daystar/corpos-christie) To watch go project used in this program
 
 ### Setup githooks
 
@@ -153,51 +132,23 @@ See [Project dependencies](https://deps.dev/go/github.com/NY-Daystar/corpos-chri
 git config --add core.hooksPath .githooks
 ```
 
-## Testing
+### Testing
 
+TODO a revoir
 Inspired by: https://dev.to/ankitmalikg/how-to-write-unit-test-cases-for-golang-3ln0
 
-## Packaging App
-
-This app is developed with [fyne library](https://fyne.io/)
-
-To build app we use [fyne-cross](https://github.com/fyne-io/fyne-cross)
-To use fyne-cross you need docker (linux) or docker destkop launched (windows/mac)
-
-To build on windows
+To launch tests
 
 ```bash
-$ make build-windows
+go test ./...
 ```
 
-To build on linux
+### Build application
+
+This app is developed with [wails](https://wails.io/)
 
 ```bash
-$ make build-linux
-```
-
-To build on Mac **Not available on gui for now**
-You need to pull docker image for fyne mac
-
-```bash
-$ make build-mac
-```
-
-To test packaging
-
-```bash
-$ make package-test
-```
-
-## Installing and Setup Golang
-
-To install golang
-
-```bash
-$ wget https://golang.org/dl/go1.22.3.linux-amd64.tar.gz
-$ tar -xvf go1.22.3.linux-amd64.tar.gz
-$ sudo mv go /usr/lib
-$ go version
+wails build
 ```
 
 ## Cve analysis
@@ -221,11 +172,22 @@ To launch verbose analysis
 govulncheck -show verbose ./...
 ```
 
+## Installing and Setup Golang
+
+To install golang on linux
+
+```bash
+wget https://golang.org/dl/go1.23.12.linux-amd64.tar.gz
+tar -xvf go1.23.12.linux-amd64.tar.gz
+sudo mv go /usr/lib
+go version
+```
+
 ## Suggestions
 
--   To make a pull request: https://github.com/NY-Daystar/corpos-christie/pulls
--   To summon an issue: https://github.com/NY-Daystar/corpos-christie/issues
--   For any specific demand by mail: luc4snoga@gmail.com
+- To make a pull request: https://github.com/NY-Daystar/corpos-christie/pulls
+- To summon an issue: https://github.com/NY-Daystar/corpos-christie/issues
+- For any specific demand by mail: luc4snoga@gmail.com
 
 ## Credits
 
